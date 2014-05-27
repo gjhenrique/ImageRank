@@ -1,25 +1,38 @@
 package br.uel.mdd;
 
 import br.uel.io.DicomFileOpener;
+import ij.ImagePlus;
+import math.jwave.Transform;
 import math.jwave.exceptions.JWaveFailure;
-
-import java.util.Arrays;
+import math.jwave.transforms.FastWaveletTransform;
+import math.jwave.transforms.wavelets.Haar1;
+import math.jwave.transforms.wavelets.Wavelet;
 
 /**
  * Hello world!
- *
  */
-public class App 
-{
-    public static void main( String[] args ) throws JWaveFailure {
+public class App {
+    public static void main(String[] args) throws JWaveFailure {
         new App();
     }
 
-    public App(){
+    public App() {
+
         String filePath = this.getClass().getResource("/pulmao_enfisema.dcm").getPath();
         DicomFileOpener dicomOpener = new DicomFileOpener(filePath);
 
-        // Get the gray value of a random pixel
-        System.out.println(Arrays.toString(dicomOpener.getImage().getPixel(1, 20)));
+        double[][] imageMatrix = dicomOpener.getGrayPixelMatrix();
+
+        try {
+            Wavelet filter = new Haar1();
+            Transform transform = new Transform(new FastWaveletTransform(filter), 2);
+
+            double[][] transformedWavelet = transform.forward(imageMatrix);
+            ImagePlus newImage = dicomOpener.createNewImage(transformedWavelet);
+            newImage.show();
+        } catch (JWaveFailure jWaveFailure) {
+            jWaveFailure.printStackTrace();
+        }
+
     }
 }

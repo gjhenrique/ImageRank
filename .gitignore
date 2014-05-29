@@ -67,3 +67,5 @@ hs_err_pid*
 
 ### jOOQ ###
 jooq-config.xml
+# database properties
+src/main/resources/database.properties

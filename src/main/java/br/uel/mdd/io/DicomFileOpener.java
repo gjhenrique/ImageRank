@@ -1,4 +1,4 @@
-package br.uel.io;
+package br.uel.mdd.io;
 
 import ij.IJ;
 import ij.ImagePlus;

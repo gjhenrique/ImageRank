@@ -8,6 +8,7 @@ import org.jooq.SQLDialect;
 import org.jooq.impl.DefaultConfiguration;
 
 import java.sql.Connection;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -26,7 +27,7 @@ public class Main {
         ExperimentosDao dao = new ExperimentosDao(configuration);
         List<Experimentos> exp = dao.findAll();
 
-        System.out.println(exp);
+        System.out.println(Arrays.deepToString(exp.toArray()));
 
     }
 }

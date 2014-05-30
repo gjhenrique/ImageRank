@@ -1,4 +1,4 @@
-package br.uel.mdd.loading;
+package br.uel.mdd.io.loading;
 
 import br.uel.mdd.NameClassExtractor;
 import br.uel.mdd.dao.ClassesDao;
@@ -23,8 +23,8 @@ import static br.uel.mdd.db.Sequences.CLASSES_ID_SEQ;
 import static br.uel.mdd.db.Sequences.EXPERIMENTOS_ID_SEQ;
 
 /**
- * @author ${user}
- * @TODO Auto-generated comment
+ * @author Pedro Tanaka
+ * Load images from specific folder
  * <p/>
  * Created by pedro on 29/05/14.
  */

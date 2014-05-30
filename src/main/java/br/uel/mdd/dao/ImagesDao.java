@@ -4,6 +4,9 @@ import br.uel.mdd.db.tables.pojos.Images;
 import br.uel.mdd.db.tables.records.ImagesRecord;
 import org.jooq.Configuration;
 import org.jooq.impl.DAOImpl;
+import org.jooq.impl.DSL;
+
+import static br.uel.mdd.db.Sequences.*;
 
 /**
  * @author ${user}
@@ -21,5 +24,11 @@ public class ImagesDao extends DAOImpl<ImagesRecord, Images, Integer>{
     @Override
     protected Integer getId(Images object) {
         return object.getId();
+    }
+
+    public void insertNullPk(Images images){
+        long id = DSL.using(this.configuration()).nextval(IMAGES_ID_SEQ);
+        images.setId((int) id);
+        this.insert(images);
     }
 }

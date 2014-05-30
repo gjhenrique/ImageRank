@@ -4,6 +4,9 @@ import br.uel.mdd.db.tables.pojos.Datasets;
 import br.uel.mdd.db.tables.records.DatasetsRecord;
 import org.jooq.Configuration;
 import org.jooq.impl.DAOImpl;
+import org.jooq.impl.DSL;
+
+import static br.uel.mdd.db.Sequences.DATASETS_ID_SEQ;
 
 /**
  * @author ${user}
@@ -21,4 +24,11 @@ public class DatasetsDao extends DAOImpl<DatasetsRecord, Datasets, Integer> {
     protected Integer getId(Datasets object) {
         return object.getId();
     }
+
+    public void insertNullPk(Datasets dataset){
+        long id = DSL.using(this.configuration()).nextval(DATASETS_ID_SEQ);
+        dataset.setId((int) id);
+        this.insert(dataset);
+    }
+
 }

@@ -1,15 +1,14 @@
 package br.uel.mdd;
 
+import br.uel.mdd.dao.ExperimentosDao;
 import br.uel.mdd.db.jdbc.PostgresConnectionFactory;
-import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.Result;
+import br.uel.mdd.model.Experimentos;
+import org.jooq.Configuration;
 import org.jooq.SQLDialect;
-import org.jooq.impl.DSL;
+import org.jooq.impl.DefaultConfiguration;
 
 import java.sql.Connection;
-
-import static br.uel.mdd.db.Tables.CLASSES;
+import java.util.List;
 
 /**
  * @author ${user}
@@ -19,13 +18,15 @@ import static br.uel.mdd.db.Tables.CLASSES;
  */
 public class Main {
     public static void main(String args[]){
+
         Connection connection = new PostgresConnectionFactory().getConnection();
-        DSLContext create = DSL.using(connection, SQLDialect.POSTGRES);
-        Result<Record> result = create.select().from(CLASSES).fetch();
-        for (Record r : result) {
-            Integer id = r.getValue(CLASSES.ID);
-            String nome = r.getValue(CLASSES.NOME);
-            System.out.println("ID: " + id + " nome: " + nome);
-        }
+
+        Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.POSTGRES);
+
+        ExperimentosDao dao = new ExperimentosDao(configuration);
+        List<Experimentos> exp = dao.findAll();
+
+        System.out.println(exp);
+
     }
 }

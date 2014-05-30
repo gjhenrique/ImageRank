@@ -1,8 +1,8 @@
 package br.uel.mdd;
 
-import br.uel.mdd.dao.ExperimentosDao;
+import br.uel.mdd.dao.ImagesDao;
 import br.uel.mdd.db.jdbc.PostgresConnectionFactory;
-import br.uel.mdd.model.Experimentos;
+import br.uel.mdd.db.tables.pojos.Images;
 import org.jooq.Configuration;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DefaultConfiguration;
@@ -23,11 +23,8 @@ public class Main {
         Connection connection = new PostgresConnectionFactory().getConnection();
 
         Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.POSTGRES);
-
-        ExperimentosDao dao = new ExperimentosDao(configuration);
-        List<Experimentos> exp = dao.findAll();
-
-        System.out.println(Arrays.deepToString(exp.toArray()));
-
+        ImagesDao dao = new ImagesDao(configuration);
+        List<Images> all = dao.findAll();
+        Arrays.deepToString(all.toArray());
     }
 }

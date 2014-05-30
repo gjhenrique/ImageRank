@@ -1,15 +1,18 @@
 package br.uel.mdd.io.loading;
 
 import br.uel.mdd.NameClassExtractor;
-import br.uel.mdd.dao.ClassesDao;
-import br.uel.mdd.dao.ExperimentosDao;
+import br.uel.mdd.dao.ClassImageDao;
+import br.uel.mdd.dao.DatasetClassesDao;
+import br.uel.mdd.dao.DatasetsDao;
+import br.uel.mdd.dao.ImagesDao;
 import br.uel.mdd.db.jdbc.PostgresConnectionFactory;
-import br.uel.mdd.model.Classes;
-import br.uel.mdd.model.Experimentos;
+import br.uel.mdd.db.tables.pojos.ClassImage;
+import br.uel.mdd.db.tables.pojos.DatasetClasses;
+import br.uel.mdd.db.tables.pojos.Datasets;
+import br.uel.mdd.db.tables.pojos.Images;
 import com.google.common.io.ByteStreams;
 import org.jooq.Configuration;
 import org.jooq.SQLDialect;
-import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultConfiguration;
 
 import java.io.File;
@@ -19,8 +22,6 @@ import java.sql.Connection;
 import java.util.Arrays;
 import java.util.List;
 
-import static br.uel.mdd.db.Sequences.CLASSES_ID_SEQ;
-import static br.uel.mdd.db.Sequences.EXPERIMENTOS_ID_SEQ;
 
 /**
  * @author Pedro Tanaka
@@ -45,28 +46,36 @@ public class LungImageLoader {
         Connection connection = new PostgresConnectionFactory().getConnection();
         Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.POSTGRES);
 
-        ExperimentosDao experimentosDao = new ExperimentosDao(configuration);
-        ClassesDao classesDao = new ClassesDao(configuration);
+        Datasets datasets =  new Datasets(null, "LungCT");
+        new DatasetsDao(configuration).insertNullPk(datasets);
+
+        ImagesDao imagesDao = new ImagesDao(configuration);
+        ClassImageDao classDao = new ClassImageDao(configuration);
+        DatasetClassesDao datasetClassesDao = new DatasetClassesDao(configuration);
         NameClassExtractor classExtractor = new NameClassExtractor();
 
 
         for (File file : this.getFilesFromFolder(path)) {
-            Experimentos exp = new Experimentos();
-            exp.setId(DSL.using(configuration).nextval(EXPERIMENTOS_ID_SEQ));
+            Images image = new Images();
+
             FileInputStream fis = new FileInputStream(file);
             byte[] fileBytes = ByteStreams.toByteArray(fis);
 
-            exp.setImagem(fileBytes);
-            exp.setNomeImagem(file.getName());
-            if (classesDao.fetchByNome(classExtractor.extractClass(file)).isEmpty()) {
-                Classes classe = new Classes();
-                classe.setId(DSL.using(configuration).nextval(CLASSES_ID_SEQ));
-                classe.setNome(classExtractor.extractClass(file));
-                classe.setTipoImagem("lung");
-                classesDao.insert(classe);
+            image.setImage(fileBytes);
+            image.setFileName(file.getName());
+
+            String imageClass = classExtractor.extractClass(file);
+            ClassImage iclass = classDao.fetchByDatasetAndClassName(datasets, imageClass);
+            DatasetClasses dc = new DatasetClasses();
+            if(iclass == null){ // There's no such class, create it then
+                iclass = new ClassImage(null, imageClass);
+                classDao.insertNullPk(iclass);
+                dc = datasetClassesDao.insert(datasets, iclass);
+            }else{
+                dc = datasetClassesDao.fetchByClassAndDataset(iclass, datasets);
             }
-            exp.setClasseId(classesDao.fetchByNome(classExtractor.extractClass(file)).get(0).getId());
-            experimentosDao.insert(exp);
+            image.setDatasetClassId(dc.getId());
+            imagesDao.insertNullPk(image);
         }
     }
 

@@ -6,6 +6,8 @@ public class Classes {
 
     private String nome;
 
+    private String tipoImagem;
+
     public Long getId() {
         return id;
     }
@@ -22,11 +24,20 @@ public class Classes {
         this.nome = nome;
     }
 
+    public String getTipoImagem() {
+        return tipoImagem;
+    }
+
+    public void setTipoImagem(String tipoImagem) {
+        this.tipoImagem = tipoImagem;
+    }
+
     @Override
     public String toString() {
         return "Classes{" +
                 "id=" + id +
                 ", nome='" + nome + '\'' +
+                ", tipoImagem='" + tipoImagem + '\'' +
                 '}';
     }
 }

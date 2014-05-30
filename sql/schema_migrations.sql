@@ -14,11 +14,11 @@ ALTER TABLE extractors ADD COLUMN levels_wavelet INT;
 
 -- Author: Guilherme
 -- Date/Time: 30/05/2014 15:59
-INSERT INTO extractors (id, name, filter_identifier, class_name)
-  VALUES (1, 'Wavelet SubEspaco', 'Haar1', 'ReducedScaleWaveletExtractor');
+INSERT INTO extractors (id, name, filter_identifier, class_name, levels_wavelet)
+  VALUES (1, 'Wavelet SubEspaco', 'Haar1', 'ReducedScaleWaveletExtractor', 4);
 
-INSERT INTO extractors (id, name, filter_identifier, class_name)
-  VALUES (2, 'Wavelet SubEspaco', 'Daubechies2', 'ReducedScaleWaveletExtractor');
+INSERT INTO extractors (id, name, filter_identifier, class_name, levels_wavelet)
+  VALUES (2, 'Wavelet SubEspaco', 'Daubechies2', 'ReducedScaleWaveletExtractor', 4);
 
-INSERT INTO extractors (id, name, filter_identifier, class_name)
-  VALUES (3, 'Wavelet SubEspaco', 'Symlets2', 'ReducedScaleWaveletExtractor')
+INSERT INTO extractors (id, name, filter_identifier, class_name, levels_wavelet)
+  VALUES (3, 'Wavelet SubEspaco', 'Symlets2', 'ReducedScaleWaveletExtractor', 4);

@@ -10,10 +10,10 @@ import org.jooq.impl.DAOImpl;
  * <p/>
  * Created by pedro on 30/05/14.
  */
-public class DatasetClasses extends DAOImpl<DatasetClassesRecord, br.uel.mdd.db.tables.pojos.DatasetClasses, Integer>{
+public class DatasetClassesDao extends DAOImpl<DatasetClassesRecord, br.uel.mdd.db.tables.pojos.DatasetClasses, Integer>{
 
 
-    protected DatasetClasses(Configuration configuration) {
+    protected DatasetClassesDao(Configuration configuration) {
         super(br.uel.mdd.db.tables.DatasetClasses.DATASET_CLASSES, br.uel.mdd.db.tables.pojos.DatasetClasses.class, configuration);
     }
 

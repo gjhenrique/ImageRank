@@ -95,6 +95,9 @@
                         <password>pedro123</password>
                     </jdbc>
                     <generator>
+                        <generate>
+                            <pojos>true</pojos>
+                        </generate>
                         <database>
                             <name>org.jooq.util.postgres.PostgresDatabase</name>
                             <includes>.*</includes>

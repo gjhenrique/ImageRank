@@ -26,6 +26,11 @@
             <version>1.0</version>
         </dependency>
         <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>17.0</version>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>3.8.1</version>
@@ -85,9 +90,9 @@
                     <!-- JDBC connection parameters -->
                     <jdbc>
                         <driver>org.postgresql.Driver</driver>
-                        <url>jdbc:postgresql://localhost:5432/images</url>
+                        <url>jdbc:postgresql:mestrado</url>
                         <user>postgres</user>
-                        <password>123456</password>
+                        <password>pedro123</password>
                     </jdbc>
                     <generator>
                         <database>

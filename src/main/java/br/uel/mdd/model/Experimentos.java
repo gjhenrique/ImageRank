@@ -10,11 +10,11 @@ public class Experimentos {
 
     private Integer[] coeficiente;
 
-    private Byte[] imagem;
+    private byte[] imagem;
 
     private String nomeImagem;
 
-    private Integer classeId;
+    private Long classeId;
 
     public Long getId() {
         return id;
@@ -40,11 +40,11 @@ public class Experimentos {
         this.coeficiente = coeficiente;
     }
 
-    public Byte[] getImagem() {
+    public byte[] getImagem() {
         return imagem;
     }
 
-    public void setImagem(Byte[] imagem) {
+    public void setImagem(byte[] imagem) {
         this.imagem = imagem;
     }
 
@@ -56,11 +56,11 @@ public class Experimentos {
         this.nomeImagem = nomeImagem;
     }
 
-    public Integer getClasseId() {
+    public Long getClasseId() {
         return classeId;
     }
 
-    public void setClasseId(Integer classeId) {
+    public void setClasseId(Long classeId) {
         this.classeId = classeId;
     }
 

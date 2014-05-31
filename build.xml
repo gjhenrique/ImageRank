@@ -1,0 +1,32 @@
+<project name="image-wavelet" default="code-generation" basedir=".">
+    <property name="maven.home" value="${user.home}/.m2" />
+    <property name="jooq.maven.home" value="${maven.home}/repository/org/jooq" />
+    <property name="postgresql.jar.home" value="${maven.home}/repository/org/postgresql/postgresql/9.3-1101-jdbc41" />
+
+    
+    <path id="project.classpath">
+        <pathelement path="${java.class.path}"/>
+        <fileset dir="${jooq.maven.home}/jooq/3.3.2">
+            <include name="*.jar" />
+        </fileset>
+        <fileset dir="${jooq.maven.home}/jooq-meta/3.3.2">
+            <include name="*.jar" />
+        </fileset>
+        <fileset dir="${jooq.maven.home}/jooq-codegen/3.3.2">
+            <include name="*.jar" />
+        </fileset>
+        <fileset dir="${postgresql.jar.home}">
+            <include name="*.jar" />
+        </fileset>
+        <fileset dir="."></fileset>
+    </path>
+        
+    <target name="code-generation">
+        <java fork="true" classname="org.jooq.util.GenerationTool" classpathref="project.classpath" classpath=".">
+            <arg
+                description="The configuration file for jooq"
+                value="/jooq-config.xml"
+                ></arg>
+        </java>
+    </target>
+</project>

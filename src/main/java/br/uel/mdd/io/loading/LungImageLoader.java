@@ -1,24 +1,24 @@
 package br.uel.mdd.io.loading;
 
+import br.uel.mdd.ClassExtractor;
 import br.uel.mdd.NameClassExtractor;
 import br.uel.mdd.dao.ClassImageDao;
 import br.uel.mdd.dao.DatasetClassesDao;
 import br.uel.mdd.dao.DatasetsDao;
 import br.uel.mdd.dao.ImagesDao;
-import br.uel.mdd.db.jdbc.PostgresConnectionFactory;
 import br.uel.mdd.db.tables.pojos.ClassImage;
 import br.uel.mdd.db.tables.pojos.DatasetClasses;
 import br.uel.mdd.db.tables.pojos.Datasets;
 import br.uel.mdd.db.tables.pojos.Images;
+import br.uel.mdd.module.AppModule;
 import com.google.common.io.ByteStreams;
-import org.jooq.Configuration;
-import org.jooq.SQLDialect;
-import org.jooq.impl.DefaultConfiguration;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.Connection;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,11 +31,28 @@ import java.util.List;
  */
 public class LungImageLoader {
 
+    @Inject
+    private DatasetsDao datasetsDao;
+
+    @Inject
+    private ImagesDao imagesDao;
+
+    @Inject
+    private ClassImageDao classDao;
+
+    private ClassExtractor classExtractor = new NameClassExtractor();
+
+    @Inject
+    private DatasetClassesDao datasetClassesDao;
 
     public static void main(String args[]) {
-        LungImageLoader lil = new LungImageLoader();
+
+        Injector injector = Guice.createInjector(new AppModule());
+        LungImageLoader lil = injector.getInstance(LungImageLoader.class);
+
         try {
-            lil.loadFilesFromFolder("/home/pedro/Documentos/Mestrado/PDS/Projeto/Imagens-Pulmao");
+            lil.loadFilesFromFolder("/home/guilherme/Documents/imgsPulmao/Pulmao");
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -43,17 +60,10 @@ public class LungImageLoader {
 
 
     public void loadFilesFromFolder(String path) throws IOException {
-        Connection connection = new PostgresConnectionFactory().getConnection();
-        Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.POSTGRES);
 
-        Datasets datasets =  new Datasets(null, "LungCT");
-        new DatasetsDao(configuration).insertNullPk(datasets);
-
-        ImagesDao imagesDao = new ImagesDao(configuration);
-        ClassImageDao classDao = new ClassImageDao(configuration);
-        DatasetClassesDao datasetClassesDao = new DatasetClassesDao(configuration);
-        NameClassExtractor classExtractor = new NameClassExtractor();
-
+        Datasets datasets =  new Datasets();
+        datasets.setName("LungCT");
+        datasetsDao.insertNullPk(datasets);
 
         for (File file : this.getFilesFromFolder(path)) {
             Images image = new Images();
@@ -70,6 +80,7 @@ public class LungImageLoader {
             if(iclass == null){ // There's no such class, create it then
                 iclass = new ClassImage(null, imageClass);
                 classDao.insertNullPk(iclass);
+                System.out.println(imageClass);
                 dc = datasetClassesDao.insert(datasets, iclass);
             }else{
                 dc = datasetClassesDao.fetchByClassAndDataset(iclass, datasets);

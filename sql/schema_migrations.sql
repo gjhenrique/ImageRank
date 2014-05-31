@@ -44,3 +44,9 @@ ALTER TABLE extractions ADD COLUMN extraction_data DOUBLE PRECISION [];
 ALTER TABLE extractions ADD UNIQUE (image_id, extractor_id);
 ALTER TABLE extractions ALTER COLUMN image_id SET NOT NULL;
 ALTER TABLE extractions ALTER COLUMN extractor_id SET NOT NULL;
+
+-- Author: Guilherme
+-- Date/Time: 31/05/2014 19:31
+ALTER TABLE class_image ADD UNIQUE (name);
+ALTER TABLE datasets ADD UNIQUE (name);
+ALTER TABLE images ADD UNIQUE (file_name, dataset_class_id);

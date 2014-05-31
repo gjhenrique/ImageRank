@@ -3,16 +3,20 @@ package br.uel.mdd.extractor;
 import math.jwave.Transform;
 import math.jwave.exceptions.JWaveFailure;
 import math.jwave.transforms.FastWaveletTransform;
-import math.jwave.transforms.wavelets.Haar1;
 import math.jwave.transforms.wavelets.Wavelet;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 public class ReducedScaleWaveletExtractor implements FeatureExtractor {
 
+    @Inject
+    @Named("levels")
     private int levels;
 
-    public ReducedScaleWaveletExtractor(int levels) {
-        this.levels = levels;
-    }
+    @Inject
+    @Named("filter")
+    private Wavelet filter;
 
     @Override
     public double[] extractFeature(double[][] pixels) {
@@ -26,8 +30,7 @@ public class ReducedScaleWaveletExtractor implements FeatureExtractor {
 
         double[][] transformedWavelet = null;
         try {
-            Wavelet filter = new Haar1();
-            Transform transform = new Transform(new FastWaveletTransform(filter), this.levels);
+            Transform transform = new Transform(new FastWaveletTransform(this.filter), this.levels);
             transformedWavelet = transform.forward(pixels);
         } catch (JWaveFailure jWaveFailure) {
             jWaveFailure.printStackTrace();

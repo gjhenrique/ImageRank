@@ -18,9 +18,7 @@ ALTER TABLE images
 -- Author: Guilherme
 -- Date/Time: 30/05/2014 15:59
 ALTER TABLE extractors DROP COLUMN family;
-
 ALTER TABLE extractors DROP COLUMN support;
-
 ALTER TABLE extractors ADD COLUMN filter_identifier VARCHAR ( 50 );
 ALTER TABLE extractors ADD COLUMN class_name VARCHAR ( 50 );
 ALTER TABLE extractors ADD COLUMN levels_wavelet INT;
@@ -40,3 +38,9 @@ VALUES (3, 'Wavelet SubEspaco', 'Symlets2', 'ReducedScaleWaveletExtractor', 4);
 -- Date/Time: 31/05/2014 12:55
 ALTER TABLE extractions DROP COLUMN extraction_data;
 ALTER TABLE extractions ADD COLUMN extraction_data DOUBLE PRECISION [];
+
+-- Author: Guilherme
+-- Date/Time: 31/05/2014 16:38
+ALTER TABLE extractions ADD UNIQUE (image_id, extractor_id);
+ALTER TABLE extractions ALTER COLUMN image_id SET NOT NULL;
+ALTER TABLE extractions ALTER COLUMN extractor_id SET NOT NULL;

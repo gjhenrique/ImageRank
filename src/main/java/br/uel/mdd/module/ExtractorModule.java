@@ -1,13 +1,12 @@
-package br.uel.mdd;
+package br.uel.mdd.module;
 
 import br.uel.mdd.db.tables.pojos.Extractors;
 import br.uel.mdd.extractor.FeatureExtractor;
 import br.uel.mdd.extractor.ReducedScaleWaveletExtractor;
-import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
 import math.jwave.transforms.wavelets.Wavelet;
 
-public class ExtractorModule extends AbstractModule {
+public class ExtractorModule extends AppModule {
 
     private Extractors extractors;
 
@@ -17,6 +16,8 @@ public class ExtractorModule extends AbstractModule {
 
     @Override
     protected void configure() {
+        super.configure();
+
         Class clazzFeatureExtractor = this.findClassByName(getExtractorsPackage(), extractors.getClassName());
         bind(FeatureExtractor.class).to(clazzFeatureExtractor);
 
@@ -27,6 +28,7 @@ public class ExtractorModule extends AbstractModule {
             bind(Wavelet.class).annotatedWith(Names.named("filter")).to(clazzFilter);
         }
 
+        bind(Extractors.class).toInstance(extractors);
     }
 
     private String getExtractorsPackage() {

@@ -1,8 +1,11 @@
 package br.uel.mdd.io;
 
-import ij.IJ;
 import ij.ImagePlus;
+import ij.io.Opener;
+import ij.plugin.DICOM;
 import ij.process.ImageProcessor;
+
+import java.io.InputStream;
 
 /**
  * Example class that opens DICOM files.
@@ -11,16 +14,26 @@ import ij.process.ImageProcessor;
  */
 public class DicomFileOpener {
 
+    private static String DEFAULT_NAME = "Padrao";
+
     public ImagePlus getImage() {
         return image;
     }
 
-    private ImagePlus image;
+    private DICOM image;
 
-    public DicomFileOpener(String filePath) {
-        image = (ImagePlus) IJ.runPlugIn("ij.plugin.DICOM", filePath);
-        if(image == null)
-            throw new RuntimeException("Imagem " + filePath + " não existe");
+    public DicomFileOpener(String path) {
+        Opener opener = new Opener();
+        image = (DICOM) opener.openImage(path);
+    }
+
+    public DicomFileOpener(InputStream inputStream, String fileName) {
+        image = new DICOM(inputStream);
+        image.run(fileName);
+    }
+
+    public DicomFileOpener(InputStream inputStream) {
+        this(inputStream, DEFAULT_NAME);
     }
 
     public double[][] getGrayPixelMatrix() {
@@ -39,7 +52,7 @@ public class DicomFileOpener {
         ImagePlus newImage = image.duplicate();
         ImageProcessor processor = newImage.getProcessor();
 
-        for (int i = 0;  i < image.getWidth(); i++) {
+        for (int i = 0; i < image.getWidth(); i++) {
             for (int j = 0; j < image.getHeight(); j++) {
                 processor.putPixelValue(i, j, pixels[i][j]);
             }

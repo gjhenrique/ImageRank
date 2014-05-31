@@ -22,3 +22,10 @@ INSERT INTO extractors (id, name, filter_identifier, class_name, levels_wavelet)
 
 INSERT INTO extractors (id, name, filter_identifier, class_name, levels_wavelet)
   VALUES (3, 'Wavelet SubEspaco', 'Symlets2', 'ReducedScaleWaveletExtractor', 4);
+
+
+-- Author: Guilherme
+-- Date/Time: 31/05/2014 16:38
+ALTER TABLE extractions ADD UNIQUE (image_id, extractor_id);
+ALTER TABLE extractions ALTER COLUMN image_id SET NOT NULL;
+ALTER TABLE extractions ALTER COLUMN extractor_id SET NOT NULL;

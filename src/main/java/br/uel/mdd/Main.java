@@ -1,8 +1,11 @@
 package br.uel.mdd;
 
 import br.uel.mdd.dao.ExtractorsDao;
+import br.uel.mdd.dao.ImagesDao;
 import br.uel.mdd.db.jdbc.PostgresConnectionFactory;
 import br.uel.mdd.db.tables.pojos.Extractors;
+import br.uel.mdd.db.tables.pojos.Images;
+import br.uel.mdd.module.ExtractorModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import org.jooq.Configuration;
@@ -10,6 +13,7 @@ import org.jooq.SQLDialect;
 import org.jooq.impl.DefaultConfiguration;
 
 import java.sql.Connection;
+import java.util.List;
 
 /**
  * @author ${user}
@@ -27,9 +31,12 @@ public class Main {
         ExtractorsDao dao = new ExtractorsDao(configuration);
         Extractors extractor = dao.findById(3);
 
-        Injector injector = Guice.createInjector(new ExtractorModule(extractor));
-        ExtractFeatureDatabase efd = injector.getInstance(ExtractFeatureDatabase.class);
+        ImagesDao imagesDao = new ImagesDao(configuration);
+        List<Images> images = imagesDao.findAll();
 
-        efd.extractFeatures();
+        Injector injector = Guice.createInjector(new ExtractorModule(extractor));
+        FeatureExtractionLoader efd = injector.getInstance(FeatureExtractionLoader.class);
+
+        efd.extractFeatures(images);
     }
 }

@@ -5,6 +5,7 @@ import br.uel.mdd.dao.ImagesDao;
 import br.uel.mdd.db.jdbc.PostgresConnectionFactory;
 import br.uel.mdd.db.tables.pojos.Extractors;
 import br.uel.mdd.db.tables.pojos.Images;
+import br.uel.mdd.io.loading.FeatureExtractionLoader;
 import br.uel.mdd.module.ExtractorModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;

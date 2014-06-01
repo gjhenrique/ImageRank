@@ -1,4 +1,4 @@
-package br.uel.mdd;
+package br.uel.mdd.io.loading;
 
 import br.uel.mdd.dao.ExtractionsDao;
 import br.uel.mdd.db.tables.pojos.Extractions;

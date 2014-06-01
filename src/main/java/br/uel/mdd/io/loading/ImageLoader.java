@@ -14,6 +14,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 import javax.inject.Inject;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -153,7 +154,8 @@ public class ImageLoader {
 //        Extracting the bytes from the image
         try {
             FileInputStream fis = new FileInputStream(file);
-            byte[] fileBytes = ByteStreams.toByteArray(fis);
+            BufferedInputStream bis = new BufferedInputStream(fis);
+            byte[] fileBytes = ByteStreams.toByteArray(bis);
             image.setImage(fileBytes);
         } catch (IOException e) {
             e.printStackTrace();

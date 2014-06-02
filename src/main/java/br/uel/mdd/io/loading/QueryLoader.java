@@ -88,7 +88,7 @@ public class QueryLoader {
         TreeResult<QueryResults> result = new TreeResult<>(extractionQuery.getExtractionData(), k);
         Datasets dataset = datasetsDao.fetchByExtractionId(extractionQuery.getId());
 
-        List<Extractions> extractions = extractionsDao.fetchByDatasetId(dataset.getId());
+        List<Extractions> extractions = extractionsDao.fetchByDatasetIdAndExtractorId(dataset.getId(), extractionQuery.getExtractorId());
         for (Extractions extraction : extractions) {
 
             QueryResults queryResult = new QueryResults();

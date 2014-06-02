@@ -43,4 +43,19 @@ public class ExtractionsDao extends DAOImpl<ExtractionsRecord, Extractions, Inte
                         DATASET_CLASSES.DATASET_ID.equal(datasetId)
                 ).fetchInto(Extractions.class);
     }
+
+
+    public List<Extractions> fetchByDatasetIdAndExtractorId(Integer datasetId, Integer extractorId) {
+        DSLContext create = DSL.using(this.configuration());
+        return create.select(EXTRACTIONS.ID, EXTRACTIONS.EXTRACTION_DATA, EXTRACTIONS.IMAGE_ID, EXTRACTIONS.EXTRACTOR_ID)
+                .from(DATASET_CLASSES)
+                .join(IMAGES)
+                .on(IMAGES.DATASET_CLASS_ID.equal(DATASET_CLASSES.ID))
+                .join(EXTRACTIONS)
+                .on(EXTRACTIONS.IMAGE_ID.equal(IMAGES.ID))
+                .where(
+                        DATASET_CLASSES.DATASET_ID.equal(datasetId)
+                                .and(EXTRACTIONS.EXTRACTOR_ID.equal(extractorId))
+                ).fetchInto(Extractions.class);
+    }
 }

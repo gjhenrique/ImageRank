@@ -10,13 +10,13 @@ import java.io.InputStream;
  */
 public abstract class ImageWrapper {
 
-    public static ImageWrapper createImageOpener(InputStream stream, String mime){
-        // TODO: Open different file types, not only DICOM and common formats (jpg, png and bpm)
-        if(mime.equals("application/dicom")){
+    public static ImageWrapper createImageOpener(InputStream stream, String mime) {
+        if (mime.equals("application/dicom")) {
             return new DicomImageWrapper(stream);
-        }else{
-            // @TODO return java BufferedImage
-            return null;
+        } else if (mime.startsWith("image")) {
+            return new CommonImageWrapper(stream);
+        } else {
+            throw new IllegalArgumentException("Mime " + mime + " not recognized");
         }
     }
 
@@ -30,15 +30,29 @@ public abstract class ImageWrapper {
 
     protected abstract int getWidth();
 
-    public double[][] getPixelMatrix(){
+    public double[][] getPixelMatrix() {
 
         double[][] matrix = new double[getHeight()][getWidth()];
         for (int i = 0; i < getWidth(); i++) {
             for (int j = 0; j < getWidth(); j++) {
-                matrix[i][j] = (double) getPixelValue(i, j)[0];
+                matrix[i][j] = getUnitPixelValue(i, j);
             }
         }
         return matrix;
+    }
+
+    private int getUnitPixelValue(int x, int y) {
+        int value = 0;
+        if (supportColor()) {
+//                    TODO
+            value = getPixelValue(x, y)[0];
+        } else if (supportAlpha()) {
+//                    TODO
+            value = getPixelValue(x, y)[0];
+        } else {
+            value = getPixelValue(x, y)[0];
+        }
+        return value;
     }
 
 }

@@ -9,6 +9,7 @@ import br.uel.mdd.db.tables.pojos.DatasetClasses;
 import br.uel.mdd.db.tables.pojos.Datasets;
 import br.uel.mdd.db.tables.pojos.Images;
 import br.uel.mdd.module.AppModule;
+import br.uel.mdd.utils.Mime;
 import com.google.common.io.ByteStreams;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -18,9 +19,6 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -74,14 +72,8 @@ public class ImageLoader {
     }
 
     private boolean isImage(File file) {
+        String mimeType = Mime.getMimeType(file);
 
-        Path path = Paths.get(file.toURI());
-        String mimeType = null;
-        try {
-            mimeType = Files.probeContentType(path);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         return mimeType.startsWith("image") || mimeType.endsWith("dicom");
     }
 
@@ -160,6 +152,9 @@ public class ImageLoader {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        String mimeType = Mime.getMimeType(file);
+        image.setMimeType(mimeType);
 
         image.setFileName(file.getName());
 

@@ -1,6 +1,9 @@
 package br.uel.mdd.io;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author Pedro Tanaka
@@ -14,9 +17,17 @@ import java.awt.image.BufferedImage;
  *  </ul>
  *
  */
-public class CommomImageWrapper extends ImageWrapper{
+public class CommonImageWrapper extends ImageWrapper{
 
-    BufferedImage image;
+    private BufferedImage image;
+
+    public CommonImageWrapper(InputStream stream) {
+        try {
+            this.image = ImageIO.read(stream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     protected boolean supportColor() {
@@ -37,9 +48,9 @@ public class CommomImageWrapper extends ImageWrapper{
      */
     @Override
     protected int[] getPixelValue(int x, int y) {
-        if (supportColor()){
+        if (supportAlpha()){
             return getPixelARGB(x, y);
-        }else if(supportAlpha()){
+        }else if(supportColor()){
             return getPixelRGB(x,y);
         }else{
             return new int[]{image.getRGB(x,y), 0, 0, 0};

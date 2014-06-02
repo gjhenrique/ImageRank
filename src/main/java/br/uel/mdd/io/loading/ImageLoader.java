@@ -8,11 +8,8 @@ import br.uel.mdd.db.tables.pojos.ClassImage;
 import br.uel.mdd.db.tables.pojos.DatasetClasses;
 import br.uel.mdd.db.tables.pojos.Datasets;
 import br.uel.mdd.db.tables.pojos.Images;
-import br.uel.mdd.module.AppModule;
 import br.uel.mdd.utils.Mime;
 import com.google.common.io.ByteStreams;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 
 import javax.inject.Inject;
 import java.io.BufferedInputStream;
@@ -42,15 +39,6 @@ public class ImageLoader {
 
     @Inject
     private DatasetClassesDao datasetClassesDao;
-
-    public static void main(String args[]) {
-
-        Injector injector = Guice.createInjector(new AppModule());
-        ImageLoader lil = injector.getInstance(ImageLoader.class);
-
-        lil.loadFilesFromFolder(args[0]);
-
-    }
 
     public void loadFilesFromFolder(String path) {
         this.loadFilesFromFolder(new File(path));

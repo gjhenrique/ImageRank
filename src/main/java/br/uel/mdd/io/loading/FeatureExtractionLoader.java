@@ -33,11 +33,13 @@ public class FeatureExtractionLoader {
 
         double[][] pixels = this.getImagePixels(image);
 
+        long start = System.nanoTime();
         double[] features = featureExtractor.extractFeature(pixels);
+        long elapsedTime = System.nanoTime() - start;
 
         Double[] featuresContainer = castPrimitiveToContainer(features);
 
-        Extractions extractions = this.buildExtraction(featuresContainer, image);
+        Extractions extractions = this.buildExtraction(featuresContainer, image, elapsedTime);
 
         extractionsDao.insertNullPk(extractions);
     }
@@ -60,12 +62,13 @@ public class FeatureExtractionLoader {
         return featuresContainer;
     }
 
-    public Extractions buildExtraction(Double[] features, Images image) {
+    public Extractions buildExtraction(Double[] features, Images image, long elapsedTime) {
         Extractions extractions = new Extractions();
 
         extractions.setExtractionData(features);
         extractions.setExtractorId(extractor.getId());
         extractions.setImageId(image.getId());
+        extractions.setExtractionTime(elapsedTime);
 
         return extractions;
     }

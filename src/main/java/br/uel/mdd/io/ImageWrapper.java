@@ -12,7 +12,7 @@ public abstract class ImageWrapper {
 
     public static ImageWrapper createImageOpener(InputStream stream, String mime){
         // TODO: Open different file types, not only DICOM and common formats (jpg, png and bpm)
-        if(mime == "application/dicom"){
+        if(mime.equals("application/dicom")){
             return new DicomImageWrapper(stream);
         }else{
             // @TODO return java BufferedImage
@@ -20,7 +20,9 @@ public abstract class ImageWrapper {
         }
     }
 
-    protected abstract boolean isColor();
+    protected abstract boolean supportColor();
+
+    protected abstract boolean supportAlpha();
 
     protected abstract int[] getPixelValue(int x, int y);
 

@@ -36,8 +36,13 @@ public class DicomImageWrapper extends ImageWrapper {
     }
 
     @Override
-    public boolean isColor() {
+    public boolean supportColor() {
         return image.getNChannels() > 1;
+    }
+
+    @Override
+    protected boolean supportAlpha() {
+        return false;
     }
 
     @Override

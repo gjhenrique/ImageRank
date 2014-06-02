@@ -1,6 +1,7 @@
 package br.uel.mdd.dao;
 
 import br.uel.mdd.db.tables.pojos.DatasetClasses;
+import br.uel.mdd.db.tables.pojos.Datasets;
 import br.uel.mdd.db.tables.pojos.Images;
 import br.uel.mdd.db.tables.records.ImagesRecord;
 import org.jooq.Configuration;
@@ -8,9 +9,8 @@ import org.jooq.DSLContext;
 import org.jooq.impl.DAOImpl;
 import org.jooq.impl.DSL;
 
-import java.util.List;
-
 import static br.uel.mdd.db.Sequences.IMAGES_ID_SEQ;
+import static br.uel.mdd.db.tables.DatasetClasses.DATASET_CLASSES;
 import static br.uel.mdd.db.tables.Images.IMAGES;
 
 /**
@@ -39,16 +39,21 @@ public class ImagesDao extends DAOImpl<ImagesRecord, Images, Integer>{
 
     public Images fetchByFileNameAndDatasetClassId(String name, DatasetClasses datasetClasses) {
         DSLContext create = DSL.using(this.configuration());
-        List<Images> images = create.select()
+        return create.select()
                 .from(IMAGES)
                 .where(IMAGES.FILE_NAME.equal(name)
                                 .and(IMAGES.DATASET_CLASS_ID.equal(datasetClasses.getId()))
                 )
-                .fetch().into(Images.class);
-        if(images.isEmpty()){
-            return null;
-        } else{
-            return images.get(0);
-        }
+                .fetchOneInto(Images.class);
+    }
+
+    public long getCountByDataset(Datasets dataset) {
+        DSLContext create = DSL.using(this.configuration());
+        return create.selectCount()
+                .from(IMAGES)
+                .join(DATASET_CLASSES).onKey()
+                .where(
+                        DATASET_CLASSES.DATASET_ID.equal(dataset.getId())
+                ).fetchOne(0, long.class);
     }
 }

@@ -22,5 +22,8 @@ public class AppModule extends AbstractModule {
         bind(ExtractionsDao.class).toInstance(new ExtractionsDao(configuration));
         bind(ExtractorsDao.class).toInstance(new ExtractorsDao(configuration));
         bind(ImagesDao.class).toInstance(new ImagesDao(configuration));
+        bind(QueriesDao.class).toInstance(new QueriesDao(configuration));
+        bind(QueryResultsDao.class).toInstance(new QueryResultsDao(configuration));
+        bind(DistanceFunctionsDao.class).toInstance(new DistanceFunctionsDao(configuration));
     }
 }

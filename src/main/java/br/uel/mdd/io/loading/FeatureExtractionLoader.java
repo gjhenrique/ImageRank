@@ -5,11 +5,13 @@ import br.uel.mdd.db.tables.pojos.Extractions;
 import br.uel.mdd.db.tables.pojos.Extractors;
 import br.uel.mdd.db.tables.pojos.Images;
 import br.uel.mdd.extractor.FeatureExtractor;
-import br.uel.mdd.io.DicomFileOpener;
+import br.uel.mdd.io.ImageWrapper;
+import org.apache.tika.Tika;
 
 import javax.inject.Inject;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.List;
 
 public class FeatureExtractionLoader {
@@ -46,9 +48,15 @@ public class FeatureExtractionLoader {
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(image.getImage());
         BufferedInputStream bufferedInputStream = new BufferedInputStream(byteArrayInputStream);
 
-//        TODO: Open different file types, not only DICOM
-        DicomFileOpener opener = new DicomFileOpener(bufferedInputStream);
-        return opener.getGrayPixelMatrix();
+        String mimeType = "";
+        try {
+            mimeType = new Tika().detect(bufferedInputStream);
+        } catch (IOException e) {
+            System.out.println("The mime type of the file could not be detected. Please check if the file is valid.");
+            e.printStackTrace();
+        }
+        ImageWrapper opener = ImageWrapper.createImageOpener(bufferedInputStream, mimeType);
+        return opener.getPixelMatrix();
     }
 
     public Double[] castPrimitiveToContainer(double[] features) {

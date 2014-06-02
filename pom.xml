@@ -61,6 +61,11 @@
             <artifactId>guice-multibindings</artifactId>
             <version>3.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-core</artifactId>
+            <version>1.5</version>
+        </dependency>
     </dependencies>
 
 </project>

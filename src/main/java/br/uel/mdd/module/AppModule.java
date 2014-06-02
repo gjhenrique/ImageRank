@@ -16,10 +16,11 @@ public class AppModule extends AbstractModule {
         Connection connection = new PostgresConnectionFactory().getConnection();
         Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.POSTGRES);
 
-        bind(ExtractionsDao.class).toInstance(new ExtractionsDao(configuration));
-        bind(ImagesDao.class).toInstance(new ImagesDao(configuration));
-        bind(DatasetsDao.class).toInstance(new DatasetsDao(configuration));
         bind(ClassImageDao.class).toInstance(new ClassImageDao(configuration));
         bind(DatasetClassesDao.class).toInstance(new DatasetClassesDao(configuration));
+        bind(DatasetsDao.class).toInstance(new DatasetsDao(configuration));
+        bind(ExtractionsDao.class).toInstance(new ExtractionsDao(configuration));
+        bind(ExtractorsDao.class).toInstance(new ExtractorsDao(configuration));
+        bind(ImagesDao.class).toInstance(new ImagesDao(configuration));
     }
 }

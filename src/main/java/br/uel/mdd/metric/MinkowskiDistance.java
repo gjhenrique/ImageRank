@@ -3,7 +3,7 @@ package br.uel.mdd.metric;
 public abstract class MinkowskiDistance implements MetricEvaluator {
 
     @Override
-    public double getDistance(double[] obj1, double[] obj2) {
+    public double getDistance(Double[] obj1, Double[] obj2) {
 
         if (obj1.length != obj2.length) {
             throw new IllegalArgumentException("Vetor de tamnaho" + obj1.length + " diferente de " + obj2.length);

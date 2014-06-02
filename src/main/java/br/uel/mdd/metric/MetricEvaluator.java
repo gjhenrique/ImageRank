@@ -2,6 +2,6 @@ package br.uel.mdd.metric;
 
 public interface MetricEvaluator {
 
-    public double getDistance(double[] obj1, double[] obj2);
+    public double getDistance(Double[] obj1, Double[] obj2);
 
 }

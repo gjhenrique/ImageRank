@@ -3,7 +3,7 @@ package br.uel.mdd.metric;
 public class JeffreyDivergence implements MetricEvaluator{
 
     @Override
-    public double getDistance(double[] obj1, double[] obj2) {
+    public double getDistance(Double[] obj1, Double[] obj2) {
 
         double value = 0;
 

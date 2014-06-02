@@ -1,16 +1,19 @@
 package br.uel.mdd;
 
+import br.uel.mdd.dao.DistanceFunctionsDao;
+import br.uel.mdd.dao.ExtractionsDao;
 import br.uel.mdd.dao.ExtractorsDao;
 import br.uel.mdd.dao.ImagesDao;
-import br.uel.mdd.db.tables.QueryResults;
+import br.uel.mdd.db.tables.pojos.DistanceFunctions;
+import br.uel.mdd.db.tables.pojos.Extractions;
 import br.uel.mdd.db.tables.pojos.Extractors;
 import br.uel.mdd.db.tables.pojos.Images;
 import br.uel.mdd.io.loading.FeatureExtractionLoader;
 import br.uel.mdd.io.loading.ImageLoader;
+import br.uel.mdd.io.loading.QueryLoader;
 import br.uel.mdd.module.AppModule;
 import br.uel.mdd.module.ExtractorModule;
-import br.uel.mdd.result.ResultPair;
-import br.uel.mdd.result.TreeResult;
+import br.uel.mdd.module.QueryModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
@@ -26,12 +29,12 @@ public class Main {
 
     public static void main(String args[]) {
 
-        int i = 1;
-
+        int i = 2;
+        Injector injector = Guice.createInjector(new AppModule());
 //        Loading Images
         if (i == 0) {
 
-            Injector injector = Guice.createInjector(new AppModule());
+            injector = Guice.createInjector(new AppModule());
             ImageLoader lil = injector.getInstance(ImageLoader.class);
 
             lil.loadFilesFromFolder(args[0]);
@@ -39,7 +42,7 @@ public class Main {
 //        Loading extractions
         else if (i == 1) {
 
-            Injector injector = Guice.createInjector(new AppModule());
+
             ExtractorsDao dao = injector.getInstance(ExtractorsDao.class);
 
             List<Extractors> extractors = dao.findAll();
@@ -52,11 +55,14 @@ public class Main {
                 FeatureExtractionLoader efd = injector.getInstance(FeatureExtractionLoader.class);
                 efd.extractFeatures(images);
             }
-            TreeResult<QueryResults> result = new TreeResult<QueryResults>(null, 10, false);
-
-            for(ResultPair results : result.getPairs()) {
-
-            }
+        } else if (i == 2){
+            ExtractionsDao edao = injector.getInstance(ExtractionsDao.class);
+            Extractions extractions = edao.findById(1);
+            DistanceFunctionsDao dao = injector.getInstance(DistanceFunctionsDao.class);
+            DistanceFunctions distanceFunction = dao.findById(1);
+            injector = Guice.createInjector(new QueryModule(distanceFunction));
+            QueryLoader queryLoader = injector.getInstance(QueryLoader.class);
+            queryLoader.knn(extractions, 15);
         }
     }
 }

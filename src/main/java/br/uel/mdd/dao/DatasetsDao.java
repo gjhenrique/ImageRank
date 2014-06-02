@@ -3,10 +3,17 @@ package br.uel.mdd.dao;
 import br.uel.mdd.db.tables.pojos.Datasets;
 import br.uel.mdd.db.tables.records.DatasetsRecord;
 import org.jooq.Configuration;
+import org.jooq.DSLContext;
 import org.jooq.impl.DAOImpl;
 import org.jooq.impl.DSL;
 
+import java.util.List;
+
 import static br.uel.mdd.db.Sequences.DATASETS_ID_SEQ;
+import static br.uel.mdd.db.tables.DatasetClasses.DATASET_CLASSES;
+import static br.uel.mdd.db.tables.Datasets.DATASETS;
+import static br.uel.mdd.db.tables.Images.IMAGES;
+import static br.uel.mdd.db.tables.Extractions.EXTRACTIONS;
 
 /**
  * @author ${user}
@@ -17,7 +24,7 @@ import static br.uel.mdd.db.Sequences.DATASETS_ID_SEQ;
 public class DatasetsDao extends DAOImpl<DatasetsRecord, Datasets, Integer> {
 
     public DatasetsDao(Configuration configuration) {
-        super(br.uel.mdd.db.tables.Datasets.DATASETS, Datasets.class, configuration);
+        super(DATASETS, Datasets.class, configuration);
     }
 
     @Override
@@ -31,4 +38,36 @@ public class DatasetsDao extends DAOImpl<DatasetsRecord, Datasets, Integer> {
         this.insert(dataset);
     }
 
+    public Datasets fetchByImageId(Integer imageId) {
+
+        DSLContext create = DSL.using(this.configuration());
+        List<Datasets> into = create.select()
+                .from(DATASETS)
+                .join(DATASET_CLASSES).onKey()
+                .join(IMAGES).onKey()
+                .where(
+                        IMAGES.ID.equal(imageId)
+                )
+                .fetch().into(Datasets.class);
+        if(into.isEmpty()){
+            return null;
+        } else{
+            return into.get(0);
+        }
+    }
+
+    public Datasets fetchByExtractionId(Integer id) {
+                DSLContext create = DSL.using(this.configuration());
+        return create.select()
+                .from(DATASETS)
+                .join(DATASET_CLASSES)
+                    .on(DATASET_CLASSES.DATASET_ID.equal(DATASETS.ID))
+                .join(IMAGES)
+                    .on(IMAGES.DATASET_CLASS_ID.equal(DATASET_CLASSES.ID))
+                .join(EXTRACTIONS).on(EXTRACTIONS.IMAGE_ID.equal(IMAGES.ID))
+                .where(
+                        EXTRACTIONS.ID.equal(id)
+                )
+                .fetchOneInto(Datasets.class);
+    }
 }

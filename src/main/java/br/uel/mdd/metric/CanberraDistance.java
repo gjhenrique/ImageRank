@@ -1,11 +1,9 @@
 package br.uel.mdd.metric;
 
-import br.uel.mdd.metric.MetricEvaluator;
-
 public class CanberraDistance implements MetricEvaluator {
 
     @Override
-    public double getDistance(double[] obj1, double[] obj2) {
+    public double getDistance(Double[] obj1, Double[] obj2) {
 
         double value = 0;
 

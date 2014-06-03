@@ -29,7 +29,7 @@ public class Main {
 
     public static void main(String args[]) {
 
-        int i = 1;
+        int i = 2;
         Injector injector = Guice.createInjector(new AppModule());
 //        Loading Images
         if (i == 0) {
@@ -41,29 +41,28 @@ public class Main {
         }
 //        Loading extractions
         else if (i == 1) {
-
-
             ExtractorsDao dao = injector.getInstance(ExtractorsDao.class);
 
             Extractors extractor = dao.fetchOne(br.uel.mdd.db.tables.Extractors.EXTRACTORS.ID, 4);
-//            List<Extractors> extractors = dao.findAll();
+            //List<Extractors> extractors = dao.findAll();
 
             ImagesDao imagesDao = injector.getInstance(ImagesDao.class);
             List<Images> images = imagesDao.findAll();
 
-//            for (Extractors extractor : extractors) {
+            //for (Extractors extractor : extractors) {
                 injector = Guice.createInjector(new ExtractorModule(extractor));
                 FeatureExtractionLoader efd = injector.getInstance(FeatureExtractionLoader.class);
                 efd.extractFeatures(images);
-//            }
+            //}
         } else if (i == 2){
             ExtractionsDao edao = injector.getInstance(ExtractionsDao.class);
-            Extractions extractions = edao.findById(1477);
+            Extractions extractions = edao.findAll().get(0);
+            //Extractions extractions = edao.findById(2712);
             DistanceFunctionsDao dao = injector.getInstance(DistanceFunctionsDao.class);
             DistanceFunctions distanceFunction = dao.findById(1);
             injector = Guice.createInjector(new QueryModule(distanceFunction));
             QueryLoader queryLoader = injector.getInstance(QueryLoader.class);
-            queryLoader.knn(extractions, 15);
+            queryLoader.knn(extractions, 25);
         }
     }
 }

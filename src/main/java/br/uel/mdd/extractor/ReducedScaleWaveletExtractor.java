@@ -19,10 +19,12 @@ public class ReducedScaleWaveletExtractor implements FeatureExtractor {
     @Named("filter")
     private Wavelet filter;
 
+
     @Override
     public double[] extractFeature(ImageWrapper image) {
 
         double[][] pixels = image.getPixelMatrix();
+
 
         double[][] transformedPixels = this.performWaveletTransform(pixels);
 
@@ -50,12 +52,14 @@ public class ReducedScaleWaveletExtractor implements FeatureExtractor {
 
         double[] subSpaceFeature = new double[width * height];
 
-        for (int x = 0; x < height; x++) {
+
+        int k = 0;
+
+        for (int x = height-1; x >= 0; x--) {
             for (int y = 0; y < width; y++) {
-                subSpaceFeature[x * y] = transformedPixels[x][y];
+                subSpaceFeature[k++] = transformedPixels[x][y];
             }
         }
-
         return subSpaceFeature;
     }
 }

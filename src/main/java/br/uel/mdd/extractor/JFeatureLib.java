@@ -18,6 +18,8 @@ public class JFeatureLib implements FeatureExtractor {
         BufferedImage bufferedImage = imageWrapper.getImage();
         ImagePlus imagePlus = new ImagePlus("TITLE", bufferedImage);
 
+        // Avoid getting the same results for different images
+        abstractFeatureDescriptor.getFeatures().clear();
         abstractFeatureDescriptor.run(imagePlus.getProcessor());
 
         List<double[]> features = abstractFeatureDescriptor.getFeatures();

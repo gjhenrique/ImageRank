@@ -1,5 +1,6 @@
 package br.uel.mdd.extractor;
 
+import br.uel.mdd.io.ImageWrapper;
 import math.jwave.Transform;
 import math.jwave.exceptions.JWaveFailure;
 import math.jwave.transforms.FastWaveletTransform;
@@ -19,7 +20,9 @@ public class ReducedScaleWaveletExtractor implements FeatureExtractor {
     private Wavelet filter;
 
     @Override
-    public double[] extractFeature(double[][] pixels) {
+    public double[] extractFeature(ImageWrapper image) {
+
+        double[][] pixels = image.getPixelMatrix();
 
         double[][] transformedPixels = this.performWaveletTransform(pixels);
 

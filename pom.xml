@@ -61,6 +61,16 @@
             <artifactId>guice-multibindings</artifactId>
             <version>3.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.kzwang</groupId>
+            <artifactId>lire</artifactId>
+            <version>0.9.4-kzwang-beta1</version>
+        </dependency>
+        <dependency>
+            <groupId>de.lmu.ifi.dbs.jfeaturelib</groupId>
+            <artifactId>JFeatureLib</artifactId>
+            <version>1.6.0</version>
+        </dependency>
     </dependencies>
 
 </project>

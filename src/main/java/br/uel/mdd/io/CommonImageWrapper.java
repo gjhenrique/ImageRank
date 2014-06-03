@@ -75,6 +75,11 @@ public class CommonImageWrapper extends ImageWrapper{
         return image.getWidth();
     }
 
+    @Override
+    public BufferedImage getImage() {
+        return image;
+    }
+
     /**
      * The first three positions are the RBG and the last position is the alpha channel
      * @param x Index x of image

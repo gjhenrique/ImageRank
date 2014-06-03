@@ -1,5 +1,6 @@
 package br.uel.mdd.io;
 
+import java.awt.image.BufferedImage;
 import java.io.InputStream;
 
 /**
@@ -29,6 +30,8 @@ public abstract class ImageWrapper {
     protected abstract int getHeight();
 
     protected abstract int getWidth();
+
+    public abstract BufferedImage getImage();
 
     public double[][] getPixelMatrix() {
 

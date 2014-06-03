@@ -31,10 +31,10 @@ public class FeatureExtractionLoader {
 
     public void extractFeatures(Images image) {
 
-        double[][] pixels = this.getImagePixels(image);
+        ImageWrapper wrapper = this.getImageWrapper(image);
 
         long start = System.nanoTime();
-        double[] features = featureExtractor.extractFeature(pixels);
+        double[] features = featureExtractor.extractFeature(wrapper);
         long elapsedTime = System.nanoTime() - start;
 
         Double[] featuresContainer = castPrimitiveToContainer(features);
@@ -44,12 +44,11 @@ public class FeatureExtractionLoader {
         extractionsDao.insertNullPk(extractions);
     }
 
-    public double[][] getImagePixels(Images image) {
+    public ImageWrapper getImageWrapper (Images image) {
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(image.getImage());
         BufferedInputStream bufferedInputStream = new BufferedInputStream(byteArrayInputStream);
 
-        ImageWrapper opener = ImageWrapper.createImageOpener(bufferedInputStream, image.getMimeType());
-        return opener.getPixelMatrix();
+        return ImageWrapper.createImageOpener(bufferedInputStream, image.getMimeType());
     }
 
     public Double[] castPrimitiveToContainer(double[] features) {

@@ -1,9 +1,9 @@
 package br.uel.mdd.io;
 
-import ij.ImagePlus;
 import ij.io.Opener;
 import ij.plugin.DICOM;
 
+import java.awt.image.BufferedImage;
 import java.io.InputStream;
 
 /**
@@ -14,10 +14,6 @@ import java.io.InputStream;
 public class DicomImageWrapper extends ImageWrapper {
 
     private static String DEFAULT_NAME = "Padrao";
-
-    public ImagePlus getImage() {
-        return image;
-    }
 
     private DICOM image;
 
@@ -58,5 +54,10 @@ public class DicomImageWrapper extends ImageWrapper {
     @Override
     protected int getWidth() {
         return image.getWidth();
+    }
+
+    @Override
+    public BufferedImage getImage() {
+        return image.getProcessor().getBufferedImage();
     }
 }

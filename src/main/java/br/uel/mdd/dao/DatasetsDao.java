@@ -12,8 +12,8 @@ import java.util.List;
 import static br.uel.mdd.db.Sequences.DATASETS_ID_SEQ;
 import static br.uel.mdd.db.tables.DatasetClasses.DATASET_CLASSES;
 import static br.uel.mdd.db.tables.Datasets.DATASETS;
-import static br.uel.mdd.db.tables.Images.IMAGES;
 import static br.uel.mdd.db.tables.Extractions.EXTRACTIONS;
+import static br.uel.mdd.db.tables.Images.IMAGES;
 
 /**
  * @author ${user}
@@ -32,7 +32,7 @@ public class DatasetsDao extends DAOImpl<DatasetsRecord, Datasets, Integer> {
         return object.getId();
     }
 
-    public void insertNullPk(Datasets dataset){
+    public void insertNullPk(Datasets dataset) {
         long id = DSL.using(this.configuration()).nextval(DATASETS_ID_SEQ);
         dataset.setId((int) id);
         this.insert(dataset);
@@ -49,21 +49,23 @@ public class DatasetsDao extends DAOImpl<DatasetsRecord, Datasets, Integer> {
                         IMAGES.ID.equal(imageId)
                 )
                 .fetch().into(Datasets.class);
-        if(into.isEmpty()){
+        if (into.isEmpty()) {
             return null;
-        } else{
+        } else {
             return into.get(0);
         }
     }
 
     public Datasets fetchByExtractionId(Integer id) {
-                DSLContext create = DSL.using(this.configuration());
-        return create.select()
+
+        DSLContext create = DSL.using(this.configuration());
+
+        return create.select(DATASETS.ID, DATASETS.NAME)
                 .from(DATASETS)
                 .join(DATASET_CLASSES)
-                    .on(DATASET_CLASSES.DATASET_ID.equal(DATASETS.ID))
+                .on(DATASET_CLASSES.DATASET_ID.equal(DATASETS.ID))
                 .join(IMAGES)
-                    .on(IMAGES.DATASET_CLASS_ID.equal(DATASET_CLASSES.ID))
+                .on(IMAGES.DATASET_CLASS_ID.equal(DATASET_CLASSES.ID))
                 .join(EXTRACTIONS).on(EXTRACTIONS.IMAGE_ID.equal(IMAGES.ID))
                 .where(
                         EXTRACTIONS.ID.equal(id)

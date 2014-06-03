@@ -3,7 +3,10 @@ package br.uel.mdd.module;
 import br.uel.mdd.db.tables.pojos.Extractors;
 import br.uel.mdd.extractor.FeatureExtractor;
 import br.uel.mdd.extractor.ReducedScaleWaveletExtractor;
+import br.uel.mdd.extractor.JFeatureLib;
+import br.uel.mdd.utils.ReflectionUtils;
 import com.google.inject.name.Names;
+import de.lmu.ifi.dbs.jfeaturelib.features.AbstractFeatureDescriptor;
 import math.jwave.transforms.wavelets.Wavelet;
 
 public class ExtractorModule extends AppModule {
@@ -18,14 +21,20 @@ public class ExtractorModule extends AppModule {
     protected void configure() {
         super.configure();
 
-        Class clazzFeatureExtractor = this.findClassByName(getExtractorsPackage(), extractors.getClassName());
+        Class clazzFeatureExtractor = ReflectionUtils.findClassByName(getExtractorsPackage(), extractors.getClassName());
         bind(FeatureExtractor.class).to(clazzFeatureExtractor);
 
         if (clazzFeatureExtractor == ReducedScaleWaveletExtractor.class) {
             bind(Integer.class).annotatedWith(Names.named("levels")).toInstance(extractors.getLevelsWavelet());
 
-            Class clazzFilter = this.findClassByName(getFilterPackage(), extractors.getFilterIdentifier());
+            Class clazzFilter = ReflectionUtils.findClassByName(getFilterPackage(), extractors.getTypeIdentifier());
             bind(Wavelet.class).annotatedWith(Names.named("filter")).to(clazzFilter);
+
+        } else if (clazzFeatureExtractor == JFeatureLib.class) {
+
+            Class clazzIdentifier = ReflectionUtils.findClassByName(getJFeatureLibPackage(), extractors.getTypeIdentifier());
+            bind(AbstractFeatureDescriptor.class).to(clazzIdentifier);
+
         }
 
         bind(Extractors.class).toInstance(extractors);
@@ -36,8 +45,8 @@ public class ExtractorModule extends AppModule {
     }
 
 
-    public String getFilterPackage() {
-        String filterIdentifier = extractors.getFilterIdentifier();
+    private String getFilterPackage() {
+        String filterIdentifier = extractors.getTypeIdentifier();
 
         String packageName = "math.jwave.transforms.wavelets";
 
@@ -52,14 +61,8 @@ public class ExtractorModule extends AppModule {
         return packageName;
     }
 
-    private Class findClassByName(String packageName, String className) {
-        Class clazzFeatureExtractor = null;
-        try {
-            clazzFeatureExtractor = Class.forName(packageName + "." + className);
-        } catch (ClassNotFoundException e) {
-        }
-        return clazzFeatureExtractor;
+    private String getJFeatureLibPackage() {
+        return "de.lmu.ifi.dbs.jfeaturelib.features";
     }
-
 
 }

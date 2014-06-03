@@ -12,3 +12,6 @@ ALTER COLUMN query_duration DROP NOT NULL ;
 
 ALTER TABLE query_results
     ADD UNIQUE (query_id, image_id);
+
+ALTER TABLE extractors
+    RENAME COLUMN filter_identifier TO type_identifier;

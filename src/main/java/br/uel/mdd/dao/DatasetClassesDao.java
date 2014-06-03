@@ -9,10 +9,8 @@ import org.jooq.DSLContext;
 import org.jooq.impl.DAOImpl;
 import org.jooq.impl.DSL;
 
-import java.util.List;
-
 import static br.uel.mdd.db.Sequences.DATASET_CLASSES_ID_SEQ;
-import static br.uel.mdd.db.tables.DatasetClasses.*;
+import static br.uel.mdd.db.tables.DatasetClasses.DATASET_CLASSES;
 
 /**
  * @author ${user}
@@ -48,17 +46,11 @@ public class DatasetClassesDao extends DAOImpl<DatasetClassesRecord, br.uel.mdd.
 
     public DatasetClasses fetchByClassAndDataset(ClassImage iclass, Datasets datasets) {
         DSLContext create = DSL.using(this.configuration());
-        List<DatasetClasses> into = create.select()
+        return create.select(DATASET_CLASSES.fields())
                 .from(DATASET_CLASSES)
                 .where(DATASET_CLASSES.CLASS_ID.equal(iclass.getId())
                                 .and(DATASET_CLASSES.DATASET_ID.equal(datasets.getId()))
                 )
-                .fetch().into(DatasetClasses.class);
-        if(into.isEmpty()){
-            return null;
-        } else{
-            return into.get(0);
-        }
-
+                .fetchOneInto(DatasetClasses.class);
     }
 }

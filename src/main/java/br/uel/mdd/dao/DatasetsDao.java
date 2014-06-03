@@ -7,8 +7,6 @@ import org.jooq.DSLContext;
 import org.jooq.impl.DAOImpl;
 import org.jooq.impl.DSL;
 
-import java.util.List;
-
 import static br.uel.mdd.db.Sequences.DATASETS_ID_SEQ;
 import static br.uel.mdd.db.tables.DatasetClasses.DATASET_CLASSES;
 import static br.uel.mdd.db.tables.Datasets.DATASETS;
@@ -41,26 +39,21 @@ public class DatasetsDao extends DAOImpl<DatasetsRecord, Datasets, Integer> {
     public Datasets fetchByImageId(Integer imageId) {
 
         DSLContext create = DSL.using(this.configuration());
-        List<Datasets> into = create.select()
+        return create.select(DATASETS.fields())
                 .from(DATASETS)
                 .join(DATASET_CLASSES).onKey()
                 .join(IMAGES).onKey()
                 .where(
                         IMAGES.ID.equal(imageId)
                 )
-                .fetch().into(Datasets.class);
-        if (into.isEmpty()) {
-            return null;
-        } else {
-            return into.get(0);
-        }
+                .fetchOneInto(Datasets.class);
     }
 
     public Datasets fetchByExtractionId(Integer id) {
 
         DSLContext create = DSL.using(this.configuration());
 
-        return create.select(DATASETS.ID, DATASETS.NAME)
+        return create.select(DATASETS.fields())
                 .from(DATASETS)
                 .join(DATASET_CLASSES)
                 .on(DATASET_CLASSES.DATASET_ID.equal(DATASETS.ID))

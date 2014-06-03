@@ -42,7 +42,7 @@ public class ClassImageDao extends DAOImpl<ClassImageRecord, ClassImage, Integer
     public List<ClassImage> fetchByDataset(Datasets dataset){
        if(dataset.getId() != null) {
             DSLContext create = DSL.using(this.configuration());
-            return create.select(CLASS_IMAGE.ID, CLASS_IMAGE.NAME)
+            return create.select(CLASS_IMAGE.fields())
                     .from(CLASS_IMAGE)
                     .join(DATASET_CLASSES)
                     .onKey()
@@ -61,19 +61,14 @@ public class ClassImageDao extends DAOImpl<ClassImageRecord, ClassImage, Integer
     public ClassImage fetchByDatasetAndClassName(Datasets dataset, String classImage){
         if(dataset.getId() != null && (classImage != null && !classImage.isEmpty())) {
             DSLContext create = DSL.using(this.configuration());
-            List<ClassImage> classImages = create.select(CLASS_IMAGE.ID, CLASS_IMAGE.NAME)
+            return create.select(CLASS_IMAGE.fields())
                     .from(CLASS_IMAGE)
                     .join(DATASET_CLASSES)
                     .onKey()
                     .where(DATASET_CLASSES.DATASET_ID.equal(dataset.getId())
                                     .and(CLASS_IMAGE.NAME.equal(classImage))
                     )
-                    .fetch().into(ClassImage.class);
-            if (classImages.isEmpty()){
-                return null;
-            }else{
-                return classImages.get(0);
-            }
+                    .fetchOneInto(ClassImage.class);
         }
         return null;
     }

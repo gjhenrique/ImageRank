@@ -39,7 +39,7 @@ public class ImagesDao extends DAOImpl<ImagesRecord, Images, Integer>{
 
     public Images fetchByFileNameAndDatasetClassId(String name, DatasetClasses datasetClasses) {
         DSLContext create = DSL.using(this.configuration());
-        return create.select()
+        return create.select(IMAGES.fields())
                 .from(IMAGES)
                 .where(IMAGES.FILE_NAME.equal(name)
                                 .and(IMAGES.DATASET_CLASS_ID.equal(datasetClasses.getId()))

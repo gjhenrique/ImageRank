@@ -33,7 +33,7 @@ public class ExtractionsDao extends DAOImpl<ExtractionsRecord, Extractions, Inte
 
     public List<Extractions> fetchByDatasetId(Integer datasetId){
         DSLContext create = DSL.using(this.configuration());
-        return create.select(EXTRACTIONS.ID, EXTRACTIONS.EXTRACTION_DATA, EXTRACTIONS.IMAGE_ID, EXTRACTIONS.EXTRACTOR_ID)
+        return create.select(EXTRACTIONS.fields())
                 .from(DATASET_CLASSES)
                 .join(IMAGES)
                 .on(IMAGES.DATASET_CLASS_ID.equal(DATASET_CLASSES.ID))
@@ -47,7 +47,7 @@ public class ExtractionsDao extends DAOImpl<ExtractionsRecord, Extractions, Inte
 
     public List<Extractions> fetchByDatasetIdAndExtractorId(Integer datasetId, Integer extractorId) {
         DSLContext create = DSL.using(this.configuration());
-        return create.select(EXTRACTIONS.ID, EXTRACTIONS.EXTRACTION_DATA, EXTRACTIONS.IMAGE_ID, EXTRACTIONS.EXTRACTOR_ID)
+        return create.select(EXTRACTIONS.fields())
                 .from(DATASET_CLASSES)
                 .join(IMAGES)
                 .on(IMAGES.DATASET_CLASS_ID.equal(DATASET_CLASSES.ID))

@@ -19,6 +19,8 @@ import com.google.inject.Injector;
 
 import java.util.List;
 
+import static br.uel.mdd.db.tables.Extractions.EXTRACTIONS;
+
 /**
  * @author ${user}
  * @TODO Auto-generated comment
@@ -44,22 +46,22 @@ public class Main {
             ExtractorsDao dao = injector.getInstance(ExtractorsDao.class);
 
             Extractors extractor = dao.fetchOne(br.uel.mdd.db.tables.Extractors.EXTRACTORS.ID, 4);
-            //List<Extractors> extractors = dao.findAll();
+//            List<Extractors> extractors = dao.findAll();
 
             ImagesDao imagesDao = injector.getInstance(ImagesDao.class);
             List<Images> images = imagesDao.findAll();
 
-            //for (Extractors extractor : extractors) {
+//            for (Extractors extractor : extractors) {
                 injector = Guice.createInjector(new ExtractorModule(extractor));
                 FeatureExtractionLoader efd = injector.getInstance(FeatureExtractionLoader.class);
                 efd.extractFeatures(images);
-            //}
+//            }
         } else if (i == 2){
             ExtractionsDao edao = injector.getInstance(ExtractionsDao.class);
-            Extractions extractions = edao.findAll().get(0);
-            //Extractions extractions = edao.findById(2712);
+            int extractorId = 4;
+            Extractions extractions = edao.fetch(EXTRACTIONS.EXTRACTOR_ID, extractorId).get(0);
             DistanceFunctionsDao dao = injector.getInstance(DistanceFunctionsDao.class);
-            DistanceFunctions distanceFunction = dao.findById(1);
+            DistanceFunctions distanceFunction = dao.findById(2);
             injector = Guice.createInjector(new QueryModule(distanceFunction));
             QueryLoader queryLoader = injector.getInstance(QueryLoader.class);
             queryLoader.knn(extractions, 25);

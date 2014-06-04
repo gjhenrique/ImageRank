@@ -22,8 +22,16 @@ public class JFeatureLib implements FeatureExtractor {
         abstractFeatureDescriptor.getFeatures().clear();
         abstractFeatureDescriptor.run(imagePlus.getProcessor());
 
-        List<double[]> features = abstractFeatureDescriptor.getFeatures();
+        List<double[]> featuresList = abstractFeatureDescriptor.getFeatures() ;
 
-        return features.get(0);
+        double[] features = featuresList.get(0);
+
+//        Checking if it is Nan due to any unhandled division by 0
+        for (int i = 0; i < features.length; i++) {
+           if(Double.isNaN(features[i])) {
+               features[i] = 0;
+           }
+        }
+        return features;
     }
 }

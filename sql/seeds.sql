@@ -12,5 +12,5 @@ INSERT INTO extractors (id, name, type_identifier, class_name)
 VALUES (4, 'Textural Features', 'Haralick', 'JFeatureLib');
 
 -- Metric Evaluators
-INSERT INTO metric_evaluator (name, class_name) VALUES ('Euclidean', 'EuclideanDistance');
-INSERT INTO metric_evaluator (name, class_name) VALUES ('Manhattan', 'ManhattanDistance');
+INSERT INTO distance_functions (name, class_name) VALUES ('Euclidean', 'EuclideanDistance');
+INSERT INTO distance_functions (name, class_name) VALUES ('Manhattan', 'ManhattanDistance');

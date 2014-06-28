@@ -20,28 +20,31 @@ import static br.uel.mdd.db.tables.Extractions.EXTRACTIONS;
  */
 public class QueryLoader {
 
-    @Inject
-    MetricEvaluator metricEvaluator;
+    private MetricEvaluator metricEvaluator;
+
+    private ExtractionsDao extractionsDao;
+
+    private ImagesDao imagesDao;
+
+    private DatasetsDao datasetsDao;
+
+    private DistanceFunctions distanceFunction;
+
+    private QueriesDao queriesDao;
+
+    private QueryResultsDao queryResultsDao;
 
     @Inject
-    ExtractionsDao extractionsDao;
-
-    @Inject
-    ImagesDao imagesDao;
-
-    @Inject
-    DatasetsDao datasetsDao;
-
-    @Inject
-    DistanceFunctions distanceFunction;
-
-    @Inject
-    QueriesDao queriesDao;
-
-    @Inject
-    QueryResultsDao queryResultsDao;
-
-
+    public QueryLoader(MetricEvaluator metricEvaluator, ExtractionsDao extractionsDao, ImagesDao imagesDao, DatasetsDao datasetsDao,
+                       DistanceFunctions distanceFunction, QueriesDao queriesDao, QueryResultsDao queryResultsDao) {
+        this.metricEvaluator = metricEvaluator;
+        this.extractionsDao = extractionsDao;
+        this.imagesDao = imagesDao;
+        this.datasetsDao = datasetsDao;
+        this.distanceFunction = distanceFunction;
+        this.queriesDao = queriesDao;
+        this.queryResultsDao = queryResultsDao;
+    }
 
     public void bulkKnn(Images image, int steps){
         List<Extractions> extractions = extractionsDao.fetch(EXTRACTIONS.IMAGE_ID, image.getId());

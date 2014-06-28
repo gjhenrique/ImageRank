@@ -10,8 +10,8 @@ import br.uel.mdd.db.tables.pojos.Datasets;
 import br.uel.mdd.db.tables.pojos.Images;
 import br.uel.mdd.utils.Mime;
 import com.google.common.io.ByteStreams;
+import com.google.inject.Inject;
 
-import javax.inject.Inject;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,17 +28,21 @@ import java.util.regex.Pattern;
  */
 public class ImageLoader {
 
-    @Inject
     private DatasetsDao datasetsDao;
 
-    @Inject
     private ImagesDao imagesDao;
 
-    @Inject
     private ClassImageDao classImageDao;
 
-    @Inject
     private DatasetClassesDao datasetClassesDao;
+
+    @Inject
+    public ImageLoader(DatasetsDao datasetsDao, ImagesDao imagesDao, ClassImageDao classImageDao, DatasetClassesDao datasetClassesDao) {
+        this.datasetClassesDao = datasetClassesDao;
+        this.imagesDao = imagesDao;
+        this.classImageDao = classImageDao;
+        this.datasetClassesDao = datasetClassesDao;
+    }
 
     public void loadFilesFromFolder(String path) {
         this.loadFilesFromFolder(new File(path));

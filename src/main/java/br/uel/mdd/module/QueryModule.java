@@ -23,7 +23,6 @@ public class QueryModule extends AppModule{
         super.configure();
         Class clazz = ReflectionUtils.findClassByName("br.uel.mdd.metric", distanceFunction.getClassName());
         this.bind(MetricEvaluator.class).to(clazz);
-
         this.bind(DistanceFunctions.class).toInstance(distanceFunction);
     }
 }

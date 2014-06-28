@@ -6,22 +6,26 @@ import br.uel.mdd.db.tables.pojos.Extractors;
 import br.uel.mdd.db.tables.pojos.Images;
 import br.uel.mdd.extractor.FeatureExtractor;
 import br.uel.mdd.io.ImageWrapper;
+import com.google.inject.Inject;
 
-import javax.inject.Inject;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.util.List;
 
 public class FeatureExtractionLoader {
 
-    @Inject
-    FeatureExtractor featureExtractor;
+    private FeatureExtractor featureExtractor;
+
+    private Extractors extractor;
+
+    private ExtractionsDao extractionsDao;
 
     @Inject
-    Extractors extractor;
-
-    @Inject
-    ExtractionsDao extractionsDao;
+    public FeatureExtractionLoader(FeatureExtractor featureExtractor, Extractors extractor, ExtractionsDao extractionsDao) {
+        this.featureExtractor = featureExtractor;
+        this.extractor = extractor;
+        this.extractionsDao = extractionsDao;
+    }
 
     public void extractFeatures(List<Images> images) {
         for (Images image : images) {
@@ -44,7 +48,7 @@ public class FeatureExtractionLoader {
         extractionsDao.insertNullPk(extractions);
     }
 
-    public ImageWrapper getImageWrapper (Images image) {
+    public ImageWrapper getImageWrapper(Images image) {
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(image.getImage());
         BufferedInputStream bufferedInputStream = new BufferedInputStream(byteArrayInputStream);
 

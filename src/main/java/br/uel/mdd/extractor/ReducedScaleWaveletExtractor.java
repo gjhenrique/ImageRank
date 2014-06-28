@@ -11,14 +11,16 @@ import javax.inject.Named;
 
 public class ReducedScaleWaveletExtractor implements FeatureExtractor {
 
-    @Inject
-    @Named("levels")
     private int levels;
 
-    @Inject
-    @Named("filter")
     private Wavelet filter;
 
+    @Inject
+    public ReducedScaleWaveletExtractor(@Named("levels") int levels,
+                                        @Named("filter") Wavelet wavelet) {
+        this.levels = levels;
+        this.filter = wavelet;
+    }
 
     @Override
     public double[] extractFeature(ImageWrapper image) {

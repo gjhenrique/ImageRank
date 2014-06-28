@@ -38,6 +38,7 @@ public class ImageLoader {
 
     @Inject
     public ImageLoader(DatasetsDao datasetsDao, ImagesDao imagesDao, ClassImageDao classImageDao, DatasetClassesDao datasetClassesDao) {
+        this.datasetsDao = datasetsDao;
         this.datasetClassesDao = datasetClassesDao;
         this.imagesDao = imagesDao;
         this.classImageDao = classImageDao;

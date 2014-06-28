@@ -13,6 +13,7 @@ public class ReflectionUtils {
         try {
             clazz = Class.forName(packageName + "." + className);
         } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
         return clazz;
     }

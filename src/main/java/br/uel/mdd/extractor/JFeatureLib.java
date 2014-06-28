@@ -10,8 +10,12 @@ import java.util.List;
 
 public class JFeatureLib implements FeatureExtractor {
 
-    @Inject
     private AbstractFeatureDescriptor abstractFeatureDescriptor;
+
+    @Inject
+    public JFeatureLib(AbstractFeatureDescriptor abstractFeatureDescriptor) {
+        this.abstractFeatureDescriptor = abstractFeatureDescriptor;
+    }
 
     @Override
     public double[] extractFeature(ImageWrapper imageWrapper) {

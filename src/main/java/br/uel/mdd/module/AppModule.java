@@ -2,7 +2,10 @@ package br.uel.mdd.module;
 
 import br.uel.mdd.dao.*;
 import br.uel.mdd.db.jdbc.PostgresConnectionFactory;
+import br.uel.mdd.io.loading.FeatureExtractionLoader;
+import br.uel.mdd.io.loading.FeatureExtractionLoaderImpl;
 import com.google.inject.AbstractModule;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
 import org.jooq.Configuration;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DefaultConfiguration;
@@ -25,5 +28,10 @@ public class AppModule extends AbstractModule {
         bind(QueriesDao.class).toInstance(new QueriesDao(configuration));
         bind(QueryResultsDao.class).toInstance(new QueryResultsDao(configuration));
         bind(DistanceFunctionsDao.class).toInstance(new DistanceFunctionsDao(configuration));
+
+//        FeatureExtractionFactory Injection
+        install(new FactoryModuleBuilder().
+                implement(FeatureExtractionLoader.class, FeatureExtractionLoaderImpl.class).
+                build(FeatureExtractionLoaderFactory.class));
     }
 }

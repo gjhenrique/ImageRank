@@ -14,7 +14,6 @@ import java.util.List;
 
 public class MainExtractor {
 
-
     public static void main(String[] args) {
         Injector injector = Guice.createInjector(new AppModule());
         ExtractorsDao dao = injector.getInstance(ExtractorsDao.class);

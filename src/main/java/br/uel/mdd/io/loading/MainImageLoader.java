@@ -4,9 +4,6 @@ import br.uel.mdd.module.AppModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-
-
-
 public class MainImageLoader {
 
     public static void main(String[] args){

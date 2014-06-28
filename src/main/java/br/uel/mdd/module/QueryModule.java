@@ -18,7 +18,6 @@ public class QueryModule extends AppModule{
         this.distanceFunction = distanceFunction;
     }
 
-
     @Override
     public void configure(){
         super.configure();

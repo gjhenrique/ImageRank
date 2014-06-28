@@ -76,7 +76,6 @@ public class ImageLoader {
         createImage(file, datasetClasses);
     }
 
-
     private Datasets createOrFetchDataset(String datasetName) {
 
         Datasets datasets = datasetsDao.fetchOne(br.uel.mdd.db.tables.Datasets.DATASETS.NAME, datasetName);

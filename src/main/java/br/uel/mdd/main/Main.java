@@ -80,7 +80,7 @@ public class Main {
 
     private void extractFeature(Images image, Extractors extractor) {
         FeatureExtractionLoaderFactory factory = injector.getInstance(FeatureExtractionLoaderFactory.class);
-        FeatureExtractor featureExtractionLoader = ExtractorUtils.getReflectionUtils(extractor);
+        FeatureExtractor featureExtractionLoader = ExtractorUtils.getFeatureExtractorImplementation(extractor);
 
         FeatureExtractionLoader loader = factory.create(extractor, featureExtractionLoader);
         loader.extractFeatures(image);

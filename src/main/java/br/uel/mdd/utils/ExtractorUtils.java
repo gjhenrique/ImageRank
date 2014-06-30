@@ -9,7 +9,7 @@ import math.jwave.transforms.wavelets.Wavelet;
 
 public class ExtractorUtils {
 
-    public static FeatureExtractor getReflectionUtils(Extractors extractor) {
+    public static FeatureExtractor getFeatureExtractorImplementation(Extractors extractor) {
 
         Class clazzFeatureExtractor = ReflectionUtils.findClassByName(getExtractorsPackage(), extractor.getClassName());
 

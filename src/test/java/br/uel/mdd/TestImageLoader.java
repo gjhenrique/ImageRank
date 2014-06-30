@@ -11,7 +11,6 @@ import br.uel.mdd.module.AppModule;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.ninja_squad.dbsetup.DbSetup;
-import com.ninja_squad.dbsetup.DbSetupTracker;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,8 +39,6 @@ public class TestImageLoader {
     @Inject
     private CommonOperations commonOperations;
 
-    private static DbSetupTracker dbSetupTracker = new DbSetupTracker();
-
     private File imagesDirectory;
     private int imagesDirectorySize;
 
@@ -49,34 +46,35 @@ public class TestImageLoader {
     public void prepareDatabase() {
         Guice.createInjector(new AppModule()).injectMembers(this);
 
-        String path = getClass().getResource("/imgs/dicom/Pulmao").getFile();
-
         DbSetup setup = commonOperations.createDbSetup();
-        dbSetupTracker.launchIfNecessary(setup);
+        setup.launch();
+
+        populateDatabase();
+    }
+
+    private void populateDatabase() {
+        String path = getClass().getResource("/imgs/dicom/Pulmao").getFile();
 
         imagesDirectory = new File(path);
         imagesDirectorySize = imagesDirectory.listFiles().length;
         imageLoader.loadFilesFromFolder(imagesDirectory);
     }
 
+
     @Test
     public void testImageImageInsertion() throws Exception {
-        dbSetupTracker.skipNextLaunch();
         List<Images> images = imagesDao.findAll();
         assertThat(images.size(), equalTo(imagesDirectorySize));
     }
 
     @Test
     public void testFindByMimeType() {
-        dbSetupTracker.skipNextLaunch();
-
         List<Images> images = imagesDao.fetch(IMAGES.MIME_TYPE, "application/dicom");
         assertThat(images.size(), equalTo(imagesDirectorySize));
     }
 
     @Test
     public void testDatasetsInsertion() {
-        dbSetupTracker.skipNextLaunch();
 
         List<Datasets> datasets = datasetsDao.findAll();
         assertThat(datasets.size(), equalTo(1));
@@ -85,8 +83,6 @@ public class TestImageLoader {
 
     @Test
     public void testClassesInsertion() throws Exception {
-        dbSetupTracker.skipNextLaunch();
-
         List<ClassImage> classes = classImageDao.findAll();
         assertThat(classes.size(), equalTo(3));
 
@@ -96,8 +92,6 @@ public class TestImageLoader {
 
     @Test
     public void testFindByFileName() throws Exception {
-        dbSetupTracker.skipNextLaunch();
-
         List<Images> images = imagesDao.fetch(IMAGES.FILE_NAME, "Consolidacao0002685C_08.dcm");
         assertThat(images.size(), equalTo(1));
     }

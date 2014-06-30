@@ -16,10 +16,6 @@ import com.google.inject.Injector;
 import java.util.ArrayList;
 import java.util.List;
 
-
-/**
- * Main class that peforms Knn-queries
- */
 public class Main {
 
     private Injector injector = Guice.createInjector(new AppModule());
@@ -31,9 +27,7 @@ public class Main {
     }
 
     public Main(String[] args) {
-
         commandLineValues = new CommandLineValues(args);
-
         processImageExtraction();
         processFeatureExtractions();
 

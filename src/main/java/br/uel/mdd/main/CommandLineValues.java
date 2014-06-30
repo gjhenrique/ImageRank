@@ -28,7 +28,6 @@ public class CommandLineValues {
     @Option(name = "-extractor-id", usage = "extractFeatures")
     private int extractorId = INVALID_ID;
 
-
     @Argument
     private List<String> arguments = new ArrayList<String>();
 
@@ -40,7 +39,7 @@ public class CommandLineValues {
         try {
             parser.parseArgument(args);
 
-            if (arguments.isEmpty())
+            if (args.length == 0)
                 throw new CmdLineException(parser, "No argument is given");
 
             validateArguments(parser);
@@ -48,7 +47,6 @@ public class CommandLineValues {
         } catch (CmdLineException e) {
             System.err.println(e.getMessage());
             parser.printUsage(System.err);
-            System.err.println();
             System.exit(-1);
         }
     }

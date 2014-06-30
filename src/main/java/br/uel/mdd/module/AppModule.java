@@ -1,6 +1,7 @@
 package br.uel.mdd.module;
 
 import br.uel.mdd.dao.*;
+import br.uel.mdd.db.jdbc.ConnectionFactory;
 import br.uel.mdd.db.jdbc.PostgresConnectionFactory;
 import br.uel.mdd.io.loading.FeatureExtractionLoader;
 import br.uel.mdd.io.loading.FeatureExtractionLoaderImpl;
@@ -18,6 +19,8 @@ public class AppModule extends AbstractModule {
     protected void configure() {
         Connection connection = new PostgresConnectionFactory().getConnection();
         Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.POSTGRES);
+
+        bind(ConnectionFactory.class).to(PostgresConnectionFactory.class);
 
         bind(ClassImageDao.class).toInstance(new ClassImageDao(configuration));
         bind(DatasetClassesDao.class).toInstance(new DatasetClassesDao(configuration));

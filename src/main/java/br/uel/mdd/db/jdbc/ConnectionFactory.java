@@ -10,7 +10,9 @@ import java.sql.Connection;
  */
 public interface ConnectionFactory {
 
-    void readProperties();
+    public void readProperties();
     public abstract Connection getConnection();
-
+    public String getUrl();
+    public String getUser();
+    public String getPassword();
 }

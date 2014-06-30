@@ -69,4 +69,5 @@ hs_err_pid*
 jooq-config.xml
 # database properties
 src/main/resources/database.properties
+src/test/resources/database.properties
 jFeatureLib.log

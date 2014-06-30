@@ -13,12 +13,13 @@ import java.util.Properties;
  * <p/>
  * Created by pedro on 28/05/14.
  */
-public class PostgresConnectionFactory implements ConnectionFactory{
+public class PostgresConnectionFactory implements ConnectionFactory {
     private String dsn = null;
     private Properties properties;
 
-    public PostgresConnectionFactory(){
+    public PostgresConnectionFactory() {
         this.dsn = "jdbc:postgresql://";
+        this.readProperties();
     }
 
     @Override
@@ -32,15 +33,14 @@ public class PostgresConnectionFactory implements ConnectionFactory{
             this.dsn += properties.getProperty("host", "localhost") + ":";
             this.dsn += properties.getProperty("port", "5432") + "/";
             this.dsn += properties.getProperty("database");
-
         } catch (IOException ioException) {
-            System.out.println("O arquivo de configuração não foi " +
+            System.err.println("O arquivo de configuração não foi " +
                     "encontrado, por favor crie o arquivo com " +
                     "as seguintes chaves: \n" +
                     "host;port;database;user;password;ssl");
             ioException.printStackTrace();
         } finally {
-            if (inputStream != null){
+            if (inputStream != null) {
                 try {
                     inputStream.close();
                 } catch (IOException e) {
@@ -52,9 +52,8 @@ public class PostgresConnectionFactory implements ConnectionFactory{
 
     @Override
     public Connection getConnection() {
-        this.readProperties();
-        if(this.properties.getProperty("user") != null &&
-                this.properties.getProperty("password") != null){
+        if (this.properties.getProperty("user") != null &&
+                this.properties.getProperty("password") != null) {
             try {
                 return DriverManager.getConnection(this.dsn, this.properties);
             } catch (SQLException e) {
@@ -64,5 +63,20 @@ public class PostgresConnectionFactory implements ConnectionFactory{
             }
         }
         return null;
+    }
+
+    @Override
+    public String getUrl() {
+        return this.dsn;
+    }
+
+    @Override
+    public String getUser() {
+        return this.properties.getProperty("user");
+    }
+
+    @Override
+    public String getPassword() {
+        return this.properties.getProperty("password");
     }
 }

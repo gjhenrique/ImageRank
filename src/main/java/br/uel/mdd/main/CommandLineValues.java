@@ -1,13 +1,10 @@
 package br.uel.mdd.main;
 
-import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class CommandLineValues {
 
@@ -25,11 +22,29 @@ public class CommandLineValues {
     @Option(name = "-all-ext", aliases = {"--all-extractors"}, usage = "Extract features with ALL the extractors of the database")
     private boolean allExtractors;
 
-    @Option(name = "-extractor-id", usage = "extractFeatures")
-    private int extractorId = INVALID_ID;
+    @Option(name = "--extractor-feature-id", usage = "extractFeatures")
+    private int extractorFeatureId = INVALID_ID;
 
-    @Argument
-    private List<String> arguments = new ArrayList<String>();
+    @Option(name="--knn-queries", usage="Perform knn queries in the extractions")
+    private boolean knnQueries;
+
+    @Option(name="--all-extractions", usage="Knn with all extractions")
+    private boolean allExtractionsQuery;
+
+    @Option(name="--extractor-query-id", usage="Query with all the extractions from this extractor")
+    private int extractorQueryId = INVALID_ID;
+
+    @Option(name="--all-distance-functions", usage="Knn with all the distance functions from the dataset")
+    private boolean allDistanceFunctions;
+
+    @Option(name="--distance-function-id", usage="Query with the distance of this dataset")
+    private int distanceFunctionId = INVALID_ID;
+
+    @Option(name="--max-k", usage="Boundary of the value of k")
+    private int maxK = 100;
+
+    @Option(name="--rate-k", usage="Ratio used in each iteration of k")
+    private int rateK = 5;
 
     public CommandLineValues(String... args) {
 
@@ -60,10 +75,18 @@ public class CommandLineValues {
         }
 
         if(extractFeatures) {
+            if(extractorFeatureId == INVALID_ID && !(allExtractors)) {
+                throw new CmdLineException(parser, "No extractor selected!!!");
+            }
+        }
 
-            if(extractorId == INVALID_ID && !(allExtractors)) {
-                throw new CmdLineException(parser, "No extractor selected!!!" +
-                        "\n Select all-ext for all extractors or ext-id for one extractor only");
+        if(extractFeatures) {
+            if(extractorQueryId == INVALID_ID && !(allExtractionsQuery)) {
+                throw new CmdLineException(parser, "No extractions selected!!!");
+            }
+
+            if(distanceFunctionId == INVALID_ID && !(allDistanceFunctions)) {
+                throw new CmdLineException(parser, "No distance function selected!!!");
             }
         }
     }
@@ -84,7 +107,35 @@ public class CommandLineValues {
         return allExtractors;
     }
 
-    public int getExtractorId() {
-        return extractorId;
+    public int getExtractorFeatureId() {
+        return extractorFeatureId;
+    }
+
+    public boolean isKnnQueries() {
+        return knnQueries;
+    }
+
+    public boolean isAllExtractionsQuery() {
+        return allExtractionsQuery;
+    }
+
+    public int getExtractorQueryId() {
+        return extractorQueryId;
+    }
+
+    public boolean isAllDistanceFunctions() {
+        return allDistanceFunctions;
+    }
+
+    public int getDistanceFunctionId() {
+        return distanceFunctionId;
+    }
+
+    public int getMaxK() {
+        return maxK;
+    }
+
+    public int getRateK() {
+        return rateK;
     }
 }

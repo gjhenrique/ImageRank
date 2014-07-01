@@ -1,20 +1,29 @@
 package br.uel.mdd.main;
 
+import br.uel.mdd.dao.DistanceFunctionsDao;
+import br.uel.mdd.dao.ExtractionsDao;
 import br.uel.mdd.dao.ExtractorsDao;
 import br.uel.mdd.dao.ImagesDao;
+import br.uel.mdd.db.tables.pojos.DistanceFunctions;
+import br.uel.mdd.db.tables.pojos.Extractions;
 import br.uel.mdd.db.tables.pojos.Extractors;
 import br.uel.mdd.db.tables.pojos.Images;
 import br.uel.mdd.extractor.FeatureExtractor;
 import br.uel.mdd.io.loading.FeatureExtractionLoader;
 import br.uel.mdd.io.loading.ImageLoader;
+import br.uel.mdd.io.loading.QueryLoader;
 import br.uel.mdd.module.AppModule;
 import br.uel.mdd.module.FeatureExtractionLoaderFactory;
+import br.uel.mdd.module.QueryModule;
 import br.uel.mdd.utils.ExtractorUtils;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static br.uel.mdd.db.tables.DistanceFunctions.DISTANCE_FUNCTIONS;
+import static br.uel.mdd.db.tables.Extractions.EXTRACTIONS;
 
 public class Main {
 
@@ -30,8 +39,9 @@ public class Main {
         commandLineValues = new CommandLineValues(args);
         processImageExtraction();
         processFeatureExtractions();
-
+        processQueryLoader();
     }
+
 
     private void processImageExtraction() {
         if (commandLineValues.isExtractImage()) {
@@ -64,9 +74,9 @@ public class Main {
 
             extractors = extractorsDao.findAll();
 
-        } else if (commandLineValues.getExtractorId() != CommandLineValues.INVALID_ID) {
+        } else if (commandLineValues.getExtractorFeatureId() != CommandLineValues.INVALID_ID) {
 
-            int extractorId = commandLineValues.getExtractorId();
+            int extractorId = commandLineValues.getExtractorFeatureId();
             Extractors extractor = extractorsDao.findById(extractorId);
 
             if (extractor == null)
@@ -85,5 +95,50 @@ public class Main {
         FeatureExtractionLoader loader = factory.create(extractor, featureExtractionLoader);
         loader.extractFeatures(image);
     }
+
+    private void processQueryLoader() {
+        if (commandLineValues.isKnnQueries()) {
+            List<DistanceFunctions> distanceFunctions = fetchDistanceFunctions();
+            List<Extractions> extractions = fetchExtractions();
+
+            for (DistanceFunctions distanceFunction : distanceFunctions) {
+                for (Extractions extraction : extractions) {
+//                    TODO: Make factory, just like the FeatureExtractionLoader
+                    injector = Guice.createInjector(new QueryModule(distanceFunction));
+                    QueryLoader queryLoader = injector.getInstance(QueryLoader.class);
+
+                    for (int i = commandLineValues.getRateK(); i <= commandLineValues.getMaxK(); i += commandLineValues.getRateK()) {
+                        queryLoader.knn(extraction, i);
+                    }
+                }
+            }
+        }
+    }
+
+    private List<DistanceFunctions> fetchDistanceFunctions() {
+        DistanceFunctionsDao distanceFunctionsDao = injector.getInstance(DistanceFunctionsDao.class);
+        List<DistanceFunctions> distanceFunctions = null;
+
+        if (commandLineValues.isAllDistanceFunctions())
+            distanceFunctions = distanceFunctionsDao.findAll();
+        else if (commandLineValues.getDistanceFunctionId() != CommandLineValues.INVALID_ID)
+            distanceFunctions = distanceFunctionsDao.fetch(DISTANCE_FUNCTIONS.ID,
+                    commandLineValues.getDistanceFunctionId());
+
+        return distanceFunctions;
+    }
+
+    private List<Extractions> fetchExtractions() {
+        ExtractionsDao extractionsDao = injector.getInstance(ExtractionsDao.class);
+        List<Extractions> extractions = null;
+
+        if (commandLineValues.isAllExtractionsQuery())
+            extractions = extractionsDao.findAll();
+        else if (commandLineValues.getExtractorQueryId() != CommandLineValues.INVALID_ID)
+            extractionsDao.fetch(EXTRACTIONS.EXTRACTOR_ID, commandLineValues.getExtractorQueryId());
+
+        return extractions;
+    }
+
 
 }

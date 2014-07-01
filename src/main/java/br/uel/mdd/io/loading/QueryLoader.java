@@ -104,6 +104,7 @@ public class QueryLoader {
         }
         return result;
     }
+
     private Queries buildQuery(Extractions extractionQuery) {
         Queries query = new Queries();
         query.setImageId(extractionQuery.getImageId());

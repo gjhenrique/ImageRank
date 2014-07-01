@@ -5,6 +5,8 @@ import br.uel.mdd.db.jdbc.ConnectionFactory;
 import br.uel.mdd.db.jdbc.PostgresConnectionFactory;
 import br.uel.mdd.io.loading.FeatureExtractionLoader;
 import br.uel.mdd.io.loading.FeatureExtractionLoaderImpl;
+import br.uel.mdd.io.loading.QueryLoader;
+import br.uel.mdd.io.loading.QueryLoaderImpl;
 import com.google.inject.AbstractModule;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import org.jooq.Configuration;
@@ -36,5 +38,11 @@ public class AppModule extends AbstractModule {
         install(new FactoryModuleBuilder().
                 implement(FeatureExtractionLoader.class, FeatureExtractionLoaderImpl.class).
                 build(FeatureExtractionLoaderFactory.class));
+
+//        QueryLoaderFactory Injection
+        install(new FactoryModuleBuilder().
+                implement(QueryLoader.class, QueryLoaderImpl.class).
+                build(QueryLoaderFactory.class));
     }
+
 }

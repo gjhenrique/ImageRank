@@ -12,9 +12,11 @@ import br.uel.mdd.extractor.FeatureExtractor;
 import br.uel.mdd.io.loading.FeatureExtractionLoader;
 import br.uel.mdd.io.loading.ImageLoader;
 import br.uel.mdd.io.loading.QueryLoader;
+import br.uel.mdd.metric.MetricEvaluator;
 import br.uel.mdd.module.AppModule;
 import br.uel.mdd.module.FeatureExtractionLoaderFactory;
-import br.uel.mdd.module.QueryModule;
+import br.uel.mdd.module.QueryLoaderFactory;
+import br.uel.mdd.utils.DistanceFunctionUtils;
 import br.uel.mdd.utils.ExtractorUtils;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -103,9 +105,10 @@ public class Main {
 
             for (DistanceFunctions distanceFunction : distanceFunctions) {
                 for (Extractions extraction : extractions) {
-//                    TODO: Make factory, just like the FeatureExtractionLoader
-                    injector = Guice.createInjector(new QueryModule(distanceFunction));
-                    QueryLoader queryLoader = injector.getInstance(QueryLoader.class);
+
+                    QueryLoaderFactory factory = injector.getInstance(QueryLoaderFactory.class);
+                    MetricEvaluator metricEvaluator = DistanceFunctionUtils.getMetricEvaluatorFromDistanceFunction(distanceFunction);
+                    QueryLoader queryLoader = factory.create(metricEvaluator, distanceFunction);
 
                     for (int i = commandLineValues.getRateK(); i <= commandLineValues.getMaxK(); i += commandLineValues.getRateK()) {
                         queryLoader.knn(extraction, i);

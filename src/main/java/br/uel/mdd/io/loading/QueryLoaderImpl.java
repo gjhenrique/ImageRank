@@ -10,7 +10,6 @@ import com.google.inject.assistedinject.Assisted;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static br.uel.mdd.db.tables.QueryResults.QUERY_RESULTS;
@@ -59,7 +58,7 @@ public class QueryLoaderImpl implements QueryLoader {
 
         Queries query = buildQuery(extractionQuery, k);
 
-        logger.info("Starting new {}-nn query with distance function {} and extraction {}", k, distanceFunction.getId(), Arrays.toString(extractionQuery.getExtractionData()));
+        logger.info("Starting new {}-nn query with distance function {} and extraction {}", k, distanceFunction.getId(), extractionQuery.getId());
 
         long start = System.nanoTime();
         TreeResult<QueryResults> result = performKnn(extractionQuery, query, k);
@@ -109,7 +108,6 @@ public class QueryLoaderImpl implements QueryLoader {
             queryResult.setImageId(extraction.getImageId());
             queryResult.setQueryId(query.getId());
             result.addPair(queryResult, distance);
-
         }
 
         result.cut(k);
@@ -126,6 +124,5 @@ public class QueryLoaderImpl implements QueryLoader {
         queriesDao.insertNullPk(query);
         return query;
     }
-
 
 }

@@ -11,7 +11,7 @@
 
     <appender name="FILE" class="ch.qos.logback.core.FileAppender" level="INFO">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>DEBUG</level>
+            <level>INFO</level>
         </filter>
         <file>log/debug.log</file>
         <append>true</append>
@@ -22,7 +22,7 @@
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>INFO</level>
+            <level>DEBUG</level>
         </filter>
         <encoder>
             <pattern>%msg%n</pattern>

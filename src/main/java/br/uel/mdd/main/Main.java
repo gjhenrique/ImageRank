@@ -20,6 +20,8 @@ import br.uel.mdd.utils.DistanceFunctionUtils;
 import br.uel.mdd.utils.ExtractorUtils;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +35,12 @@ public class Main {
 
     CommandLineValues commandLineValues;
 
+    private final Logger logger = LoggerFactory.getLogger(Main.class);
+
     public static void main(String args[]) {
+//        args = "--image-extraction --images-path /home/guilherme/Documents/imgs/Pulmao".split(" ");
+      args = "--feature-extraction -all-ext".split(" ");
+//        args = "--knn-queries --all-extractions --all-distance-functions".split(" ");
         new Main(args);
     }
 
@@ -54,14 +61,21 @@ public class Main {
 
     private void processFeatureExtractions() {
 
-        ImagesDao imagesDao = injector.getInstance(ImagesDao.class);
-
         if (commandLineValues.isExtractFeatures()) {
+
+            ImagesDao imagesDao = injector.getInstance(ImagesDao.class);
+
+            List<Images> images = imagesDao.findAll();
             List<Extractors> extractors = fetchExtractors();
 
+            int currentExtraction = 0;
+            int totalExtractions = images.size() * extractors.size();
+
             for (Images image : imagesDao.findAll()) {
-                for (Extractors extractorsIt : extractors)
+                for (Extractors extractorsIt : extractors) {
+                    logger.info("Extraction {} of {}", ++currentExtraction, totalExtractions);
                     extractFeature(image, extractorsIt);
+                }
             }
         }
     }
@@ -103,6 +117,12 @@ public class Main {
             List<DistanceFunctions> distanceFunctions = fetchDistanceFunctions();
             List<Extractions> extractions = fetchExtractions();
 
+            int maxK = commandLineValues.getMaxK();
+            int rateK = commandLineValues.getRateK();
+
+            int currentQuery = 0;
+            int totalQueries = distanceFunctions.size() * extractions.size() * (maxK / rateK);
+
             for (DistanceFunctions distanceFunction : distanceFunctions) {
                 for (Extractions extraction : extractions) {
 
@@ -110,7 +130,8 @@ public class Main {
                     MetricEvaluator metricEvaluator = DistanceFunctionUtils.getMetricEvaluatorFromDistanceFunction(distanceFunction);
                     QueryLoader queryLoader = factory.create(metricEvaluator, distanceFunction);
 
-                    for (int i = commandLineValues.getRateK(); i <= commandLineValues.getMaxK(); i += commandLineValues.getRateK()) {
+                    for (int i = rateK; i <= maxK; i += rateK) {
+                        logger.info("Query {} / {}", ++currentQuery, totalQueries);
                         queryLoader.knn(extraction, i);
                     }
                 }

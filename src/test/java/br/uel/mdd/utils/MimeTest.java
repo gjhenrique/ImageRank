@@ -10,7 +10,7 @@ public class MimeTest extends TestCase {
         String path = this.getClass().getResource("/pulmao_enfisema.dcm").getFile();
         File file = new File(path);
         String mimeType = Mime.getMimeType(file);
-        assertEquals(mimeType, "image/jpeg");
+        assertEquals(mimeType, "application/dicom");
     }
 
 }

@@ -80,7 +80,7 @@ public class CommandLineValues {
             }
         }
 
-        if(extractFeatures) {
+        if(knnQueries) {
             if(extractorQueryId == INVALID_ID && !(allExtractionsQuery)) {
                 throw new CmdLineException(parser, "No extractions selected!!!");
             }

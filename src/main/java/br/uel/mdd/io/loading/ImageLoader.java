@@ -54,7 +54,7 @@ public class ImageLoader {
     }
 
     public void loadFilesFromFolder(File file) {
-        logger.info("Extracting image from {}", file.getName());
+        logger.info("Extracting image from the file {}", file.getName());
 
         if (file.isDirectory()) {
             File[] files = file.listFiles();
@@ -76,8 +76,6 @@ public class ImageLoader {
     }
 
     public void persistImage(File file, String datasetName) {
-        logger.info("Persisting image {} with dataset name {}", file.getName(), datasetName);
-
         Datasets datasets = createOrFetchDataset(datasetName);
 
         ClassImage classImage = createOrFetchClassImage(file);

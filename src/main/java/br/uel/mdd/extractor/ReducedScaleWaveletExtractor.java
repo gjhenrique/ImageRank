@@ -64,4 +64,12 @@ public class ReducedScaleWaveletExtractor implements FeatureExtractor {
         }
         return subSpaceFeature;
     }
+
+    @Override
+    public String toString() {
+        return "ReducedScaleWaveletExtractor{" +
+                "levels=" + levels +
+                ", filter=" + filter +
+                '}';
+    }
 }

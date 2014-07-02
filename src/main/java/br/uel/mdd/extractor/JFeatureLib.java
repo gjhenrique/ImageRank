@@ -38,4 +38,11 @@ public class JFeatureLib implements FeatureExtractor {
         }
         return features;
     }
+
+    @Override
+    public String toString() {
+        return "JFeatureLib{" +
+                "abstractFeatureDescriptor=" + abstractFeatureDescriptor +
+                '}';
+    }
 }

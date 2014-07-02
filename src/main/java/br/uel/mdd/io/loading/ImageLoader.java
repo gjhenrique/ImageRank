@@ -11,6 +11,8 @@ import br.uel.mdd.db.tables.pojos.Images;
 import br.uel.mdd.utils.Mime;
 import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -36,6 +38,8 @@ public class ImageLoader {
 
     private DatasetClassesDao datasetClassesDao;
 
+    private static final Logger logger = LoggerFactory.getLogger(ImageLoader.class);
+
     @Inject
     public ImageLoader(DatasetsDao datasetsDao, ImagesDao imagesDao, ClassImageDao classImageDao, DatasetClassesDao datasetClassesDao) {
         this.datasetsDao = datasetsDao;
@@ -50,6 +54,7 @@ public class ImageLoader {
     }
 
     public void loadFilesFromFolder(File file) {
+        logger.info("Extracting image from {}", file.getName());
 
         if (file.isDirectory()) {
             File[] files = file.listFiles();
@@ -71,6 +76,7 @@ public class ImageLoader {
     }
 
     public void persistImage(File file, String datasetName) {
+        logger.info("Persisting image {} with dataset name {}", file.getName(), datasetName);
 
         Datasets datasets = createOrFetchDataset(datasetName);
 
@@ -89,6 +95,7 @@ public class ImageLoader {
             datasets = new Datasets();
             datasets.setName(datasetName);
             datasetsDao.insertNullPk(datasets);
+            logger.debug("Persisting dataset {} in the database", datasets.getName());
         }
 
         return datasets;
@@ -104,6 +111,7 @@ public class ImageLoader {
             classImage = new ClassImage();
             classImage.setName(imageClass);
             classImageDao.insertNullPk(classImage);
+            logger.debug("Persisting ClassImage {} in the database", classImage.getName());
         }
 
         return classImage;
@@ -118,6 +126,7 @@ public class ImageLoader {
             datasetClasses.setClassId(classImage.getId());
             datasetClasses.setDatasetId(datasets.getId());
             datasetClassesDao.insertNullPk(datasetClasses);
+            logger.debug("Persisting DatasetClasses {}", datasetClasses.getId());
         }
 
         return datasetClasses;
@@ -129,6 +138,10 @@ public class ImageLoader {
             image = buildImage(file);
             image.setDatasetClassId(datasetClasses.getId());
             imagesDao.insertNullPk(image);
+            logger.debug("Persisting image {}", image.getFileName());
+        }
+        else {
+           logger.info("Image {} already populated in the database", image.getFileName());
         }
     }
 

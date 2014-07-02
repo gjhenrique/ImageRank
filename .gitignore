@@ -62,8 +62,7 @@ release.properties
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
-
-
+log/
 
 ### jOOQ ###
 jooq-config.xml
@@ -71,3 +70,4 @@ jooq-config.xml
 src/main/resources/database.properties
 src/test/resources/database.properties
 jFeatureLib.log
+

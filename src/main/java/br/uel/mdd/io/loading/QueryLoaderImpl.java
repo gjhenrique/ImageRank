@@ -7,7 +7,10 @@ import br.uel.mdd.result.ResultPair;
 import br.uel.mdd.result.TreeResult;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class QueryLoaderImpl implements QueryLoader {
@@ -26,8 +29,11 @@ public class QueryLoaderImpl implements QueryLoader {
 
     private QueryResultsDao queryResultsDao;
 
-//    Warning!!! Too many dependencies
+    private final Logger logger = LoggerFactory.getLogger(QueryLoaderImpl.class);
+
+    //    Warning!!! Too many dependencies
     @Inject
+
     public QueryLoaderImpl(@Assisted MetricEvaluator metricEvaluator, ExtractionsDao extractionsDao, ImagesDao imagesDao, DatasetsDao datasetsDao,
                            @Assisted DistanceFunctions distanceFunction, QueriesDao queriesDao, QueryResultsDao queryResultsDao) {
         this.metricEvaluator = metricEvaluator;
@@ -41,13 +47,23 @@ public class QueryLoaderImpl implements QueryLoader {
 
     @Override
     public void knn(Extractions extractionQuery, int k) {
+
+        if(k < extractionsDao.count()) {
+            logger.warn("K-nn is bigger than the number of extractions. Try to decrease the number of k");
+            return;
+        }
+
         Queries query = buildQuery(extractionQuery);
+
+        logger.info("Starting new {}-nn query with distance function {} and extraction {}", k, distanceFunction.getId(), Arrays.toString(extractionQuery.getExtractionData()));
 
         long start = System.nanoTime();
 
         TreeResult<QueryResults> result = performKnn(extractionQuery, query, k);
 
-        result.cut(k);
+        long end = System.nanoTime() - start;
+
+        logger.debug("Result of knn with {} elements", result.getNumberOfEntries());
 
         int i = 0;
         for (ResultPair<QueryResults> resultPair : result.getPairs()) {
@@ -55,8 +71,6 @@ public class QueryLoaderImpl implements QueryLoader {
             queryResults.setReturnOrder(i++);
             queryResultsDao.insertNullPk(queryResults);
         }
-
-        long end = System.nanoTime() - start;
 
         query.setQueryDuration(end);
         queriesDao.update(query);
@@ -78,6 +92,9 @@ public class QueryLoaderImpl implements QueryLoader {
             result.addPair(queryResult, distance);
 
         }
+
+        result.cut(k);
+
         return result;
     }
 

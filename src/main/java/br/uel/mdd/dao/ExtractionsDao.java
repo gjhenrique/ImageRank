@@ -58,4 +58,14 @@ public class ExtractionsDao extends DAOImpl<ExtractionsRecord, Extractions, Inte
                                 .and(EXTRACTIONS.EXTRACTOR_ID.equal(extractorId))
                 ).fetchInto(Extractions.class);
     }
+
+    public Extractions fetchImageIdAndExtractorId(Integer imageId, Integer extractorId) {
+        DSLContext create = DSL.using(this.configuration());
+        return create.select(EXTRACTIONS.fields())
+                .from(EXTRACTIONS)
+                .where(
+                        EXTRACTIONS.IMAGE_ID.equal(imageId)
+                                .and(EXTRACTIONS.EXTRACTOR_ID.equal(extractorId))
+                ).fetchOneInto(Extractions.class);
+    }
 }

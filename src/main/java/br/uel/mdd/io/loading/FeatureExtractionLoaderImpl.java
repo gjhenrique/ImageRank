@@ -8,9 +8,12 @@ import br.uel.mdd.extractor.FeatureExtractor;
 import br.uel.mdd.io.ImageWrapper;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.util.Arrays;
 import java.util.List;
 
 public class FeatureExtractionLoaderImpl implements FeatureExtractionLoader {
@@ -20,6 +23,8 @@ public class FeatureExtractionLoaderImpl implements FeatureExtractionLoader {
     private Extractors extractor;
 
     private ExtractionsDao extractionsDao;
+
+    private final Logger logger = LoggerFactory.getLogger(FeatureExtractionLoaderImpl.class);
 
     @Inject
     public FeatureExtractionLoaderImpl(@Assisted FeatureExtractor featureExtractor,
@@ -37,18 +42,32 @@ public class FeatureExtractionLoaderImpl implements FeatureExtractionLoader {
     }
 
     public void extractFeatures(Images image) {
+        logger.info("Extracting feature of image {} with extractor {}", image.getFileName(), featureExtractor);
 
-        ImageWrapper wrapper = this.getImageWrapper(image);
+        Extractions extractions = extractionsDao.fetchImageIdAndExtractorId(image.getId(), extractor.getId());
 
-        long start = System.nanoTime();
-        double[] features = featureExtractor.extractFeature(wrapper);
-        long elapsedTime = System.nanoTime() - start;
+        if (extractions == null) {
 
-        Double[] featuresContainer = castPrimitiveToContainer(features);
+            ImageWrapper wrapper = this.getImageWrapper(image);
 
-        Extractions extractions = this.buildExtraction(featuresContainer, image, elapsedTime);
+            long start = System.nanoTime();
+            double[] features = featureExtractor.extractFeature(wrapper);
 
-        extractionsDao.insertNullPk(extractions);
+            logger.debug("Extract feature {}", Arrays.toString(features));
+
+            long elapsedTime = System.nanoTime() - start;
+
+            Double[] featuresContainer = castPrimitiveToContainer(features);
+
+            extractions = this.buildExtraction(featuresContainer, image, elapsedTime);
+
+            logger.debug("Inserting extraction {} in the database", extractions.getId());
+
+            extractionsDao.insertNullPk(extractions);
+        }
+        else {
+            logger.info("Extraction with Image {} and Extractor {} already exists in the database", image.getId(), extractor.getId());
+        }
     }
 
     private ImageWrapper getImageWrapper(Images image) {

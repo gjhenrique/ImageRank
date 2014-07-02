@@ -15,3 +15,9 @@ ALTER TABLE query_results
 
 ALTER TABLE extractors
     RENAME COLUMN filter_identifier TO type_identifier;
+
+ALTER TABLE queries
+    ADD COLUMN k INTEGER;
+
+ALTER TABLE queries
+    ADD UNIQUE (extraction_id, distance_function_id, k);

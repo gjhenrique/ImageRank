@@ -3,10 +3,12 @@ package br.uel.mdd.dao;
 import br.uel.mdd.db.tables.pojos.Queries;
 import br.uel.mdd.db.tables.records.QueriesRecord;
 import org.jooq.Configuration;
+import org.jooq.DSLContext;
 import org.jooq.impl.DAOImpl;
 import org.jooq.impl.DSL;
 
 import static br.uel.mdd.db.Sequences.QUERIES_ID_SEQ;
+import static br.uel.mdd.db.tables.Queries.QUERIES;
 
 /**
  * @author ${user}
@@ -16,7 +18,7 @@ import static br.uel.mdd.db.Sequences.QUERIES_ID_SEQ;
  */
 public class QueriesDao extends DAOImpl<QueriesRecord, Queries, Integer>{
     public  QueriesDao(Configuration configuration) {
-        super(br.uel.mdd.db.tables.Queries.QUERIES, Queries.class, configuration);
+        super(QUERIES, Queries.class, configuration);
     }
 
     @Override
@@ -28,6 +30,17 @@ public class QueriesDao extends DAOImpl<QueriesRecord, Queries, Integer>{
         long id = DSL.using(this.configuration()).nextval(QUERIES_ID_SEQ);
         queries.setId((int) id);
         this.insert(queries);
+    }
+
+    public Queries fetchByExtractionIdAndDistanceFunctionIdAndK(int extractionId, int distanceFunctionId, int k) {
+        DSLContext create = DSL.using(this.configuration());
+        return create.select(QUERIES.fields())
+                .from(QUERIES)
+                .where(
+                        QUERIES.EXTRACTION_ID.equal(extractionId)
+                                .and(QUERIES.DISTANCE_FUNCTION_ID.equal(distanceFunctionId))
+                        .and(QUERIES.K.equal(k))
+                ).fetchOneInto(Queries.class);
     }
 
 }

@@ -21,7 +21,7 @@
             <version>1.48v</version>
         </dependency>
         <dependency>
-            <groupId>cscheiblich.math.jwave</groupId>
+            <groupId>math.jwave</groupId>
             <artifactId>jwave</artifactId>
             <version>1.0</version>
         </dependency>
@@ -59,6 +59,11 @@
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
             <version>3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>br.uel.cross</groupId>
+            <artifactId>distributed-slim</artifactId>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.inject.extensions</groupId>

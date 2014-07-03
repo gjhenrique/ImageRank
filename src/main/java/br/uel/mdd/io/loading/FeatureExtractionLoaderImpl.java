@@ -7,6 +7,7 @@ import br.uel.mdd.db.tables.pojos.Extractors;
 import br.uel.mdd.db.tables.pojos.Images;
 import br.uel.mdd.extractor.FeatureExtractor;
 import br.uel.mdd.io.ImageWrapper;
+import br.uel.mdd.utils.ExtractorUtils;
 import br.uel.mdd.utils.PrimitiveUtils;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
@@ -15,7 +16,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
-import java.util.Arrays;
 import java.util.List;
 
 public class FeatureExtractionLoaderImpl implements FeatureExtractionLoader {
@@ -31,11 +31,10 @@ public class FeatureExtractionLoaderImpl implements FeatureExtractionLoader {
     private final Logger logger = LoggerFactory.getLogger(FeatureExtractionLoaderImpl.class);
 
     @Inject
-    public FeatureExtractionLoaderImpl(@Assisted FeatureExtractor featureExtractor,
-                                       @Assisted Extractors extractor,
+    public FeatureExtractionLoaderImpl(@Assisted Extractors extractor,
                                        ExtractionsDao extractionsDao,
                                        Index index) {
-        this.featureExtractor = featureExtractor;
+        this.featureExtractor = ExtractorUtils.getFeatureExtractorImplementation(extractor);
         this.extractor = extractor;
         this.extractionsDao = extractionsDao;
         this.index = index;
@@ -58,9 +57,6 @@ public class FeatureExtractionLoaderImpl implements FeatureExtractionLoader {
 
             long start = System.nanoTime();
             double[] features = featureExtractor.extractFeature(wrapper);
-
-            logger.debug("Extract feature {}", Arrays.toString(features));
-
             long elapsedTime = System.nanoTime() - start;
 
             Double[] featuresContainer = PrimitiveUtils.castPrimitiveToWrapper(features);

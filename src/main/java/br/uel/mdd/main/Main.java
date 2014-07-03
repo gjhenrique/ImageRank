@@ -8,16 +8,12 @@ import br.uel.mdd.db.tables.pojos.DistanceFunctions;
 import br.uel.mdd.db.tables.pojos.Extractions;
 import br.uel.mdd.db.tables.pojos.Extractors;
 import br.uel.mdd.db.tables.pojos.Images;
-import br.uel.mdd.extractor.FeatureExtractor;
 import br.uel.mdd.io.loading.FeatureExtractionLoader;
 import br.uel.mdd.io.loading.ImageLoader;
 import br.uel.mdd.io.loading.QueryLoader;
-import br.uel.mdd.metric.MetricEvaluator;
 import br.uel.mdd.module.AppModule;
 import br.uel.mdd.module.FeatureExtractionLoaderFactory;
 import br.uel.mdd.module.QueryLoaderFactory;
-import br.uel.mdd.utils.DistanceFunctionUtils;
-import br.uel.mdd.utils.ExtractorUtils;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import org.slf4j.Logger;
@@ -105,9 +101,8 @@ public class Main {
 
     private void extractFeature(Images image, Extractors extractor) {
         FeatureExtractionLoaderFactory factory = injector.getInstance(FeatureExtractionLoaderFactory.class);
-        FeatureExtractor featureExtractionLoader = ExtractorUtils.getFeatureExtractorImplementation(extractor);
 
-        FeatureExtractionLoader loader = factory.create(extractor, featureExtractionLoader);
+        FeatureExtractionLoader loader = factory.create(extractor);
         loader.extractFeatures(image);
     }
 
@@ -126,8 +121,7 @@ public class Main {
                 for (Extractions extraction : extractions) {
 
                     QueryLoaderFactory factory = injector.getInstance(QueryLoaderFactory.class);
-                    MetricEvaluator metricEvaluator = DistanceFunctionUtils.getMetricEvaluatorFromDistanceFunction(distanceFunction);
-                    QueryLoader queryLoader = factory.create(metricEvaluator, distanceFunction);
+                    QueryLoader queryLoader = factory.create(distanceFunction);
 
                     for (int i = rateK; i <= maxK; i += rateK) {
                         logger.info("Query {} / {}", ++currentQuery, totalQueries);

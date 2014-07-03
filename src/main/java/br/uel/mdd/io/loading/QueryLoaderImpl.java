@@ -6,6 +6,7 @@ import br.uel.mdd.avaliation.KnnOperation;
 import br.uel.mdd.metric.MetricEvaluator;
 import br.uel.mdd.module.KnnOperationFactory;
 import br.uel.mdd.result.TreeResult;
+import br.uel.mdd.utils.DistanceFunctionUtils;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import org.slf4j.Logger;
@@ -33,9 +34,9 @@ public class QueryLoaderImpl implements QueryLoader {
 
     //    Warning!!! Too many dependencies
     @Inject
-    public QueryLoaderImpl(@Assisted MetricEvaluator metricEvaluator, ExtractionsDao extractionsDao, ImagesDao imagesDao,
+    public QueryLoaderImpl(ExtractionsDao extractionsDao, ImagesDao imagesDao,
                            @Assisted DistanceFunctions distanceFunction, QueriesDao queriesDao, QueryResultsDao queryResultsDao, KnnOperationFactory knnOperationFactory) {
-        this.metricEvaluator = metricEvaluator;
+        this.metricEvaluator = DistanceFunctionUtils.getMetricEvaluatorFromDistanceFunction(distanceFunction);
         this.extractionsDao = extractionsDao;
         this.distanceFunction = distanceFunction;
         this.queriesDao = queriesDao;

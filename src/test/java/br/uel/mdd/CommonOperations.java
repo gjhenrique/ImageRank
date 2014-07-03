@@ -42,7 +42,6 @@ public class CommonOperations {
             insertInto("distance_functions").
                     columns("id", "name", "class_name").
                     values(1, "Euclidean", "EuclideanDistance").
-                    values(2, "Manhattan", "ManhattanDistance").
                     build());
 
     public static final Operation DATASETS = Operations.sequenceOf(

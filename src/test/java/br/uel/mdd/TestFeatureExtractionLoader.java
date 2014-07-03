@@ -6,11 +6,9 @@ import br.uel.mdd.dao.ExtractorsDao;
 import br.uel.mdd.dao.ImagesDao;
 import br.uel.mdd.db.tables.pojos.Extractions;
 import br.uel.mdd.db.tables.pojos.Extractors;
-import br.uel.mdd.extractor.FeatureExtractor;
 import br.uel.mdd.io.loading.FeatureExtractionLoader;
 import br.uel.mdd.module.AppModule;
 import br.uel.mdd.module.FeatureExtractionLoaderFactory;
-import br.uel.mdd.utils.ExtractorUtils;
 import com.google.inject.Guice;
 import com.ninja_squad.dbsetup.DbSetup;
 import com.ninja_squad.dbsetup.operation.Operation;
@@ -72,8 +70,7 @@ public class TestFeatureExtractionLoader {
 
     private void populateDatabase() {
         for (Extractors extractors : extractorsDao.findAll()) {
-            FeatureExtractor featureExtractor = ExtractorUtils.getFeatureExtractorImplementation(extractors);
-            FeatureExtractionLoader featureExtractionLoader = featureExtractionLoaderFactory.create(extractors, featureExtractor);
+            FeatureExtractionLoader featureExtractionLoader = featureExtractionLoaderFactory.create(extractors);
             featureExtractionLoader.extractFeatures(imagesDao.findAll());
         }
     }

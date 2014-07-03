@@ -9,10 +9,8 @@ import br.uel.mdd.db.tables.pojos.Extractions;
 import br.uel.mdd.db.tables.pojos.Queries;
 import br.uel.mdd.db.tables.pojos.QueryResults;
 import br.uel.mdd.io.loading.QueryLoader;
-import br.uel.mdd.metric.MetricEvaluator;
 import br.uel.mdd.module.AppModule;
 import br.uel.mdd.module.QueryLoaderFactory;
-import br.uel.mdd.utils.DistanceFunctionUtils;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -66,8 +64,7 @@ public class TestQueryLoader {
             for (DistanceFunctions distanceFunctions : distanceFunctionsDao.findAll()) {
                 QueryLoaderFactory factory = injector.getInstance(QueryLoaderFactory.class);
 
-                MetricEvaluator metricEvaluator = DistanceFunctionUtils.getMetricEvaluatorFromDistanceFunction(distanceFunctions);
-                QueryLoader queryLoader = factory.create(metricEvaluator, distanceFunctions);
+                QueryLoader queryLoader = factory.create(distanceFunctions);
 
                 for (int i = 1; i <= 2; i++) {
                     queryLoader.knn(extraction, i);

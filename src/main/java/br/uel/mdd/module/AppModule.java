@@ -1,6 +1,9 @@
 package br.uel.mdd.module;
 
-import br.uel.mdd.avaliation.*;
+import br.uel.mdd.avaliation.DummyKnn;
+import br.uel.mdd.avaliation.Index;
+import br.uel.mdd.avaliation.KnnOperation;
+import br.uel.mdd.avaliation.NoOpIndex;
 import br.uel.mdd.dao.*;
 import br.uel.mdd.db.jdbc.ConnectionFactory;
 import br.uel.mdd.db.jdbc.PostgresConnectionFactory;
@@ -37,7 +40,7 @@ public class AppModule extends AbstractModule {
         bind(QueryResultsDao.class).toInstance(new QueryResultsDao(configuration));
         bind(DistanceFunctionsDao.class).toInstance(new DistanceFunctionsDao(configuration));
 
-        bind(Index.class).to(SlimTreeWrapper.class);
+        bind(Index.class).to(NoOpIndex.class);
 
 //        FeatureExtractionFactory Injection
         install(new FactoryModuleBuilder().

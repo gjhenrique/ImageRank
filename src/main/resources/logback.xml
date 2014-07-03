@@ -29,11 +29,11 @@
         </encoder>
     </appender>
 
-    <logger name="org.jooq.tools">
+    <logger name="org.jooq.tools" level="WARN">
         <appender-ref ref="SQL"/>
     </logger>
 
-    <logger name="br.uel.mdd" level="INFO">
+    <logger name="br.uel.mdd" level="WARN">
         <appender-ref ref="FILE"/>
     </logger>
 

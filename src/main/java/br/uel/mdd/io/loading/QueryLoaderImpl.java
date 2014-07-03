@@ -13,9 +13,12 @@ import br.uel.mdd.module.KnnOperationFactory;
 import br.uel.mdd.utils.DistanceFunctionUtils;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
+import org.jooq.ConnectionProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
@@ -57,11 +60,21 @@ public class QueryLoaderImpl implements QueryLoader {
             return;
         }
 
+        logger.debug("Starting new {}-nn query with distance function {} and extraction {}", k, distanceFunction.getId(), extractionQuery.getId());
+
+        ConnectionProvider provider = extractionsDao.configuration().connectionProvider();
+        Connection connection = provider.acquire();
+
+        try {
+            connection.setAutoCommit(false);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         eraseExistingQuery(extractionQuery, k);
 
         Queries query = buildQuery(extractionQuery, k);
-
-        logger.info("Starting new {}-nn query with distance function {} and extraction {}", k, distanceFunction.getId(), extractionQuery.getId());
+        queriesDao.insertNullPk(query);
 
         KnnOperation knnOperation = knnOperationFactory.create(metricEvaluator);
 
@@ -76,10 +89,17 @@ public class QueryLoaderImpl implements QueryLoader {
 //        Watch out! Not populating the primary key of QueryResults
         queryResultsDao.insert(result);
 
-        logger.debug("Result of knn with {} elements", result.size());
-
         query.setQueryDuration(end);
         queriesDao.update(query);
+
+        logger.debug("Result of knn with {} elements", result.size());
+
+        try {
+            connection.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        provider.release(connection);
     }
 
     /**
@@ -105,7 +125,6 @@ public class QueryLoaderImpl implements QueryLoader {
         query.setExtractionId(extractionQuery.getId());
         query.setDistanceFunctionId(distanceFunction.getId());
         query.setK(k);
-        queriesDao.insertNullPk(query);
         return query;
     }
 

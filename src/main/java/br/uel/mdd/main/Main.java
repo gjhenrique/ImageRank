@@ -11,6 +11,7 @@ import br.uel.mdd.db.tables.pojos.Images;
 import br.uel.mdd.io.loading.FeatureExtractionLoader;
 import br.uel.mdd.io.loading.ImageLoader;
 import br.uel.mdd.io.loading.QueryLoader;
+import br.uel.mdd.io.loading.QueryLoaderDispatcher;
 import br.uel.mdd.module.AppModule;
 import br.uel.mdd.module.FeatureExtractionLoaderFactory;
 import br.uel.mdd.module.QueryLoaderFactory;
@@ -21,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static br.uel.mdd.db.tables.DistanceFunctions.DISTANCE_FUNCTIONS;
 import static br.uel.mdd.db.tables.Extractions.EXTRACTIONS;
@@ -104,24 +106,25 @@ public class Main {
 
     private void processQueryLoader() {
         if (commandLineValues.isKnnQueries()) {
+
+            QueryLoaderFactory factory = injector.getInstance(QueryLoaderFactory.class);
+
             List<DistanceFunctions> distanceFunctions = fetchDistanceFunctions();
             List<Extractions> extractions = fetchExtractions();
 
             int maxK = commandLineValues.getMaxK();
             int rateK = commandLineValues.getRateK();
+            final int totalQueries = distanceFunctions.size() * extractions.size() * (maxK / rateK);
 
-            int currentQuery = 0;
-            int totalQueries = distanceFunctions.size() * extractions.size() * (maxK / rateK);
+            QueryLoaderDispatcher dispatcher = createQueryLoaderDispatcher(totalQueries);
 
             for (DistanceFunctions distanceFunction : distanceFunctions) {
                 for (Extractions extraction : extractions) {
 
-                    QueryLoaderFactory factory = injector.getInstance(QueryLoaderFactory.class);
                     QueryLoader queryLoader = factory.create(distanceFunction);
 
-                    for (int i = rateK; i <= maxK; i += rateK) {
-                        logger.info("Query {} / {}", ++currentQuery, totalQueries);
-                        queryLoader.knn(extraction, i);
+                    for (int k = rateK; k <= maxK; k += rateK) {
+                        dispatcher.runQuery(queryLoader, extraction, k);
                     }
                 }
             }
@@ -153,5 +156,15 @@ public class Main {
         return extractions;
     }
 
+    private QueryLoaderDispatcher createQueryLoaderDispatcher(final int totalQueries) {
 
+        final AtomicInteger currentQuery = new AtomicInteger(0);
+
+        return new QueryLoaderDispatcher(new QueryLoaderDispatcher.QueryLoaderListener() {
+            @Override
+            public void queryComplete() {
+                logger.info("Query {} / {}", currentQuery.incrementAndGet(), totalQueries);
+            }
+        });
+    }
 }

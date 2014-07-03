@@ -80,7 +80,6 @@ public class Main {
         }
     }
 
-
     private List<Extractors> fetchExtractors() {
 
         ExtractorsDao extractorsDao = injector.getInstance(ExtractorsDao.class);

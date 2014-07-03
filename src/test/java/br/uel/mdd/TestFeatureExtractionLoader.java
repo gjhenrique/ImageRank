@@ -1,5 +1,6 @@
 package br.uel.mdd;
 
+import br.uel.mdd.avaliation.SlimTreeWrapper;
 import br.uel.mdd.dao.ExtractionsDao;
 import br.uel.mdd.dao.ExtractorsDao;
 import br.uel.mdd.dao.ImagesDao;
@@ -57,7 +58,10 @@ public class TestFeatureExtractionLoader {
     }
 
     private void removeIndexes() {
-        File folder = new File("slim-idx");
+        String rootPath = getClass().getResource("/").getFile();
+
+        File folder = new File(rootPath + File.separator + SlimTreeWrapper.INDEX_FOLDER_NAME);
+
         if (folder.exists()) {
             for (File file : folder.listFiles()) {
                 file.delete();

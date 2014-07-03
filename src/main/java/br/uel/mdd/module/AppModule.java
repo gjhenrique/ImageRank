@@ -1,9 +1,6 @@
 package br.uel.mdd.module;
 
-import br.uel.mdd.avaliation.DummyKnn;
-import br.uel.mdd.avaliation.Index;
-import br.uel.mdd.avaliation.KnnOperation;
-import br.uel.mdd.avaliation.SlimTreeWrapper;
+import br.uel.mdd.avaliation.*;
 import br.uel.mdd.dao.*;
 import br.uel.mdd.db.jdbc.ConnectionFactory;
 import br.uel.mdd.db.jdbc.PostgresConnectionFactory;
@@ -53,7 +50,7 @@ public class AppModule extends AbstractModule {
 
 //        Knn Operation
         install(new FactoryModuleBuilder().
-                implement(KnnOperation.class, DummyKnn.class).
+                implement(KnnOperation.class, SlimKnn.class).
                 build(KnnOperationFactory.class));
     }
 

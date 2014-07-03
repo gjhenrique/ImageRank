@@ -20,9 +20,9 @@ import java.util.Map;
 
 public class SlimTreeWrapper implements Index {
 
-    private final static String INDEX_NAME = "slim-idx";
+    public final static String INDEX_FOLDER_NAME = "slim-idx";
     private final static String SEPARATOR = "-";
-    private final static int BLOCK_SIZE = 16384;
+    private final static int BLOCK_SIZE = 8192;
 
     private File rootIndexPath;
 
@@ -36,8 +36,8 @@ public class SlimTreeWrapper implements Index {
     public SlimTreeWrapper(DistanceFunctionsDao distanceFunctionsDao, DatasetsDao datasetsDao) {
 
         String folder = getClass().getResource("/").getFile();
+        rootIndexPath = new File(folder + File.separator + INDEX_FOLDER_NAME);
 
-        rootIndexPath = new File(folder + File.separator + INDEX_NAME);
         if (!rootIndexPath.exists()) {
             if (!rootIndexPath.mkdir())
                 throw new RuntimeException("Unable to create index directory");
@@ -49,7 +49,6 @@ public class SlimTreeWrapper implements Index {
 
     @Override
     public void addEntry(Extractions extractions) {
-
         List<DistanceFunctions> distanceFunctions = distanceFunctionsDao.findAll();
         for (DistanceFunctions distanceFunction : distanceFunctions) {
 
@@ -60,7 +59,7 @@ public class SlimTreeWrapper implements Index {
             if (slimTree == null)
                 slimTree = createSlimTree(extractions, metricEvaluator);
 
-            float[] features = PrimitiveUtils.castWrapperToPrimitive(extractions.getExtractionData());
+            float[] features = PrimitiveUtils.castWrapperToPrimitiveFloat(extractions.getExtractionData());
 
             slimTree.add(features, extractions.getId());
         }
@@ -101,6 +100,7 @@ public class SlimTreeWrapper implements Index {
 
     private SlimTree fetchSlimTree(String path, MetricEvaluator metricEvaluator) {
         PageManager pageManager = new DiskPageManager(path);
+//        pageManager = new GuavaCachePageManagerDecorator(pageManager, 100);
         return buildSlimTree(pageManager, path, metricEvaluator);
     }
 
@@ -113,6 +113,4 @@ public class SlimTreeWrapper implements Index {
 
         return newSlimTree;
     }
-
-
 }

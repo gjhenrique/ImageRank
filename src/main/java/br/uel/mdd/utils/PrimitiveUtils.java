@@ -22,7 +22,7 @@ public class PrimitiveUtils {
         return featuresContainer;
     }
 
-    public static float[] castWrapperToPrimitive(Double[] features) {
+    public static float[] castWrapperToPrimitiveFloat(Double[] features) {
         float[] featuresPrimitive = new float[features.length];
 
         for (int i = 0; i < features.length; i++) {

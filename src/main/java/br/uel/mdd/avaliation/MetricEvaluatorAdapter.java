@@ -15,7 +15,6 @@ public class MetricEvaluatorAdapter implements br.uel.cross.parallel.mams.distan
     public double getDistance(float[] obj1, float[] obj2) {
         Double[] doubleObj1 = PrimitiveUtils.castPrimitiveToWrapper(obj1);
         Double[] doubleObj2 = PrimitiveUtils.castPrimitiveToWrapper(obj1);
-
         return metricEvaluator.getDistance(doubleObj1, doubleObj2);
     }
 

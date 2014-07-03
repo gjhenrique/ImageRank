@@ -1,17 +1,22 @@
 package br.uel.mdd.io.loading;
 
-import br.uel.mdd.dao.*;
-import br.uel.mdd.db.tables.pojos.*;
 import br.uel.mdd.avaliation.KnnOperation;
+import br.uel.mdd.dao.ExtractionsDao;
+import br.uel.mdd.dao.QueriesDao;
+import br.uel.mdd.dao.QueryResultsDao;
+import br.uel.mdd.db.tables.pojos.DistanceFunctions;
+import br.uel.mdd.db.tables.pojos.Extractions;
+import br.uel.mdd.db.tables.pojos.Queries;
+import br.uel.mdd.db.tables.pojos.QueryResults;
 import br.uel.mdd.metric.MetricEvaluator;
 import br.uel.mdd.module.KnnOperationFactory;
-import br.uel.mdd.result.TreeResult;
 import br.uel.mdd.utils.DistanceFunctionUtils;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.List;
 
 import static br.uel.mdd.db.tables.QueryResults.QUERY_RESULTS;
@@ -34,7 +39,7 @@ public class QueryLoaderImpl implements QueryLoader {
 
     //    Warning!!! Too many dependencies
     @Inject
-    public QueryLoaderImpl(ExtractionsDao extractionsDao, ImagesDao imagesDao,
+    public QueryLoaderImpl(ExtractionsDao extractionsDao,
                            @Assisted DistanceFunctions distanceFunction, QueriesDao queriesDao, QueryResultsDao queryResultsDao, KnnOperationFactory knnOperationFactory) {
         this.metricEvaluator = DistanceFunctionUtils.getMetricEvaluatorFromDistanceFunction(distanceFunction);
         this.extractionsDao = extractionsDao;
@@ -61,15 +66,17 @@ public class QueryLoaderImpl implements QueryLoader {
         KnnOperation knnOperation = knnOperationFactory.create(metricEvaluator);
 
         long start = System.nanoTime();
-        TreeResult<QueryResults> result = knnOperation.performKnn(extractionQuery, k);
+        Collection<QueryResults> result = knnOperation.performKnn(extractionQuery, k);
         long end = System.nanoTime() - start;
 
-        for (QueryResults queryResults : result.getObjects()) {
+        for (QueryResults queryResults : result) {
             queryResults.setQueryId(query.getId());
-            queryResultsDao.insertNullPk(queryResults);
         }
 
-        logger.debug("Result of knn with {} elements", result.getNumberOfEntries());
+//        Watch out! Not populating the primary key of QueryResults
+        queryResultsDao.insert(result);
+
+        logger.debug("Result of knn with {} elements", result.size());
 
         query.setQueryDuration(end);
         queriesDao.update(query);

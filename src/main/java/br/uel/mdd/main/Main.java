@@ -35,8 +35,8 @@ public class Main {
 
     public static void main(String args[]) {
 //        args = "--image-extraction --images-path /home/guilherme/Documents/imgs/Pulmao".split(" ");
-      args = "--feature-extraction -all-ext".split(" ");
-//        args = "--knn-queries --all-extractions --all-distance-functions".split(" ");
+//      args = "--feature-extraction -all-ext".split(" ");
+        args = "--knn-queries --all-extractions --all-distance-functions".split(" ");
         new Main(args);
     }
 
@@ -46,7 +46,6 @@ public class Main {
         processFeatureExtractions();
         processQueryLoader();
     }
-
 
     private void processImageExtraction() {
         if (commandLineValues.isExtractImage()) {
@@ -67,10 +66,14 @@ public class Main {
             int currentExtraction = 0;
             int totalExtractions = images.size() * extractors.size();
 
+            FeatureExtractionLoaderFactory factory = injector.getInstance(FeatureExtractionLoaderFactory.class);
+
             for (Images image : imagesDao.findAll()) {
                 for (Extractors extractorsIt : extractors) {
                     logger.info("Extraction {} of {}", ++currentExtraction, totalExtractions);
-                    extractFeature(image, extractorsIt);
+
+                    FeatureExtractionLoader loader = factory.create(extractorsIt);
+                    loader.extractFeatures(image);
                 }
             }
         }
@@ -97,13 +100,6 @@ public class Main {
         }
 
         return extractors;
-    }
-
-    private void extractFeature(Images image, Extractors extractor) {
-        FeatureExtractionLoaderFactory factory = injector.getInstance(FeatureExtractionLoaderFactory.class);
-
-        FeatureExtractionLoader loader = factory.create(extractor);
-        loader.extractFeatures(image);
     }
 
     private void processQueryLoader() {

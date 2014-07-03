@@ -12,12 +12,14 @@ import br.uel.mdd.metric.MetricEvaluator;
 import br.uel.mdd.utils.DistanceFunctionUtils;
 import br.uel.mdd.utils.PrimitiveUtils;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Singleton
 public class SlimTreeWrapper implements Index {
 
     public final static String INDEX_FOLDER_NAME = "slim-idx";
@@ -50,11 +52,11 @@ public class SlimTreeWrapper implements Index {
     @Override
     public void addEntry(Extractions extractions) {
         List<DistanceFunctions> distanceFunctions = distanceFunctionsDao.findAll();
+
         for (DistanceFunctions distanceFunction : distanceFunctions) {
 
             MetricEvaluator metricEvaluator = DistanceFunctionUtils.getMetricEvaluatorFromDistanceFunction(distanceFunction);
             SlimTree slimTree = findSlimTree(extractions, metricEvaluator);
-
 //            Index still not exists
             if (slimTree == null)
                 slimTree = createSlimTree(extractions, metricEvaluator);

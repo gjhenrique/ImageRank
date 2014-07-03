@@ -26,6 +26,7 @@ public class AppModule extends AbstractModule {
 //        DAOs injections
         Connection connection = new PostgresConnectionFactory().getConnection();
         Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.POSTGRES);
+
         bind(ClassImageDao.class).toInstance(new ClassImageDao(configuration));
         bind(DatasetClassesDao.class).toInstance(new DatasetClassesDao(configuration));
         bind(DatasetsDao.class).toInstance(new DatasetsDao(configuration));
@@ -50,7 +51,7 @@ public class AppModule extends AbstractModule {
 
 //        Knn Operation
         install(new FactoryModuleBuilder().
-                implement(KnnOperation.class, SlimKnn.class).
+                implement(KnnOperation.class, DummyKnn.class).
                 build(KnnOperationFactory.class));
     }
 

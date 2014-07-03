@@ -2,8 +2,9 @@ package br.uel.mdd.io.loading;
 
 import br.uel.mdd.dao.*;
 import br.uel.mdd.db.tables.pojos.*;
+import br.uel.mdd.avaliation.KnnOperation;
 import br.uel.mdd.metric.MetricEvaluator;
-import br.uel.mdd.result.ResultPair;
+import br.uel.mdd.module.KnnOperationFactory;
 import br.uel.mdd.result.TreeResult;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
@@ -20,30 +21,26 @@ public class QueryLoaderImpl implements QueryLoader {
 
     private ExtractionsDao extractionsDao;
 
-    private ImagesDao imagesDao;
-
-    private DatasetsDao datasetsDao;
-
     private DistanceFunctions distanceFunction;
 
     private QueriesDao queriesDao;
 
     private QueryResultsDao queryResultsDao;
 
+    private KnnOperationFactory knnOperationFactory;
+
     private final Logger logger = LoggerFactory.getLogger(QueryLoaderImpl.class);
 
     //    Warning!!! Too many dependencies
     @Inject
-
-    public QueryLoaderImpl(@Assisted MetricEvaluator metricEvaluator, ExtractionsDao extractionsDao, ImagesDao imagesDao, DatasetsDao datasetsDao,
-                           @Assisted DistanceFunctions distanceFunction, QueriesDao queriesDao, QueryResultsDao queryResultsDao) {
+    public QueryLoaderImpl(@Assisted MetricEvaluator metricEvaluator, ExtractionsDao extractionsDao, ImagesDao imagesDao,
+                           @Assisted DistanceFunctions distanceFunction, QueriesDao queriesDao, QueryResultsDao queryResultsDao, KnnOperationFactory knnOperationFactory) {
         this.metricEvaluator = metricEvaluator;
         this.extractionsDao = extractionsDao;
-        this.imagesDao = imagesDao;
-        this.datasetsDao = datasetsDao;
         this.distanceFunction = distanceFunction;
         this.queriesDao = queriesDao;
         this.queryResultsDao = queryResultsDao;
+        this.knnOperationFactory = knnOperationFactory;
     }
 
     @Override
@@ -60,18 +57,18 @@ public class QueryLoaderImpl implements QueryLoader {
 
         logger.info("Starting new {}-nn query with distance function {} and extraction {}", k, distanceFunction.getId(), extractionQuery.getId());
 
+        KnnOperation knnOperation = knnOperationFactory.create(metricEvaluator);
+
         long start = System.nanoTime();
-        TreeResult<QueryResults> result = performKnn(extractionQuery, query, k);
+        TreeResult<QueryResults> result = knnOperation.performKnn(extractionQuery, k);
         long end = System.nanoTime() - start;
 
-        logger.debug("Result of knn with {} elements", result.getNumberOfEntries());
-
-        int i = 0;
-        for (ResultPair<QueryResults> resultPair : result.getPairs()) {
-            QueryResults queryResults = resultPair.getObject();
-            queryResults.setReturnOrder(i++);
+        for (QueryResults queryResults : result.getObjects()) {
+            queryResults.setQueryId(query.getId());
             queryResultsDao.insertNullPk(queryResults);
         }
+
+        logger.debug("Result of knn with {} elements", result.getNumberOfEntries());
 
         query.setQueryDuration(end);
         queriesDao.update(query);
@@ -89,30 +86,9 @@ public class QueryLoaderImpl implements QueryLoader {
         if (queries != null) {
             List<QueryResults> queryResults = queryResultsDao.fetch(QUERY_RESULTS.QUERY_ID, queries.getId());
             queryResultsDao.delete(queryResults);
-
             queriesDao.delete(queries);
         }
-    }
 
-    private TreeResult<QueryResults> performKnn(Extractions extractionQuery, Queries query, int k) {
-
-        TreeResult<QueryResults> result = new TreeResult<>(extractionQuery.getExtractionData(), k);
-        Datasets dataset = datasetsDao.fetchByExtractionId(extractionQuery.getId());
-
-        List<Extractions> extractions = extractionsDao.fetchByDatasetIdAndExtractorId(dataset.getId(), extractionQuery.getExtractorId());
-        for (Extractions extraction : extractions) {
-
-            QueryResults queryResult = new QueryResults();
-            double distance = metricEvaluator.getDistance(extractionQuery.getExtractionData(), extraction.getExtractionData());
-            queryResult.setDistance((float) distance);
-            queryResult.setImageId(extraction.getImageId());
-            queryResult.setQueryId(query.getId());
-            result.addPair(queryResult, distance);
-        }
-
-        result.cut(k);
-
-        return result;
     }
 
     private Queries buildQuery(Extractions extractionQuery, int k) {

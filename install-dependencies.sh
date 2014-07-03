@@ -2,7 +2,7 @@
 
 mvn install:install-file -Dfile=lib/jwave-1.0.jar -DpomFile=lib/jwave-1.0.pom -Dsources=lib/jwave-1.0-sources.jar
 
-mvn install:install-file -Dfile=lib/distributed-slim-1.0.jar -DpomFile=lib/distributed-slim-1.0.pom -Dsources=lib/distributed-slim-1.0.jar
+mvn install:install-file -Dfile=lib/distributed-slim-1.0.jar -DpomFile=lib/distributed-slim-1.0.pom -Dsources=lib/distributed-slim-1.0-sources.jar
 
 # JFeatureLib external jars
 mvn install:install-file -Dfile=lib/imageanalysis-1.0.0.jar -DpomFile=lib/imageanalysis-1.0.0.pom

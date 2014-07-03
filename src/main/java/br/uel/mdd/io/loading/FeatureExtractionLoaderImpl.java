@@ -1,11 +1,13 @@
 package br.uel.mdd.io.loading;
 
+import br.uel.mdd.avaliation.Index;
 import br.uel.mdd.dao.ExtractionsDao;
 import br.uel.mdd.db.tables.pojos.Extractions;
 import br.uel.mdd.db.tables.pojos.Extractors;
 import br.uel.mdd.db.tables.pojos.Images;
 import br.uel.mdd.extractor.FeatureExtractor;
 import br.uel.mdd.io.ImageWrapper;
+import br.uel.mdd.utils.PrimitiveUtils;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import org.slf4j.Logger;
@@ -24,15 +26,19 @@ public class FeatureExtractionLoaderImpl implements FeatureExtractionLoader {
 
     private ExtractionsDao extractionsDao;
 
+    private Index index;
+
     private final Logger logger = LoggerFactory.getLogger(FeatureExtractionLoaderImpl.class);
 
     @Inject
     public FeatureExtractionLoaderImpl(@Assisted FeatureExtractor featureExtractor,
                                        @Assisted Extractors extractor,
-                                       ExtractionsDao extractionsDao) {
+                                       ExtractionsDao extractionsDao,
+                                       Index index) {
         this.featureExtractor = featureExtractor;
         this.extractor = extractor;
         this.extractionsDao = extractionsDao;
+        this.index = index;
     }
 
     public void extractFeatures(List<Images> images) {
@@ -57,13 +63,14 @@ public class FeatureExtractionLoaderImpl implements FeatureExtractionLoader {
 
             long elapsedTime = System.nanoTime() - start;
 
-            Double[] featuresContainer = castPrimitiveToContainer(features);
+            Double[] featuresContainer = PrimitiveUtils.castPrimitiveToWrapper(features);
 
             extractions = this.buildExtraction(featuresContainer, image, elapsedTime);
-
-            logger.debug("Inserting extraction {} in the database", extractions.getId());
-
             extractionsDao.insertNullPk(extractions);
+
+            index.addEntry(extractions);
+
+            logger.debug("Inserted extraction {} in the database", extractions.getId());
         }
         else {
             logger.info("Extraction with Image {} and Extractor {} already exists in the database", image.getId(), extractor.getId());
@@ -77,15 +84,6 @@ public class FeatureExtractionLoaderImpl implements FeatureExtractionLoader {
         return ImageWrapper.createImageOpener(bufferedInputStream, image.getMimeType());
     }
 
-    private Double[] castPrimitiveToContainer(double[] features) {
-        Double[] featuresContainer = new Double[features.length];
-
-        for (int i = 0; i < features.length; i++) {
-            featuresContainer[i] = features[i];
-        }
-
-        return featuresContainer;
-    }
 
     private Extractions buildExtraction(Double[] features, Images image, long elapsedTime) {
         Extractions extractions = new Extractions();

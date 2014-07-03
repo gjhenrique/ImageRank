@@ -17,9 +17,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javax.inject.Inject;
+import java.io.File;
 import java.util.List;
 
-import static br.uel.mdd.db.tables.Extractions.*;
+import static br.uel.mdd.db.tables.Extractions.EXTRACTIONS;
 import static com.ninja_squad.dbsetup.operation.CompositeOperation.sequenceOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -51,7 +52,18 @@ public class TestFeatureExtractionLoader {
         DbSetup setup = commonOperations.createDbSetup(operation);
         setup.launch();
 
+        removeIndexes();
         populateDatabase();
+    }
+
+    private void removeIndexes() {
+        File folder = new File("slim-idx");
+        if (folder.exists()) {
+            for (File file : folder.listFiles()) {
+                file.delete();
+            }
+            folder.delete();
+        }
     }
 
     private void populateDatabase() {

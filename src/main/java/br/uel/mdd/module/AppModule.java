@@ -1,5 +1,9 @@
 package br.uel.mdd.module;
 
+import br.uel.mdd.avaliation.DummyKnn;
+import br.uel.mdd.avaliation.Index;
+import br.uel.mdd.avaliation.KnnOperation;
+import br.uel.mdd.avaliation.SlimTreeWrapper;
 import br.uel.mdd.dao.*;
 import br.uel.mdd.db.jdbc.ConnectionFactory;
 import br.uel.mdd.db.jdbc.PostgresConnectionFactory;
@@ -19,11 +23,12 @@ public class AppModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        Connection connection = new PostgresConnectionFactory().getConnection();
-        Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.POSTGRES);
 
         bind(ConnectionFactory.class).to(PostgresConnectionFactory.class);
 
+//        DAOs injections
+        Connection connection = new PostgresConnectionFactory().getConnection();
+        Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.POSTGRES);
         bind(ClassImageDao.class).toInstance(new ClassImageDao(configuration));
         bind(DatasetClassesDao.class).toInstance(new DatasetClassesDao(configuration));
         bind(DatasetsDao.class).toInstance(new DatasetsDao(configuration));
@@ -34,6 +39,8 @@ public class AppModule extends AbstractModule {
         bind(QueryResultsDao.class).toInstance(new QueryResultsDao(configuration));
         bind(DistanceFunctionsDao.class).toInstance(new DistanceFunctionsDao(configuration));
 
+        bind(Index.class).to(SlimTreeWrapper.class);
+
 //        FeatureExtractionFactory Injection
         install(new FactoryModuleBuilder().
                 implement(FeatureExtractionLoader.class, FeatureExtractionLoaderImpl.class).
@@ -43,6 +50,11 @@ public class AppModule extends AbstractModule {
         install(new FactoryModuleBuilder().
                 implement(QueryLoader.class, QueryLoaderImpl.class).
                 build(QueryLoaderFactory.class));
+
+//        Knn Operation
+        install(new FactoryModuleBuilder().
+                implement(KnnOperation.class, DummyKnn.class).
+                build(KnnOperationFactory.class));
     }
 
 }

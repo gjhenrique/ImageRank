@@ -29,7 +29,6 @@ public class TestCommandLineExtractions {
     public void prepareDatabase() {
         Guice.createInjector(new AppModule()).injectMembers(this);
 
-
         Operation operation = sequenceOf(CommonOperations.DATASETS, CommonOperations.CLASS_IMAGE,
                 CommonOperations.DATASET_CLASSES, CommonOperations.IMAGES);
 

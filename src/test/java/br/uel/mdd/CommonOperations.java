@@ -33,7 +33,7 @@ public class CommonOperations {
     public static final Operation SEED_VALUES = sequenceOf(
             insertInto("extractors").
                     columns("id", "name", "type_identifier", "class_name", "levels_wavelet").
-                    values(1, "Wavelet SubEspaco", "Haar1", "ReducedScaleWaveletExtractor", 4).
+                    values(1, "Wavelet SubEspaco", "Haar1", "ReducedScaleWaveletExtractor", 6).
                     build(),
             insertInto("extractors").
                     columns("id", "name", "type_identifier", "class_name").

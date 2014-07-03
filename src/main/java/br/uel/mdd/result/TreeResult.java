@@ -59,6 +59,17 @@ public class TreeResult<T> {
         return new ArrayList<ResultPair>(pairs.values());
     }
 
+    public Collection<T> getObjects() {
+
+        List<T> listObjects = new ArrayList<>(pairs.values().size());
+
+        for (ResultPair<T> resultPair : pairs.values()) {
+            listObjects.add(resultPair.getObject());
+        }
+
+        return listObjects;
+    }
+
     public int getNumberOfEntries() {
         return this.pairs.size();
     }

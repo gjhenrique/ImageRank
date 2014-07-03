@@ -33,11 +33,11 @@
         <appender-ref ref="SQL"/>
     </logger>
 
-    <logger name="br.uel.mdd" level="DEBUG">
+    <logger name="br.uel.mdd" level="INFO">
         <appender-ref ref="FILE"/>
     </logger>
 
-    <logger name="br.uel.mdd">
+    <logger name="br.uel.mdd" level="DEBUG">
         <appender-ref ref="STDOUT"/>
     </logger>
 

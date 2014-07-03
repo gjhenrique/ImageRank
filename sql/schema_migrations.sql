@@ -21,3 +21,12 @@ ALTER TABLE queries
 
 ALTER TABLE queries
     ADD UNIQUE (extraction_id, distance_function_id, k);
+
+ALTER TABLE query_results
+    DROP COLUMN image_id;
+
+ALTER TABLE query_results
+  ADD COLUMN extraction_id INTEGER;
+
+alter table query_results
+    add foreign key(extraction_id) references extractions(id);

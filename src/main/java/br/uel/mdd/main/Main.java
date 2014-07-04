@@ -36,9 +36,9 @@ public class Main {
     private final Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String args[]) {
-//        args = "--image-extraction --images-path /home/guilherme/Documents/imgs/Pulmao".split(" ");
+//        args = ("--image-extraction --images-path " + args[0]).split(" ");
 //      args = "--feature-extraction -all-ext".split(" ");
-        args = "--knn-queries --all-extractions --all-distance-functions".split(" ");
+//        args = "--knn-queries --all-extractions --all-distance-functions".split(" ");
         new Main(args);
     }
 

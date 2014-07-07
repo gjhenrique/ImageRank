@@ -178,8 +178,7 @@ public class Main {
 
             PrecisionRecallEvaluator evaluator =  injector.getInstance(PrecisionRecallEvaluator.class);
             List<PrecisionRecall> precisionRecalls = evaluator.precisionRecallByExtractors(commandLineValues.getDistanceIdPrecisionRecall());
-            System.out.println(precisionRecalls);
-
+            evaluator.plotChartByExtractors(precisionRecalls);
         }
     }
 }

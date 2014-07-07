@@ -2,6 +2,7 @@ package br.uel.mdd.extractor;
 
 import br.uel.mdd.io.ImageWrapper;
 import de.lmu.ifi.dbs.jfeaturelib.features.AbstractFeatureDescriptor;
+import de.lmu.ifi.dbs.jfeaturelib.features.Haralick;
 import ij.ImagePlus;
 
 import javax.inject.Inject;
@@ -41,8 +42,12 @@ public class JFeatureLib implements FeatureExtractor {
 
     @Override
     public String toString() {
-        return "JFeatureLib{" +
-                "abstractFeatureDescriptor=" + abstractFeatureDescriptor +
-                '}';
+        String descriptorName = null;
+
+        if(abstractFeatureDescriptor instanceof Haralick)
+            descriptorName = "Haralick";
+
+        return descriptorName;
     }
+
 }

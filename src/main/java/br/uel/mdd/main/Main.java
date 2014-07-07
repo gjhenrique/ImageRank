@@ -1,13 +1,11 @@
 package br.uel.mdd.main;
 
+import br.uel.mdd.avaliation.PrecisionRecallEvaluator;
 import br.uel.mdd.dao.DistanceFunctionsDao;
 import br.uel.mdd.dao.ExtractionsDao;
 import br.uel.mdd.dao.ExtractorsDao;
 import br.uel.mdd.dao.ImagesDao;
-import br.uel.mdd.db.tables.pojos.DistanceFunctions;
-import br.uel.mdd.db.tables.pojos.Extractions;
-import br.uel.mdd.db.tables.pojos.Extractors;
-import br.uel.mdd.db.tables.pojos.Images;
+import br.uel.mdd.db.tables.pojos.*;
 import br.uel.mdd.io.loading.FeatureExtractionLoader;
 import br.uel.mdd.io.loading.ImageLoader;
 import br.uel.mdd.io.loading.QueryLoader;
@@ -39,6 +37,7 @@ public class Main {
 //        args = ("--image-extraction --images-path " + args[0]).split(" ");
 //      args = "--feature-extraction -all-ext".split(" ");
 //        args = "--knn-queries --all-extractions --all-distance-functions".split(" ");
+        //args = "-pr -pr-df-id 1".split(" ");
         new Main(args);
     }
 
@@ -47,6 +46,7 @@ public class Main {
         processImageExtraction();
         processFeatureExtractions();
         processQueryLoader();
+        processPrecisionRecall();
     }
 
     private void processImageExtraction() {
@@ -166,5 +166,17 @@ public class Main {
                 logger.info("Query {} / {}", currentQuery.incrementAndGet(), totalQueries);
             }
         });
+    }
+
+    private void processPrecisionRecall() {
+
+        if (commandLineValues.isPrecisionRecall()) {
+
+            PrecisionRecallEvaluator evaluator =  injector.getInstance(PrecisionRecallEvaluator.class);
+            List<PrecisionRecall> precisionRecalls = evaluator.precisionRecallByExtractors(commandLineValues.getDistanceIdPrecisionRecall());
+            System.out.println(precisionRecalls);
+            // TODO: Handle data of precisionXrecall to generate charts or whatsoever 
+
+        }
     }
 }

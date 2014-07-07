@@ -139,7 +139,8 @@ public class QueriesDao extends DAOImpl<QueriesRecord, Queries, Integer> {
 
         Field<Double> precision = DSL.count(QUERY_RESULTS.EXTRACTION_ID)
                 .over().partitionBy(queryTable.field("query_id"))
-                .div((Field<Integer>)queryTable.field("k")).cast(PostgresDataType.FLOAT8);
+                .div(queryTable.field("k").cast(PostgresDataType.FLOAT8)).cast(PostgresDataType.FLOAT8);
+
         return create.select(
                     precision.as("precision"),
                     recall.as("recall"),

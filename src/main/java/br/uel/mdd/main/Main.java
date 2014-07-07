@@ -1,5 +1,7 @@
 package br.uel.mdd.main;
 
+import br.uel.mdd.avaliation.PrecisionRecall;
+import br.uel.mdd.avaliation.PrecisionRecallEvaluator;
 import br.uel.mdd.dao.DistanceFunctionsDao;
 import br.uel.mdd.dao.ExtractionsDao;
 import br.uel.mdd.dao.ExtractorsDao;
@@ -38,7 +40,8 @@ public class Main {
     public static void main(String args[]) {
 //        args = "--image-extraction --images-path /home/guilherme/Documents/imgs/Pulmao".split(" ");
 //      args = "--feature-extraction -all-ext".split(" ");
-        args = "--knn-queries --all-extractions --all-distance-functions".split(" ");
+//        args = "--knn-queries --all-extractions --all-distance-functions".split(" ");
+        args = "-pr -pr-df-id 1".split(" ");
         new Main(args);
     }
 
@@ -47,6 +50,7 @@ public class Main {
         processImageExtraction();
         processFeatureExtractions();
         processQueryLoader();
+        processPrecisionRecall();
     }
 
     private void processImageExtraction() {
@@ -166,5 +170,16 @@ public class Main {
                 logger.info("Query {} / {}", currentQuery.incrementAndGet(), totalQueries);
             }
         });
+    }
+
+    private void processPrecisionRecall() {
+
+        if (commandLineValues.isPrecisionRecall()) {
+
+            PrecisionRecallEvaluator evaluator =  injector.getInstance(PrecisionRecallEvaluator.class);
+            List<PrecisionRecall> precisionRecalls = evaluator.precisionRecallByExtractors(commandLineValues.getDistanceIdPrecisionRecall());
+            System.out.println(precisionRecalls);
+
+        }
     }
 }

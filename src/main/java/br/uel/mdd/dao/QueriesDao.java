@@ -135,7 +135,7 @@ public class QueriesDao extends DAOImpl<QueriesRecord, Queries, Integer> {
     private Table<Record5<Double, Double, Integer, Integer, Integer>> getWindowedTable(Table<Record5<Integer, Integer, Integer, Integer, Integer>> queryTable) {
         Field<Double> recall = queryTable.field("k").cast(PostgresDataType.FLOAT8).div(
                 (Field<Double>) max(queryTable.field("k"))
-                        .over().partitionBy(queryTable.field("extraction_id")).abs());
+                        .over().partitionBy(queryTable.field("extraction_id")));
 
         Field<Double> precision = DSL.count(QUERY_RESULTS.EXTRACTION_ID)
                 .over().partitionBy(queryTable.field("query_id"))

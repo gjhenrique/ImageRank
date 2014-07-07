@@ -38,7 +38,7 @@ public class GnuPlot implements Plot {
     }
 
     @Override
-    public void addValue(String key, float x, float y) {
+    public void addValue(String key, double x, double y) {
 //        Initializing values
         if (values.get(key) == null) {
             values.put(key, new ArrayList<Point>());
@@ -68,10 +68,10 @@ public class GnuPlot implements Plot {
     }
 
     private DataSet createDataset(List<Point> points) {
-        PointDataSet<Float> dataSet = new PointDataSet<>();
+        PointDataSet<Double> dataSet = new PointDataSet<>();
 
         for (Point point : points) {
-            com.panayotis.gnuplot.dataset.Point<Float> pointGnuPlot = new com.panayotis.gnuplot.dataset.Point<Float>(point.asObjectArray());
+            com.panayotis.gnuplot.dataset.Point<Double> pointGnuPlot = new com.panayotis.gnuplot.dataset.Point<Double>(point.asObjectArray());
             dataSet.add(pointGnuPlot);
         }
 

@@ -2,29 +2,29 @@ package br.uel.mdd.avaliation;
 
 public class Point {
 
-    private float x;
+    private double x;
 
-    private float y;
+    private double y;
 
-    public Point(float x, float y) {
+    public Point(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
-    public float getX() {
+    public double getX() {
         return x;
     }
 
-    public float getY() {
+    public double getY() {
         return y;
     }
 
-    public float[] asArray() {
-        return new float[]{x, y};
+    public double[] asArray() {
+        return new double[]{x, y};
     }
 
-    public Float[] asObjectArray() {
-        return new Float[]{x, y};
+    public Double[] asObjectArray() {
+        return new Double[]{x, y};
     }
 
 }

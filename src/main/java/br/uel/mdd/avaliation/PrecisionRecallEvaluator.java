@@ -16,10 +16,7 @@ public class PrecisionRecallEvaluator {
     }
 
     public List<PrecisionRecall> precisionRecallByExtractors(Integer distanceFunctionId, Integer... extractorsId) {
-        if (extractorsId.length == 0)
-            return queriesDao.precisionRecallByDistanceFunctionId(distanceFunctionId);
-        else
-            return queriesDao.precisionRecallByDistanceFunctionId(distanceFunctionId, extractorsId);
+        return queriesDao.precisionRecallByDistanceFunctionId(distanceFunctionId, extractorsId);
     }
 
 }

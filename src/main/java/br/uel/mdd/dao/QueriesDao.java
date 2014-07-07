@@ -48,21 +48,21 @@ public class QueriesDao extends DAOImpl<QueriesRecord, Queries, Integer> {
                 ).fetchOneInto(Queries.class);
     }
 
-    public List<PrecisionRecall> precisionRecallByDistanceFunctionId(Integer distanceFunctionId) {
-        Condition condition = whereDistanceFunction(distanceFunctionId);
-        return performQuery(condition);
-    }
-
     public List<PrecisionRecall> precisionRecallByDistanceFunctionId(Integer distanceFunctionId, Integer... extractorIds) {
-        Condition condition = whereDistanceFunction(distanceFunctionId).and(whereExtractorId(extractorIds));
+
+        Condition condition = whereDistanceFunction(distanceFunctionId);
+        
+        if (extractorIds.length > 0)
+            condition = condition.and(whereExtractorId(extractorIds));
+
         return performQuery(condition);
     }
 
-    private Condition whereDistanceFunction(Integer ... distanceFunctionId) {
+    private Condition whereDistanceFunction(Integer... distanceFunctionId) {
         return QUERIES.DISTANCE_FUNCTION_ID.in(distanceFunctionId);
     }
 
-    private Condition whereExtractorId(Integer ... extractorId) {
+    private Condition whereExtractorId(Integer... extractorId) {
         return EXTRACTIONS.EXTRACTOR_ID.in(extractorId);
     }
 

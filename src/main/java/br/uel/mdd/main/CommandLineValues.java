@@ -52,8 +52,8 @@ public class CommandLineValues {
     @Option(name = "-pr-df-id", aliases = {"--precision-recall-distance-id"}, usage = "Distance function id")
     private int distanceIdPrecisionRecall;
 
-    @Option(name = "-pr-e", aliases = {"--precision-recall-distance-function-id"}, usage = "Identifier of distance function")
-    private int extractorsPrecisionRecall;
+    @Option(name = "-pr-e", aliases = {"--precision-recall-extractor-id"}, usage = "Ids of extractors separated by comma")
+    private String extractorsPrecisionRecall;
 
     public CommandLineValues(String... args) {
 
@@ -154,6 +154,16 @@ public class CommandLineValues {
 
     public int getDistanceIdPrecisionRecall() {
         return distanceIdPrecisionRecall;
+    }
+
+    public Integer[] getExtractorsPrecisionRecall() {
+        String[] extractors = extractorsPrecisionRecall.split(",");
+        Integer[] extractorsId = new Integer[extractors.length];
+        for (int i = 0; i < extractors.length; i++) {
+            extractorsId[i] = Integer.parseInt(extractors[i]);
+        }
+
+        return extractorsId;
     }
 
 }

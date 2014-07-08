@@ -50,10 +50,10 @@ public final class PrecisionRecall implements java.io.Serializable {
 
     @Override
     public String toString() {
-        return "PrecisionRecall{" +
+        return "{" +
                 "extractorId=" + extractorId +
-                ", precision=" + precision +
                 ", recall=" + recall +
+                ", precision=" + precision +
                 '}';
     }
 
@@ -61,11 +61,7 @@ public final class PrecisionRecall implements java.io.Serializable {
     public boolean equals(Object obj) {
         if (obj.getClass().isInstance(PrecisionRecall.class)){
             PrecisionRecall pr = (PrecisionRecall) obj;
-            if(pr.getExtractorId() == this.extractorId){
-                return true;
-            }else{
-                return false;
-            }
+            return pr.getExtractorId().equals(this.extractorId);
         }
         return super.equals(obj);
     }

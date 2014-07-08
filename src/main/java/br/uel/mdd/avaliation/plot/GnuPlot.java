@@ -1,4 +1,4 @@
-package br.uel.mdd.avaliation;
+package br.uel.mdd.avaliation.plot;
 
 import com.panayotis.gnuplot.JavaPlot;
 import com.panayotis.gnuplot.dataset.DataSet;
@@ -47,6 +47,18 @@ public class GnuPlot implements Plot {
         List<Point> valuesKey = values.get(key);
         Point point = new Point(x, y);
         valuesKey.add(point);
+    }
+
+    @Override
+    public boolean addArbitrary(String key, int position, double x, double y){
+        if (values.get(key) == null) { // The key must exist
+            return false;
+        }
+
+        List<Point> valuesKey = values.get(key); // Reference of object
+        Point point = new Point(x, y);
+        valuesKey.add(position, point);
+        return true;
     }
 
 

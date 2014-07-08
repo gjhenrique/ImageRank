@@ -1,6 +1,8 @@
 package br.uel.mdd.avaliation;
 
 
+import br.uel.mdd.avaliation.plot.GnuPlot;
+import br.uel.mdd.avaliation.plot.Plot;
 import br.uel.mdd.dao.ExtractorsDao;
 import br.uel.mdd.dao.QueriesDao;
 import br.uel.mdd.db.tables.pojos.Extractors;
@@ -43,7 +45,7 @@ public class PrecisionRecallEvaluator {
         for (PrecisionRecall precisionRecall : prs) {
             Extractors extractors = extractorsDao.findById(precisionRecall.getExtractorId());
             FeatureExtractor featureExtractor = ExtractorUtils.getFeatureExtractorImplementation(extractors);
-            plot.addValue(featureExtractor.toString(), 0, 1);
+            plot.addArbitrary(featureExtractor.toString(), 0, 0.0, 1.0);
         }
 
         plot.plot();

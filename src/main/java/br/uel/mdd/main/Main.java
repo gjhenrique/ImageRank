@@ -171,11 +171,9 @@ public class Main {
     private void processPrecisionRecall() {
 
         if (commandLineValues.isPrecisionRecall()) {
-
             PrecisionRecallEvaluator evaluator =  injector.getInstance(PrecisionRecallEvaluator.class);
-            List<PrecisionRecall> precisionRecalls = evaluator.precisionRecallByExtractors(commandLineValues.getDistanceIdPrecisionRecall());
+            List<PrecisionRecall> precisionRecalls = evaluator.precisionRecallByExtractors(commandLineValues.getDistanceIdPrecisionRecall(), commandLineValues.getExtractorsPrecisionRecall());
             evaluator.plotChartByExtractors(precisionRecalls);
-            System.out.println(precisionRecalls);
         }
     }
 }

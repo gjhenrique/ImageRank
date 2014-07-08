@@ -1,4 +1,4 @@
-package br.uel.mdd.avaliation;
+package br.uel.mdd.avaliation.plot;
 
 public class Point {
 

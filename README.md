@@ -13,9 +13,10 @@ Desenvolvido por:
 Tecnologias/bibliotecas usadas:
         
         Maven
-        jOOQ
-        ImageJ
-        JWave
+        [jOOQ](https://github.com/jOOQ/jOOQ)
+        [ImageJ](https://github.com/imagej/imagej)
+        [JWave](https://github.com/pedro-stanaka/JWave)
+        [Guice](https://github.com/google/guice)
         
 
 
@@ -32,5 +33,14 @@ Exemplo:
         user=usuario
         password=senha
 
-Para configurar a criação das classes com o jOOQ veja a documentação em: [Generator Config](http://www.jooq.org/doc/3.3/manual/code-generation/codegen-configuration).
+
+## Geração automática de classes do jOOQ
+
+Para configurar a geração automática das classes com o jOOQ veja a documentação em: [Generator Config](http://www.jooq.org/doc/3.3/manual/code-generation/codegen-configuration).
 Um exemplo de arquivo de configuração se encontra em: jooq-config.xml.example.
+
+Depois de configurado a comunicação com o banco e configuração do jOOQ basta rodar a task do ant:
+
+        ```bash
+        ant code-generation
+        ```

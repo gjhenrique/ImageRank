@@ -47,4 +47,26 @@ public final class PrecisionRecall implements java.io.Serializable {
     public void setPrecision(Double precision) {
         this.precision = precision;
     }
+
+    @Override
+    public String toString() {
+        return "PrecisionRecall{" +
+                "extractorId=" + extractorId +
+                ", precision=" + precision +
+                ", recall=" + recall +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj.getClass().isInstance(PrecisionRecall.class)){
+            PrecisionRecall pr = (PrecisionRecall) obj;
+            if(pr.getExtractorId() == this.extractorId){
+                return true;
+            }else{
+                return false;
+            }
+        }
+        return super.equals(obj);
+    }
 }

@@ -37,7 +37,7 @@ public class Main {
 //        args = ("--image-extraction --images-path " + args[0]).split(" ");
 //      args = "--feature-extraction -all-ext".split(" ");
 //        args = "--knn-queries --all-extractions --all-distance-functions".split(" ");
-        //args = "-pr -pr-df-id 1".split(" ");
+//        args = "-pr -pr-df-id 1".split(" ");
         new Main(args);
     }
 

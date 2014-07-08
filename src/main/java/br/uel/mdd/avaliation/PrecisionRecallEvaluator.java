@@ -4,13 +4,14 @@ package br.uel.mdd.avaliation;
 import br.uel.mdd.dao.ExtractorsDao;
 import br.uel.mdd.dao.QueriesDao;
 import br.uel.mdd.db.tables.pojos.Extractors;
+import br.uel.mdd.db.tables.pojos.PrecisionRecall;
 import br.uel.mdd.extractor.FeatureExtractor;
 import br.uel.mdd.utils.ExtractorUtils;
-import br.uel.mdd.db.tables.pojos.PrecisionRecall;
-
 import com.google.inject.Inject;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class PrecisionRecallEvaluator {
 
@@ -35,6 +36,14 @@ public class PrecisionRecallEvaluator {
             Extractors extractors = extractorsDao.findById(precisionRecall.getExtractorId());
             FeatureExtractor featureExtractor = ExtractorUtils.getFeatureExtractorImplementation(extractors);
             plot.addValue(featureExtractor.toString(), precisionRecall.getRecall(), precisionRecall.getPrecision());
+        }
+
+        Set<PrecisionRecall> prs = new HashSet<>(precisionRecalls);
+
+        for (PrecisionRecall precisionRecall : prs) {
+            Extractors extractors = extractorsDao.findById(precisionRecall.getExtractorId());
+            FeatureExtractor featureExtractor = ExtractorUtils.getFeatureExtractorImplementation(extractors);
+            plot.addValue(featureExtractor.toString(), 0, 1);
         }
 
         plot.plot();

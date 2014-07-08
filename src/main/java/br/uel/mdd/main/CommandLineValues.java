@@ -157,13 +157,16 @@ public class CommandLineValues {
     }
 
     public Integer[] getExtractorsPrecisionRecall() {
-        String[] extractors = extractorsPrecisionRecall.split(",");
-        Integer[] extractorsId = new Integer[extractors.length];
-        for (int i = 0; i < extractors.length; i++) {
-            extractorsId[i] = Integer.parseInt(extractors[i]);
-        }
+        if (extractorsPrecisionRecall != null) {
+            String[] extractors = extractorsPrecisionRecall.split(",");
+            Integer[] extractorsId = new Integer[extractors.length];
+            for (int i = 0; i < extractors.length; i++) {
+                extractorsId[i] = Integer.parseInt(extractors[i]);
+            }
 
-        return extractorsId;
+            return extractorsId;
+        }
+        return new Integer[0];
     }
 
 }

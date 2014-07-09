@@ -15,6 +15,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import org.jooq.Configuration;
 import org.jooq.SQLDialect;
+import org.jooq.conf.Settings;
 import org.jooq.impl.DefaultConfiguration;
 
 import java.sql.Connection;
@@ -29,6 +30,7 @@ public class AppModule extends AbstractModule {
 //        DAOs injections
         Connection connection = new PostgresConnectionFactory().getConnection();
         Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.POSTGRES);
+        configuration.set(new Settings().withRenderFormatted(true));
 
         bind(ClassImageDao.class).toInstance(new ClassImageDao(configuration));
         bind(DatasetClassesDao.class).toInstance(new DatasetClassesDao(configuration));

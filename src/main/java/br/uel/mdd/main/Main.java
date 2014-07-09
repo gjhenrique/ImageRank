@@ -173,7 +173,7 @@ public class Main {
         if (commandLineValues.isPrecisionRecall()) {
             PrecisionRecallEvaluator evaluator =  injector.getInstance(PrecisionRecallEvaluator.class);
             List<PrecisionRecall> precisionRecalls = evaluator.precisionRecallByExtractors(commandLineValues.getDistanceIdPrecisionRecall(), commandLineValues.getExtractorsPrecisionRecall());
-            evaluator.plotChartByExtractors(precisionRecalls);
+            evaluator.plotChartByExtractors(precisionRecalls, commandLineValues.getImagePathPrecisionRecall());
         }
     }
 }

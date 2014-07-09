@@ -55,6 +55,11 @@ public class CommandLineValues {
     @Option(name = "-pr-e", aliases = {"--precision-recall-extractor-id"}, usage = "Ids of extractors separated by comma")
     private String extractorsPrecisionRecall;
 
+
+
+    @Option(name = "-pr-img", aliases = {"--precision-recall-image"}, usage = "The path of image to save the chart of precision recall")
+    private String imagePathPrecisionRecall;
+
     public CommandLineValues(String... args) {
 
         CmdLineParser parser = new CmdLineParser(this);
@@ -96,6 +101,12 @@ public class CommandLineValues {
 
             if (distanceFunctionId == INVALID_ID && !(allDistanceFunctions)) {
                 throw new CmdLineException(parser, "No distance function selected!!!");
+            }
+        }
+
+        if (precisionRecall){
+            if (imagePathPrecisionRecall != null && imagePathPrecisionRecall.isEmpty()) {
+                throw new CmdLineException(parser, "The file path is empty!!!");
             }
         }
     }
@@ -169,4 +180,7 @@ public class CommandLineValues {
         return new Integer[0];
     }
 
+    public String getImagePathPrecisionRecall() {
+        return imagePathPrecisionRecall;
+    }
 }

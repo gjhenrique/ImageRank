@@ -31,7 +31,7 @@ public class PrecisionRecallEvaluator {
         return queriesDao.precisionRecallByDistanceFunctionId(distanceFunctionId, extractorsId);
     }
 
-    public void plotChartByExtractors(List<PrecisionRecall> precisionRecalls) {
+    public void plotChartByExtractors(List<PrecisionRecall> precisionRecalls, String imagePath) {
         Plot plot = new GnuPlot();
 
         for (PrecisionRecall precisionRecall : precisionRecalls) {
@@ -48,7 +48,12 @@ public class PrecisionRecallEvaluator {
             plot.addArbitrary(featureExtractor.toString(), 0, 0.0, 1.0);
         }
 
-        plot.plot();
+        if (imagePath != null && !imagePath.isEmpty()) {
+            plot.plot();
+            plot.saveToFile(imagePath);
+        }else{
+
+        }
     }
 
 }

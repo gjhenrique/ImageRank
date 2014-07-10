@@ -10,8 +10,8 @@ public interface Plot {
 
     /**
      * Save the chart to a file.
-     * The path must contain the filename and extension
-     * @param path
+     * The path must contain the filename
+     * @param path The name of the eps file to save
      */
     void saveToFile(String path);
 }

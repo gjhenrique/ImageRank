@@ -9,13 +9,11 @@ import com.panayotis.gnuplot.style.NamedPlotColor;
 import com.panayotis.gnuplot.style.PlotColor;
 import com.panayotis.gnuplot.style.PlotStyle;
 import com.panayotis.gnuplot.style.Style;
-import com.panayotis.gnuplot.terminal.ImageTerminal;
-import com.panayotis.gnuplot.terminal.SVGTerminal;
+import com.panayotis.gnuplot.terminal.PostscriptTerminal;
 
-import javax.imageio.ImageIO;
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 
 public class GnuPlot implements Plot {
@@ -24,8 +22,6 @@ public class GnuPlot implements Plot {
     private Map<String, List<Point>> values = new HashMap<>();
 
     private JavaPlot plot = new JavaPlot();
-    private ImageTerminal imgTerminal = new ImageTerminal();
-    private SVGTerminal svgTerminal;
 
     private PlotColor[] colors = new NamedPlotColor[]{NamedPlotColor.BLUE, NamedPlotColor.BLACK, NamedPlotColor.RED, NamedPlotColor.BROWN, NamedPlotColor.GREEN};
     private int currentColor;
@@ -72,6 +68,11 @@ public class GnuPlot implements Plot {
 
     @Override
     public void plot() {
+        preparePlot();
+        plot.plot();
+    }
+
+    private void preparePlot() {
         Set<String> keysSet = values.keySet();
 
         for (String key : keysSet) {
@@ -83,8 +84,6 @@ public class GnuPlot implements Plot {
             plot.addPlot(legend);
 
         }
-
-        plot.plot();
     }
 
     private DataSet createDataset(List<Point> points) {
@@ -116,36 +115,35 @@ public class GnuPlot implements Plot {
     @Override
     public void saveToFile(String path) {
         if (path != null) {
-            String[] pathParts = path.split("\\.");
-            String extension = pathParts[pathParts.length - 1];
-
-            if (extension.equals("png") || extension.equals("svg")) {
-                createImage(path, extension);
-            } else {
-                throw new IllegalArgumentException("Please choose a valid extension.");
-            }
+            PostscriptTerminal epsTerminal = new PostscriptTerminal(path);
+            epsTerminal.setColor(true);
+            plot.setTerminal(epsTerminal);
+            preparePlot();
+            plot.plot();
+//            String pdfPath = path.replace("eps", "pdf");
+//            convertFile(path, pdfPath);
         }
     }
 
-    private void createImage(String path, String extension) {
-        File file = new File(path);
+    private void convertFile(String path, String pdfPath) {
+
+        // TODO adicionar configuração do binário do ps2pdf em arquivo .properties
 
         try {
-            if (file.createNewFile()) {
-                if (extension.equals("png")) {
-                    imgTerminal.processOutput(new FileInputStream(file));
-                    plot.setTerminal(imgTerminal);
-                    ImageIO.write(imgTerminal.getImage(), extension, file);
-                } else if (extension.equals("svg")) {
-                    new SVGTerminal(path);
-                }
+            Process convert = Runtime.getRuntime().exec("/usr/bin/ps2pdf -dEPSCrop "+path + " " + pdfPath);
+            BufferedReader input = new BufferedReader(new InputStreamReader(convert.getInputStream()));
+            String line;
+            while ((line=input.readLine())!= null){
+                System.out.println(line);
             }
-        } catch (IOException e) {
-            System.out.println("Could not create the file. The error was: \n");
+
+            int exitVal = convert.waitFor();
+
+            System.out.println("Exited with code " + exitVal);
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
-
-
     }
+
 
 }

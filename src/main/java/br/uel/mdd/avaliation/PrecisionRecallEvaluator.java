@@ -49,10 +49,9 @@ public class PrecisionRecallEvaluator {
         }
 
         if (imagePath != null && !imagePath.isEmpty()) {
-            plot.plot();
             plot.saveToFile(imagePath);
         }else{
-
+            plot.plot();
         }
     }
 

@@ -10,8 +10,11 @@ import com.panayotis.gnuplot.style.PlotColor;
 import com.panayotis.gnuplot.style.PlotStyle;
 import com.panayotis.gnuplot.style.Style;
 import com.panayotis.gnuplot.terminal.PostscriptTerminal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
@@ -28,6 +31,8 @@ public class GnuPlot implements Plot {
 
     private int[] lineTypes = new int[]{2, 5, 6, 10, 13};
     private int currentLineTypes;
+
+    private final Logger gnuPlotLogger = LoggerFactory.getLogger(GnuPlot.class);
 
     public GnuPlot() {
         initializePlot();
@@ -118,10 +123,13 @@ public class GnuPlot implements Plot {
             PostscriptTerminal epsTerminal = new PostscriptTerminal(path);
             epsTerminal.setColor(true);
             plot.setTerminal(epsTerminal);
+            gnuPlotLogger.info("Plotting to file: {}", path);
             preparePlot();
             plot.plot();
-//            String pdfPath = path.replace("eps", "pdf");
-//            convertFile(path, pdfPath);
+            gnuPlotLogger.info("Done plotting.");
+            String pdfPath = path.replace("eps", "pdf");
+            convertFile(path, pdfPath);
+            new File(path).delete();
         }
     }
 
@@ -133,12 +141,13 @@ public class GnuPlot implements Plot {
             Process convert = Runtime.getRuntime().exec("/usr/bin/ps2pdf -dEPSCrop "+path + " " + pdfPath);
             BufferedReader input = new BufferedReader(new InputStreamReader(convert.getInputStream()));
             String line;
+            gnuPlotLogger.info("Converting file: {}", path);
+
             while ((line=input.readLine())!= null){
                 System.out.println(line);
             }
-
             int exitVal = convert.waitFor();
-
+            gnuPlotLogger.info("Done converting. Final file: {}", pdfPath);
             System.out.println("Exited with code " + exitVal);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();

@@ -21,3 +21,4 @@ INSERT INTO extractors (id, name, type_identifier) VALUES
 -- Metric Evaluators
 INSERT INTO distance_functions (id, name, class_name) VALUES (1, 'Euclidean', 'EuclideanDistance');
 INSERT INTO distance_functions (id, name, class_name) VALUES (2, 'Manhattan', 'ManhattanDistance');
+INSERT INTO distance_functions (id, name, class_name) VALUES (3, 'Chebyschev', 'LinfDistance');

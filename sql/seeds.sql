@@ -51,3 +51,4 @@ INSERT INTO distance_functions (id, name, class_name) VALUES
   (4, 'Canberra', 'CanberraDistance'),
   (5, 'ChiSquare', 'ChiSquareDistance'),
   (6, 'Jeffrey', 'JeffreyDivergence');
+

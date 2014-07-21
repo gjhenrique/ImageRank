@@ -60,7 +60,7 @@ public class QueryLoaderImpl implements QueryLoader {
             return;
         }
 
-        logger.debug("Starting new {}-nn query with distance function {} and extraction {}", k, distanceFunction.getId(), extractionQuery.getId());
+        logger.debug("Starting new {}-nn query with distance function {}, extraction {} and extractor {}", k, distanceFunction.getId(), extractionQuery.getId(), extractionQuery.getExtractorId());
 
         ConnectionProvider provider = extractionsDao.configuration().connectionProvider();
         Connection connection = provider.acquire();
@@ -99,6 +99,7 @@ public class QueryLoaderImpl implements QueryLoader {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         provider.release(connection);
     }
 

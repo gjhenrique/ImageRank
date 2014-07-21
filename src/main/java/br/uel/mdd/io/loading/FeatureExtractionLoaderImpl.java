@@ -6,6 +6,7 @@ import br.uel.mdd.db.tables.pojos.Extractions;
 import br.uel.mdd.db.tables.pojos.Extractors;
 import br.uel.mdd.db.tables.pojos.Images;
 import br.uel.mdd.extractor.FeatureExtractor;
+import br.uel.mdd.extractor.FeatureNotImplemented;
 import br.uel.mdd.io.ImageWrapper;
 import br.uel.mdd.utils.ExtractorUtils;
 import br.uel.mdd.utils.PrimitiveUtils;
@@ -56,7 +57,13 @@ public class FeatureExtractionLoaderImpl implements FeatureExtractionLoader {
             ImageWrapper wrapper = this.getImageWrapper(image);
 
             long start = System.nanoTime();
-            double[] features = featureExtractor.extractFeature(wrapper);
+            double[] features;
+            try {
+                features = featureExtractor.extractFeature(wrapper);
+            } catch (FeatureNotImplemented ex) {
+                logger.info(ex.getMessage());
+                return;
+            }
             long elapsedTime = System.nanoTime() - start;
 
             Double[] featuresContainer = PrimitiveUtils.castPrimitiveToWrapper(features);
@@ -67,8 +74,7 @@ public class FeatureExtractionLoaderImpl implements FeatureExtractionLoader {
             index.addEntry(extractions);
 
             logger.debug("Inserted extraction {} in the database", extractions.getId());
-        }
-        else {
+        } else {
             logger.info("Extraction with Image {} and Extractor {} already exists in the database", image.getId(), extractor.getId());
         }
     }

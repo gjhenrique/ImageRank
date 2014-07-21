@@ -64,16 +64,11 @@ public class GnuPlot implements Plot {
 
     @Override
     public void plot() {
-        Set<String> keysSet = values.keySet();
 
-        for (String key : keysSet) {
-
+        for (String key : values.keySet()) {
             DataSet dataSet = createDataset(values.get(key));
-
             AbstractPlot legend = createLegend(key, dataSet);
-
             plot.addPlot(legend);
-
         }
 
         plot.plot();

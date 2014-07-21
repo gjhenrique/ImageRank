@@ -97,7 +97,6 @@ public class QueriesDao extends DAOImpl<QueriesRecord, Queries, Integer> {
         precisionRecallList.add(precisionRecall);
     }
 
-
     public Select getQueries(Condition condition) {
 
         Table<Record5<Integer, Integer, Integer, Integer, Integer>> queryTable = getQueryTable(condition);
@@ -121,7 +120,6 @@ public class QueriesDao extends DAOImpl<QueriesRecord, Queries, Integer> {
         Field<Double> precisionField = (Field<Double>) windowedPr.field("precision");
         Field<Integer> k = (Field<Integer>) windowedPr.field("k");
         Field<Integer> extractorId = (Field<Integer>) windowedPr.field("extractor_id");
-
 
         return create.select(
                 recallField,

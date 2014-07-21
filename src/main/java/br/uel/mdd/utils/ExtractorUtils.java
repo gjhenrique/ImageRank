@@ -3,6 +3,7 @@ package br.uel.mdd.utils;
 import br.uel.mdd.db.tables.pojos.Extractors;
 import br.uel.mdd.extractor.FeatureExtractor;
 import br.uel.mdd.extractor.JFeatureLib;
+import br.uel.mdd.extractor.PerceptualParameter;
 import br.uel.mdd.extractor.ReducedScaleWaveletExtractor;
 import de.lmu.ifi.dbs.jfeaturelib.features.AbstractFeatureDescriptor;
 import math.jwave.transforms.wavelets.Wavelet;
@@ -21,6 +22,11 @@ public class ExtractorUtils {
         } else if (clazzFeatureExtractor == JFeatureLib.class) {
 
             featureExtractor = createJFeatureLibExtractor(extractor);
+
+        }
+        else if (clazzFeatureExtractor == PerceptualParameter.class) {
+
+            featureExtractor = new PerceptualParameter(extractor.getName());
 
         }
 

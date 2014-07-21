@@ -6,10 +6,7 @@ import br.uel.mdd.dao.ExtractionsDao;
 import br.uel.mdd.dao.ExtractorsDao;
 import br.uel.mdd.dao.ImagesDao;
 import br.uel.mdd.db.tables.pojos.*;
-import br.uel.mdd.io.loading.FeatureExtractionLoader;
-import br.uel.mdd.io.loading.ImageLoader;
-import br.uel.mdd.io.loading.QueryLoader;
-import br.uel.mdd.io.loading.QueryLoaderDispatcher;
+import br.uel.mdd.io.loading.*;
 import br.uel.mdd.module.AppModule;
 import br.uel.mdd.module.FeatureExtractionLoaderFactory;
 import br.uel.mdd.module.QueryLoaderFactory;
@@ -18,6 +15,7 @@ import com.google.inject.Injector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -38,6 +36,7 @@ public class Main {
 //      args = "--feature-extraction -all-ext".split(" ");
 //        args = "--knn-queries --all-extractions --all-distance-functions".split(" ");
 //        args = "-pr -pr-df-id 1".split(" ");
+//        args = "-ponciano".split(" ");
         new Main(args);
     }
 
@@ -47,6 +46,7 @@ public class Main {
         processFeatureExtractions();
         processQueryLoader();
         processPrecisionRecall();
+        processPoncianoExtractions();
     }
 
     private void processImageExtraction() {
@@ -151,7 +151,7 @@ public class Main {
         if (commandLineValues.isAllExtractionsQuery())
             extractions = extractionsDao.findAll();
         else if (commandLineValues.getExtractorQueryId() != CommandLineValues.INVALID_ID)
-            extractionsDao.fetch(EXTRACTIONS.EXTRACTOR_ID, commandLineValues.getExtractorQueryId());
+            extractions = extractionsDao.fetch(EXTRACTIONS.EXTRACTOR_ID, commandLineValues.getExtractorQueryId());
 
         return extractions;
     }
@@ -174,6 +174,13 @@ public class Main {
             PrecisionRecallEvaluator evaluator =  injector.getInstance(PrecisionRecallEvaluator.class);
             List<PrecisionRecall> precisionRecalls = evaluator.precisionRecallByExtractors(commandLineValues.getDistanceIdPrecisionRecall(), commandLineValues.getExtractorsPrecisionRecall());
             evaluator.plotChartByExtractors(precisionRecalls);
+        }
+    }
+
+    private void processPoncianoExtractions() {
+        if(commandLineValues.isExtractPonciano()) {
+            PoncianoLoader loader = injector.getInstance(PoncianoLoader.class);
+            loader.insertExtractionsFromFile(new File("sql/dumps/ponciano-rawdata.backup"));
         }
     }
 }

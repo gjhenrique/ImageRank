@@ -55,6 +55,9 @@ public class CommandLineValues {
     @Option(name = "-pr-e", aliases = {"--precision-recall-extractor-id"}, usage = "Ids of extractors separated by comma")
     private String extractorsPrecisionRecall;
 
+    @Option(name = "-ponciano", usage = "Extract Ponciano")
+    private boolean extractPonciano;
+
     public CommandLineValues(String... args) {
 
         CmdLineParser parser = new CmdLineParser(this);
@@ -154,6 +157,10 @@ public class CommandLineValues {
 
     public int getDistanceIdPrecisionRecall() {
         return distanceIdPrecisionRecall;
+    }
+
+    public boolean isExtractPonciano() {
+        return extractPonciano;
     }
 
     public Integer[] getExtractorsPrecisionRecall() {

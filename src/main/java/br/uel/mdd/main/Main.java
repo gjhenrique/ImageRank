@@ -34,9 +34,10 @@ public class Main {
     public static void main(String args[]) {
 //        args = ("--image-extraction --images-path " + args[0]).split(" ");
 //      args = "--feature-extraction -all-ext".split(" ");
-//        args = "--knn-queries --all-extractions --all-distance-functions".split(" ");
+//        args = "--knn-queries --extractor-query-id 5 --all-distance-functions".split(" ");
 //        args = "-pr -pr-df-id 1".split(" ");
 //        args = "-ponciano".split(" ");
+
         new Main(args);
     }
 
@@ -104,6 +105,8 @@ public class Main {
         return extractors;
     }
 
+    private QueryLoaderDispatcher dispatcher;
+
     private void processQueryLoader() {
         if (commandLineValues.isKnnQueries()) {
 
@@ -115,9 +118,8 @@ public class Main {
             int maxK = commandLineValues.getMaxK();
             int rateK = commandLineValues.getRateK();
             final int totalQueries = distanceFunctions.size() * extractions.size() * (maxK / rateK);
-
-            QueryLoaderDispatcher dispatcher = createQueryLoaderDispatcher(totalQueries);
-
+            dispatcher = createQueryLoaderDispatcher(totalQueries);
+            System.out.println("Consulta com extrator " + commandLineValues.getExtractorQueryId());
             for (DistanceFunctions distanceFunction : distanceFunctions) {
                 for (Extractions extraction : extractions) {
 
@@ -163,7 +165,13 @@ public class Main {
         return new QueryLoaderDispatcher(new QueryLoaderDispatcher.QueryLoaderListener() {
             @Override
             public void queryComplete() {
-                logger.info("Query {} / {}", currentQuery.incrementAndGet(), totalQueries);
+                int value = currentQuery.incrementAndGet();
+                if (value % 1000 == 0 || value == totalQueries) {
+                    logger.info("Query {} / {}", value, totalQueries);
+                    System.out.println("Query " + value + " / " + totalQueries);
+                    if(value == totalQueries)
+                        dispatcher.shutdown();
+                }
             }
         });
     }
@@ -171,14 +179,14 @@ public class Main {
     private void processPrecisionRecall() {
 
         if (commandLineValues.isPrecisionRecall()) {
-            PrecisionRecallEvaluator evaluator =  injector.getInstance(PrecisionRecallEvaluator.class);
+            PrecisionRecallEvaluator evaluator = injector.getInstance(PrecisionRecallEvaluator.class);
             List<PrecisionRecall> precisionRecalls = evaluator.precisionRecallByExtractors(commandLineValues.getDistanceIdPrecisionRecall(), commandLineValues.getExtractorsPrecisionRecall());
             evaluator.plotChartByExtractors(precisionRecalls);
         }
     }
 
     private void processPoncianoExtractions() {
-        if(commandLineValues.isExtractPonciano()) {
+        if (commandLineValues.isExtractPonciano()) {
             PoncianoLoader loader = injector.getInstance(PoncianoLoader.class);
             loader.insertExtractionsFromFile(new File("sql/dumps/ponciano-rawdata.backup"));
         }

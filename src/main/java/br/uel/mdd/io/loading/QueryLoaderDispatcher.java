@@ -28,6 +28,10 @@ public class QueryLoaderDispatcher {
         });
     }
 
+    public void shutdown() {
+        threadPool.shutdown();
+    }
+
     public interface QueryLoaderListener {
         public void queryComplete();
     }

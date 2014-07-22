@@ -19,10 +19,17 @@ public class GnuPlot implements Plot {
 
     private JavaPlot plot = new JavaPlot();
 
-    private PlotColor[] colors = new NamedPlotColor[] {NamedPlotColor.BLUE, NamedPlotColor.BLACK, NamedPlotColor.RED, NamedPlotColor.BROWN, NamedPlotColor.GREEN};
+    private PlotColor[] colors = new NamedPlotColor[] {
+            NamedPlotColor.BLUE, NamedPlotColor.BLACK, NamedPlotColor.RED,
+            NamedPlotColor.BROWN, NamedPlotColor.GREEN, NamedPlotColor.ORANGE_RED,
+            NamedPlotColor.ORANGE, NamedPlotColor.PINK, NamedPlotColor.TURQUOISE,
+            NamedPlotColor.PURPLE, NamedPlotColor.SPRING_GREEN, NamedPlotColor.SKYBLUE,
+            NamedPlotColor.SEA_GREEN, NamedPlotColor.PLUM, NamedPlotColor.YELLOW,
+            NamedPlotColor.MAGENTA, NamedPlotColor.BEIGE, NamedPlotColor.VIOLET,
+            NamedPlotColor.DARK_BLUE, NamedPlotColor.ORANGE_RED, NamedPlotColor.MIDNIGHT_BLUE};
     private int currentColor;
 
-    private int[] lineTypes= new int[] {2, 5, 6, 10, 13};
+    private int[] lineTypes= new int[] {2, 5, 6, 10, 13, 15, 1, 3, 8, 13, 13, 15, 16, 20, 30, 48, 61, 75, 14, 9, 5};
     private int currentLineTypes;
 
     public GnuPlot() {

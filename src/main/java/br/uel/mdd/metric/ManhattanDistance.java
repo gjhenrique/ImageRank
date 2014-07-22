@@ -6,4 +6,9 @@ public class ManhattanDistance extends MinkowskiDistance {
     public int order() {
         return 1;
     }
+
+    @Override
+    public String toString() {
+        return "Manhattan";
+    }
 }

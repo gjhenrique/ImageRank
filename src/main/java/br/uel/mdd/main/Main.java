@@ -35,7 +35,7 @@ public class Main {
 //        args = ("--image-extraction --images-path " + args[0]).split(" ");
 //      args = "--feature-extraction -all-ext".split(" ");
 //        args = "--knn-queries --extractor-query-id 5 --all-distance-functions".split(" ");
-//        args = "-pr -pr-df-id 1".split(" ");
+        args = "-pr -pr-df-id 3".split(" ");
 //        args = "-ponciano".split(" ");
 
         new Main(args);
@@ -180,9 +180,34 @@ public class Main {
 
         if (commandLineValues.isPrecisionRecall()) {
             PrecisionRecallEvaluator evaluator = injector.getInstance(PrecisionRecallEvaluator.class);
-            List<PrecisionRecall> precisionRecalls = evaluator.precisionRecallByExtractors(commandLineValues.getDistanceIdPrecisionRecall(), commandLineValues.getExtractorsPrecisionRecall());
-            evaluator.plotChartByExtractors(precisionRecalls);
+
+            Integer[] distanceFunctionsId = fromStringToArray(commandLineValues.getDistanceIdPrecisionRecall());
+            Integer[] extractorId = fromStringToArray(commandLineValues.getExtractorsPrecisionRecall());
+//            Fixed distance function
+            if(distanceFunctionsId.length == 1) {
+                List<PrecisionRecall> precisionRecalls = evaluator.precisionRecallByExtractors(distanceFunctionsId[0], extractorId);
+                evaluator.plotChartByExtractors(precisionRecalls);
+            }
+//            Fixed Distance Functions
+            else if(extractorId.length == 1) {
+                List<PrecisionRecall> precisionRecalls = evaluator.precisionRecallByDistanceFunction(extractorId[0], distanceFunctionsId);
+                evaluator.plotChartByDistanceFunction(precisionRecalls);
+            }
+
         }
+    }
+
+    public Integer[] fromStringToArray (String ids) {
+        if (ids != null) {
+            String[] extractors = ids.split(",");
+            Integer[] extractorsId = new Integer[extractors.length];
+            for (int i = 0; i < extractors.length; i++) {
+                extractorsId[i] = Integer.parseInt(extractors[i]);
+            }
+
+            return extractorsId;
+        }
+        return new Integer[0];
     }
 
     private void processPoncianoExtractions() {

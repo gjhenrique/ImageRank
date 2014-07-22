@@ -7,29 +7,29 @@ package br.uel.mdd.db.tables.pojos;
  */
 public final class PrecisionRecall implements java.io.Serializable {
 
-        private Integer extractorId;
+        private Integer id;
         private Double precision;
         private Double recall;
 
         public PrecisionRecall() {}
 
         public PrecisionRecall(
-                Integer  extractorId,
+                Integer  id,
                 Double   precision,
                 Double   recall
         ) {
-            this.extractorId = extractorId;
+            this.id = id;
             this.precision = precision;
             this.recall = recall;
         }
 
 
-    public Integer getExtractorId() {
-        return extractorId;
+    public Integer getId() {
+        return id;
     }
 
-    public void setExtractorId(Integer extractorId) {
-        this.extractorId = extractorId;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Double getRecall() {
@@ -51,7 +51,7 @@ public final class PrecisionRecall implements java.io.Serializable {
     @Override
     public String toString() {
         return "{" +
-                "extractorId=" + extractorId +
+                "id=" + id +
                 ", recall=" + recall +
                 ", precision=" + precision +
                 '}';
@@ -61,7 +61,7 @@ public final class PrecisionRecall implements java.io.Serializable {
     public boolean equals(Object obj) {
         if (obj.getClass().isInstance(PrecisionRecall.class)){
             PrecisionRecall pr = (PrecisionRecall) obj;
-            return pr.getExtractorId().equals(this.extractorId);
+            return pr.getId().equals(this.id);
         }
         return super.equals(obj);
     }

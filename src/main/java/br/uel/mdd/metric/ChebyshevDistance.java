@@ -11,4 +11,9 @@ public class ChebyshevDistance implements MetricEvaluator {
 
         return max;
     }
+
+    @Override
+    public String toString() {
+        return "Linf";
+    }
 }

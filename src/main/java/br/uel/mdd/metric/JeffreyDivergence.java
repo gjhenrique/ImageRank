@@ -15,4 +15,8 @@ public class JeffreyDivergence implements MetricEvaluator{
         return value;
     }
 
+    @Override
+    public String toString() {
+        return "Jeffrey";
+    }
 }

@@ -12,4 +12,9 @@ public class ChiSquareDistance implements MetricEvaluator {
         }
         return value;
     }
+
+    @Override
+    public String toString() {
+        return "ChiSquare";
+    }
 }

@@ -5,4 +5,9 @@ public class EuclideanDistance extends MinkowskiDistance {
     public int order() {
         return 2;
     }
+
+    @Override
+    public String toString() {
+        return "L2";
+    }
 }

@@ -1,8 +1,7 @@
 package br.uel.mdd.extractor;
 
 import br.uel.mdd.io.ImageWrapper;
-import de.lmu.ifi.dbs.jfeaturelib.features.AbstractFeatureDescriptor;
-import de.lmu.ifi.dbs.jfeaturelib.features.Haralick;
+import de.lmu.ifi.dbs.jfeaturelib.features.*;
 import ij.ImagePlus;
 
 import javax.inject.Inject;
@@ -46,6 +45,18 @@ public class JFeatureLib implements FeatureExtractor {
 
         if(abstractFeatureDescriptor instanceof Haralick)
             descriptorName = "Haralick";
+        else if(abstractFeatureDescriptor instanceof Tamura)
+            descriptorName = "Tamura";
+        else if(abstractFeatureDescriptor instanceof CEDD)
+            descriptorName = "CEDD";
+        else if(abstractFeatureDescriptor instanceof Thumbnail)
+            descriptorName = "Thumbnail";
+        else if(abstractFeatureDescriptor instanceof FCTH)
+            descriptorName = "FCTH";
+        else if(abstractFeatureDescriptor instanceof JCD)
+            descriptorName = "JCD";
+        else if(abstractFeatureDescriptor instanceof LuminanceLayout)
+            descriptorName = "Luminance Layout";
 
         return descriptorName;
     }

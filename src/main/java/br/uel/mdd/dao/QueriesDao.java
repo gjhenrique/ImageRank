@@ -17,8 +17,8 @@ import static br.uel.mdd.db.tables.Extractions.EXTRACTIONS;
 import static br.uel.mdd.db.tables.Images.IMAGES;
 import static br.uel.mdd.db.tables.Queries.QUERIES;
 import static br.uel.mdd.db.tables.QueryResults.QUERY_RESULTS;
-import static br.uel.mdd.db.tables.Extractors.EXTRACTORS;
-import static org.jooq.impl.DSL.*;
+import static org.jooq.impl.DSL.avg;
+import static org.jooq.impl.DSL.max;
 
 public class QueriesDao extends DAOImpl<QueriesRecord, Queries, Integer> {
 
@@ -41,8 +41,6 @@ public class QueriesDao extends DAOImpl<QueriesRecord, Queries, Integer> {
     }
 
     public Queries fetchByExtractionIdAndDistanceFunctionIdAndK(int extractionId, int distanceFunctionId, int k) {
-
-
         return create.select(QUERIES.fields())
                 .from(QUERIES)
                 .where(
@@ -59,7 +57,17 @@ public class QueriesDao extends DAOImpl<QueriesRecord, Queries, Integer> {
         if (extractorIds.length > 0)
             condition = condition.and(whereExtractorId(extractorIds));
 
-        return performQuery(condition);
+        return performQuery(condition, EXTRACTIONS.EXTRACTOR_ID);
+    }
+
+    public List<PrecisionRecall> precisionRecallByExtractorId(Integer extractorId, Integer ... distanceFunctionIds) {
+
+        Condition condition = whereExtractorId(extractorId);
+
+        if (distanceFunctionIds.length > 0)
+            condition = condition.and(whereDistanceFunction(distanceFunctionIds));
+
+        return performQuery(condition, QUERIES.DISTANCE_FUNCTION_ID);
     }
 
     private Condition whereDistanceFunction(Integer... distanceFunctionId) {
@@ -70,11 +78,10 @@ public class QueriesDao extends DAOImpl<QueriesRecord, Queries, Integer> {
         return EXTRACTIONS.EXTRACTOR_ID.in(extractorId);
     }
 
-    public List<PrecisionRecall> performQuery(Condition condition) {
+    public List<PrecisionRecall> performQuery(Condition condition, TableField<? extends Record, Integer> field) {
 
-        Select select = getQueries(condition);
+        Select select = getQueries(condition, field);
         Result<Record> queryResults = getQueryResults(select);
-
         return getPrecisionRecallList(queryResults);
     }
 
@@ -84,22 +91,21 @@ public class QueriesDao extends DAOImpl<QueriesRecord, Queries, Integer> {
         for (Record queryResult : queryResults) {
             buildPrecisionRecall(precisionRecallList, queryResult);
         }
-
         return precisionRecallList;
     }
 
     private void buildPrecisionRecall(List<PrecisionRecall> precisionRecallList, Record queryResult) {
         PrecisionRecall precisionRecall = new PrecisionRecall(
-                (Integer) queryResult.getValue("extractor_id"),
+                (Integer) queryResult.getValue("id"),
                 (Double) queryResult.getValue("precision"),
                 (Double) queryResult.getValue("recall")
         );
         precisionRecallList.add(precisionRecall);
     }
 
-    public Select getQueries(Condition condition) {
+    public Select getQueries(Condition condition, TableField<? extends Record, Integer> field) {
 
-        Table<Record5<Integer, Integer, Integer, Integer, Integer>> queryTable = getQueryTable(condition);
+        Table<Record5<Integer, Integer, Integer, Integer, Integer>> queryTable = getQueryTable(condition, field);
 
         Table<Record5<Double, Double, Integer, Integer, Integer>> windowedPr = getWindowedTable(queryTable);
 
@@ -108,18 +114,17 @@ public class QueriesDao extends DAOImpl<QueriesRecord, Queries, Integer> {
         return create.select(
                     fullTable.field("recall"),
                     avg((Field<Double>) fullTable.field("precision")).as("precision"),
-                    fullTable.field("extractor_id"))
+                    fullTable.field("id"))
                 .from(fullTable)
-                .join(EXTRACTORS).on(EXTRACTORS.ID.eq((Field<Integer>) fullTable.field("extractor_id")))
-                .groupBy(fullTable.field("recall"), fullTable.field("extractor_id"))
-                .orderBy(fullTable.field("extractor_id"), fullTable.field("recall"));
+                .groupBy(fullTable.field("recall"), fullTable.field("id"))
+                .orderBy(fullTable.field("id"), fullTable.field("recall"));
     }
 
     private Table<Record4<Double, Double, Integer, Integer>> getFullTable(Table<Record5<Double, Double, Integer, Integer, Integer>> windowedPr) {
         Field<Double> recallField = (Field<Double>) windowedPr.field("recall");
         Field<Double> precisionField = (Field<Double>) windowedPr.field("precision");
         Field<Integer> k = (Field<Integer>) windowedPr.field("k");
-        Field<Integer> extractorId = (Field<Integer>) windowedPr.field("extractor_id");
+        Field<Integer> extractorId = (Field<Integer>) windowedPr.field("id");
 
         return create.select(
                 recallField,
@@ -142,7 +147,7 @@ public class QueriesDao extends DAOImpl<QueriesRecord, Queries, Integer> {
         return create.select(
                     precision.as("precision"),
                     recall.as("recall"),
-                    queryTable.field("extractor_id").cast(PostgresDataType.INT4).as("extractor_id"),
+                    queryTable.field("id").cast(PostgresDataType.INT4).as("id"),
                     queryTable.field("k").cast(PostgresDataType.INT4).as("k"),
                     QUERY_RESULTS.QUERY_ID
             ).from(queryTable)
@@ -156,13 +161,13 @@ public class QueriesDao extends DAOImpl<QueriesRecord, Queries, Integer> {
                     .orderBy(QUERY_RESULTS.QUERY_ID).asTable().as("windowed_pr");
     }
 
-    private Table<Record5<Integer, Integer, Integer, Integer, Integer>> getQueryTable(Condition condition) {
+    private Table<Record5<Integer, Integer, Integer, Integer, Integer>> getQueryTable(Condition condition, TableField<? extends Record, Integer> field) {
         return create.select(
                 QUERIES.ID.as("query_id"),
                 EXTRACTIONS.ID.as("extraction_id"),
                 DATASET_CLASSES.CLASS_ID,
                 QUERIES.K.as("k"),
-                EXTRACTIONS.EXTRACTOR_ID)
+                field.as("id"))
                 .from(EXTRACTIONS)
                 .join(QUERIES).on(EXTRACTIONS.ID.eq(QUERIES.EXTRACTION_ID))
                 .join(IMAGES).on(EXTRACTIONS.IMAGE_ID.eq(IMAGES.ID))

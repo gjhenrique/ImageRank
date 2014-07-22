@@ -14,4 +14,9 @@ public class CanberraDistance implements MetricEvaluator {
         }
         return value;
     }
+
+    @Override
+    public String toString() {
+        return "Canberra";
+    }
 }

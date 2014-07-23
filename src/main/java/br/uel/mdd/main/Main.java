@@ -35,7 +35,7 @@ public class Main {
 //        args = ("--image-extraction --images-path " + args[0]).split(" ");
 //      args = "--feature-extraction -all-ext".split(" ");
 //        args = "--knn-queries --extractor-query-id 5 --all-distance-functions".split(" ");
-        args = "-pr -pr-df-id 3".split(" ");
+//        args = "-pr -pr-df-id 3 -pr-e 5,6,7,8,101,102,110,111".split(" ");
 //        args = "-ponciano".split(" ");
 
         new Main(args);

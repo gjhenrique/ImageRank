@@ -10,7 +10,10 @@ import com.panayotis.gnuplot.style.PlotColor;
 import com.panayotis.gnuplot.style.PlotStyle;
 import com.panayotis.gnuplot.style.Style;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GnuPlot implements Plot {
 
@@ -19,7 +22,7 @@ public class GnuPlot implements Plot {
 
     private JavaPlot plot = new JavaPlot();
 
-    private PlotColor[] colors = new NamedPlotColor[] {
+    private PlotColor[] colors = new NamedPlotColor[]{
             NamedPlotColor.BLUE, NamedPlotColor.BLACK, NamedPlotColor.RED,
             NamedPlotColor.BROWN, NamedPlotColor.GREEN, NamedPlotColor.ORANGE_RED,
             NamedPlotColor.ORANGE, NamedPlotColor.PINK, NamedPlotColor.TURQUOISE,
@@ -29,7 +32,7 @@ public class GnuPlot implements Plot {
             NamedPlotColor.DARK_BLUE, NamedPlotColor.ORANGE_RED, NamedPlotColor.MIDNIGHT_BLUE};
     private int currentColor;
 
-    private int[] lineTypes= new int[] {2, 5, 6, 10, 13, 15, 1, 3, 8, 13, 13, 15, 16, 20, 30, 48, 61, 75, 14, 9, 5};
+    private int[] lineTypes = new int[]{2, 5, 6, 10, 13, 15, 1, 3, 8, 13, 13, 15, 16, 20, 30, 48, 61, 75, 14, 9, 5};
     private int currentLineTypes;
 
     public GnuPlot() {
@@ -38,10 +41,13 @@ public class GnuPlot implements Plot {
 
     private void initializePlot() {
         plot.setKey(JavaPlot.Key.BELOW);
+        plot.set("key font", "',12'");
+
+        plot.getAxis("x").setBoundaries(0.0, 1.0);
         plot.getAxis("x").setBoundaries(0.0, 1.0);
         plot.getAxis("y").setBoundaries(0.0, 1.0);
-        plot.getAxis("y").setLabel("Precision");
-        plot.getAxis("x").setLabel("Recall");
+        plot.getAxis("y").setLabel("Precision", "Arial", 14);
+        plot.getAxis("x").setLabel("Recall", "Arial", 14);
     }
 
     @Override
@@ -57,7 +63,7 @@ public class GnuPlot implements Plot {
     }
 
     @Override
-    public boolean addArbitrary(String key, int position, double x, double y){
+    public boolean addArbitrary(String key, int position, double x, double y) {
         if (values.get(key) == null) { // The key must exist
             return false;
         }
@@ -97,12 +103,13 @@ public class GnuPlot implements Plot {
         AbstractPlot legend = new DataSetPlot(dataSet);
 
         legend.setTitle(legendName);
+
         PlotStyle style = legend.getPlotStyle();
         style.setStyle(Style.LINESPOINTS);
         style.setLineType(colors[currentColor++]);
         style.setPointType(lineTypes[currentLineTypes++]);
-        style.setPointSize(1);
-        style.setLineWidth(2);
+        style.setPointSize(2);
+        style.setLineWidth(3);
 
         return legend;
     }

@@ -74,3 +74,11 @@ Um exemplo de arquivo de configuração se encontra em: jooq-config.xml.example.
 Depois de configurado a comunicação com o banco e configuração do jOOQ basta rodar a task do ant:
 
 		ant code-generation
+
+## New Readme
+
+Add build instructions
+Add run instructions
+Add test instructions
+
+New pictures about

@@ -20,7 +20,7 @@ public abstract class MinkowskiDistance implements MetricEvaluator {
             value += Math.pow(absDiff, order());
         }
 
-//        Só funciona com valores positivos
+//      It only works with positive values
         return Math.pow(value, 1.0 / order());
     }
 

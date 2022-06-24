@@ -86,7 +86,6 @@ public class SlimTreeWrapper implements Index {
 
 //        Trying to load from existing index
         if (slimTree == null) {
-
             String absolutePathIndex = getIndexAbsolutePath(extractions, metricEvaluator);
             File idx = new File(absolutePathIndex);
             slimTree = (idx.exists()) ? fetchSlimTree(absolutePathIndex, metricEvaluator) : null;

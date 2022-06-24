@@ -100,7 +100,6 @@ public class ImageLoader {
     }
 
     private ClassImage createOrFetchClassImage(File file) {
-
         String imageClass = extractClassFromFileName(file);
 
         ClassImage classImage = classImageDao.fetchOne(br.uel.mdd.db.tables.ClassImage.CLASS_IMAGE.NAME, imageClass);
@@ -116,7 +115,6 @@ public class ImageLoader {
     }
 
     private DatasetClasses createOrFetchDatasetClasses(ClassImage classImage, Datasets datasets) {
-
         DatasetClasses datasetClasses = datasetClassesDao.fetchByClassAndDataset(classImage, datasets);
 
         if (datasetClasses == null) {
@@ -146,7 +144,7 @@ public class ImageLoader {
     private Images buildImage(File file) {
         Images image = new Images();
 
-//        Extracting the bytes from the image
+//      Extracting the bytes from the image
         try {
             FileInputStream fis = new FileInputStream(file);
             BufferedInputStream bis = new BufferedInputStream(fis);
@@ -165,10 +163,9 @@ public class ImageLoader {
     }
 
     private String extractClassFromFileName(File file) {
-
         String fileName = file.getName();
 
-//            Get the first occurrence of a digit in the file name
+//      Get the first occurrence of a digit in the file name
         String patternStr = "[0-9]";
         Pattern pattern = Pattern.compile(patternStr);
         Matcher matcher = pattern.matcher(fileName);

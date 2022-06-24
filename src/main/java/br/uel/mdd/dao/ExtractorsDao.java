@@ -22,7 +22,6 @@ public class ExtractorsDao extends DAOImpl<ExtractorsRecord, Extractors, Integer
     }
 
     public boolean hasExtractions(Integer id) {
-
         DSLContext create = DSL.using(this.configuration());
         int count = create.fetchCount(create.select(EXTRACTIONS.fields())
                         .from(EXTRACTORS)

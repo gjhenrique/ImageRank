@@ -43,7 +43,7 @@ public class TestFeatureExtractionLoader {
 
     @Before
     public void prepareDatabase() {
-        Guice.createInjector(new AppModule()).injectMembers(this);
+        Guice.createInjector(new AppModule(true)).injectMembers(this);
 
         Operation operation = sequenceOf(CommonOperations.DATASETS, CommonOperations.CLASS_IMAGE,
                 CommonOperations.DATASET_CLASSES, CommonOperations.IMAGES);

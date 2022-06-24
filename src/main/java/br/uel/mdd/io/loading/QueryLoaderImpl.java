@@ -84,10 +84,8 @@ public class QueryLoaderImpl implements QueryLoader {
 
         for (QueryResults queryResults : result) {
             queryResults.setQueryId(query.getId());
+            queryResultsDao.insertNullPk(queryResults);
         }
-
-//        Watch out! Not populating the primary key of QueryResults
-        queryResultsDao.insert(result);
 
         query.setQueryDuration(end);
         queriesDao.update(query);

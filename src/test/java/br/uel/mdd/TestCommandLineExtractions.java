@@ -27,7 +27,7 @@ public class TestCommandLineExtractions {
 
     @Before
     public void prepareDatabase() {
-        Guice.createInjector(new AppModule()).injectMembers(this);
+        Guice.createInjector(new AppModule(true)).injectMembers(this);
 
         Operation operation = sequenceOf(CommonOperations.DATASETS, CommonOperations.CLASS_IMAGE,
                 CommonOperations.DATASET_CLASSES, CommonOperations.IMAGES);
@@ -38,7 +38,7 @@ public class TestCommandLineExtractions {
 
     @Test
     public void testImagesCreation() throws Exception {
-        String commandLineArgument = "--feature-extraction -all-ext";
+        String commandLineArgument = "--feature-extraction -all-ext -no-threads";
 
         new Main(commandLineArgument.split(" "));
 

@@ -58,6 +58,9 @@ public class CommandLineValues {
     @Option(name = "-ponciano", usage = "Extract Ponciano")
     private boolean extractPonciano;
 
+    @Option(name = "-no-threads", usage = "Don't use threads")
+    private boolean noThreadExecutor;
+
     public CommandLineValues(String... args) {
 
         CmdLineParser parser = new CmdLineParser(this);
@@ -153,6 +156,10 @@ public class CommandLineValues {
 
     public boolean isPrecisionRecall() {
         return precisionRecall;
+    }
+
+    public boolean isNoThreadExecutor() {
+        return noThreadExecutor;
     }
 
     public String getDistanceIdPrecisionRecall() {

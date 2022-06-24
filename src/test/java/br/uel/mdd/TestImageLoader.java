@@ -44,7 +44,7 @@ public class TestImageLoader {
 
     @Before
     public void prepareDatabase() {
-        Guice.createInjector(new AppModule()).injectMembers(this);
+        Guice.createInjector(new AppModule(true)).injectMembers(this);
 
         DbSetup setup = commonOperations.createDbSetup();
         setup.launch();

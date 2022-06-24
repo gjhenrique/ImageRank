@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static br.uel.mdd.db.tables.DistanceFunctions.DISTANCE_FUNCTIONS;
@@ -25,7 +26,7 @@ import static br.uel.mdd.db.tables.Extractions.EXTRACTIONS;
 
 public class Main {
 
-    private Injector injector = Guice.createInjector(new AppModule());
+    private Injector injector;
 
     CommandLineValues commandLineValues;
 
@@ -43,6 +44,7 @@ public class Main {
 
     public Main(String[] args) {
         commandLineValues = new CommandLineValues(args);
+        this.injector = Guice.createInjector(new AppModule(commandLineValues.isNoThreadExecutor()));
         processImageExtraction();
         processFeatureExtractions();
         processQueryLoader();
@@ -122,7 +124,6 @@ public class Main {
             System.out.println("Consulta com extrator " + commandLineValues.getExtractorQueryId());
             for (DistanceFunctions distanceFunction : distanceFunctions) {
                 for (Extractions extraction : extractions) {
-
                     QueryLoader queryLoader = factory.create(distanceFunction);
 
                     for (int k = rateK; k <= maxK; k += rateK) {
@@ -159,8 +160,9 @@ public class Main {
     }
 
     private QueryLoaderDispatcher createQueryLoaderDispatcher(final int totalQueries) {
-
         final AtomicInteger currentQuery = new AtomicInteger(0);
+
+        ExecutorService executor = injector.getInstance(ExecutorService.class);
 
         return new QueryLoaderDispatcher(new QueryLoaderDispatcher.QueryLoaderListener() {
             @Override
@@ -173,7 +175,7 @@ public class Main {
                         dispatcher.shutdown();
                 }
             }
-        });
+        }, executor);
     }
 
     private void processPrecisionRecall() {

@@ -11,6 +11,7 @@ import br.uel.mdd.io.loading.FeatureExtractionLoader;
 import br.uel.mdd.io.loading.FeatureExtractionLoaderImpl;
 import br.uel.mdd.io.loading.QueryLoader;
 import br.uel.mdd.io.loading.QueryLoaderImpl;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.google.inject.AbstractModule;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import org.jooq.Configuration;
@@ -19,8 +20,21 @@ import org.jooq.conf.Settings;
 import org.jooq.impl.DefaultConfiguration;
 
 import java.sql.Connection;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class AppModule extends AbstractModule {
+    private boolean noThreadsExecutor;
+
+    private static final int THREADS_NUMBER = 8;
+
+    public AppModule(boolean noThreadExecutor) {
+        this.noThreadsExecutor = noThreadExecutor;
+    }
+
+    public AppModule() {
+        this(false);
+    }
 
     @Override
     protected void configure() {
@@ -41,6 +55,11 @@ public class AppModule extends AbstractModule {
         bind(QueriesDao.class).toInstance(new QueriesDao(configuration));
         bind(QueryResultsDao.class).toInstance(new QueryResultsDao(configuration));
         bind(DistanceFunctionsDao.class).toInstance(new DistanceFunctionsDao(configuration));
+        if(this.noThreadsExecutor) {
+            bind(ExecutorService.class).toInstance(MoreExecutors.sameThreadExecutor());
+        } else {
+            bind(ExecutorService.class).toInstance(Executors.newFixedThreadPool(THREADS_NUMBER));
+        }
 
         bind(Index.class).to(NoOpIndex.class);
 

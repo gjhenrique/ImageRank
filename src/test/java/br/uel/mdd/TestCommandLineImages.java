@@ -28,7 +28,7 @@ public class TestCommandLineImages {
 
     @Before
     public void prepareDatabase() {
-        Guice.createInjector(new AppModule()).injectMembers(this);
+        Guice.createInjector(new AppModule(true)).injectMembers(this);
         path = getClass().getResource("/imgs/dicom/Pulmao").getFile();
 
         DbSetup setup = commonOperations.createDbSetup();

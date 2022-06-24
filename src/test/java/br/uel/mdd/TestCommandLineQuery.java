@@ -28,7 +28,7 @@ public class TestCommandLineQuery {
 
     @Before
     public void prepareDatabase() {
-        Guice.createInjector(new AppModule()).injectMembers(this);
+        Guice.createInjector(new AppModule(true)).injectMembers(this);
 
         Operation operation = sequenceOf(CommonOperations.DATASETS, CommonOperations.CLASS_IMAGE,
                 CommonOperations.DATASET_CLASSES, CommonOperations.IMAGES, CommonOperations.EXTRACTIONS);
@@ -39,7 +39,7 @@ public class TestCommandLineQuery {
 
     @Test
     public void testQueriesCreation() throws Exception {
-        String commandLineArgument = "--knn-queries --all-extractions --all-distance-functions --max-k 2 --rate-k 1";
+        String commandLineArgument = "-no-threads --knn-queries --all-extractions --all-distance-functions --max-k 2 --rate-k 1";
 
         new Main(commandLineArgument.split(" "));
 

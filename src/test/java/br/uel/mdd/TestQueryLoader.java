@@ -46,7 +46,7 @@ public class TestQueryLoader {
 
     @Before
     public void prepareDatabase() {
-        injector = Guice.createInjector(new AppModule());
+        injector = Guice.createInjector(new AppModule(true));
         injector.injectMembers(this);
 
         Operation operation = sequenceOf(CommonOperations.DATASETS, CommonOperations.CLASS_IMAGE,

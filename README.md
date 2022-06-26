@@ -82,3 +82,5 @@ Add run instructions
 Add test instructions
 
 New pictures about
+
+java8 is required

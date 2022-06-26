@@ -159,9 +159,7 @@
                     <!-- JDBC connection parameters -->
                     <jdbc>
                         <driver>org.postgresql.Driver</driver>
-                        <url>jdbc:postgresql:imagerank</url>
-                        <user>postgres</user>
-                        <password></password>
+                        <url>${env.JDBC_URL}</url>
                     </jdbc>
 
                     <!-- Generator parameters -->

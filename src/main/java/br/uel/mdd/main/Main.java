@@ -185,17 +185,14 @@ public class Main {
 
             Integer[] distanceFunctionsId = fromStringToArray(commandLineValues.getDistanceIdPrecisionRecall());
             Integer[] extractorId = fromStringToArray(commandLineValues.getExtractorsPrecisionRecall());
-//            Fixed distance function
             if(distanceFunctionsId.length == 1) {
                 List<PrecisionRecall> precisionRecalls = evaluator.precisionRecallByExtractors(distanceFunctionsId[0], extractorId);
                 evaluator.plotChartByExtractors(precisionRecalls);
             }
-//            Fixed Distance Functions
             else if(extractorId.length == 1) {
                 List<PrecisionRecall> precisionRecalls = evaluator.precisionRecallByDistanceFunction(extractorId[0], distanceFunctionsId);
                 evaluator.plotChartByDistanceFunction(precisionRecalls);
             }
-
         }
     }
 

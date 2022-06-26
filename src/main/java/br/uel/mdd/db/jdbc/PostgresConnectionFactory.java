@@ -18,65 +18,20 @@ public class PostgresConnectionFactory implements ConnectionFactory {
     private Properties properties;
 
     public PostgresConnectionFactory() {
-        this.dsn = "jdbc:postgresql://";
-        this.readProperties();
-    }
-
-    @Override
-    public void readProperties() {
-        properties = new Properties();
-        InputStream inputStream = null;
-
-        inputStream = this.getClass().getResourceAsStream("/database.properties");
-        try {
-            properties.load(inputStream);
-            this.dsn += properties.getProperty("host", "localhost") + ":";
-            this.dsn += properties.getProperty("port", "5432") + "/";
-            this.dsn += properties.getProperty("database");
-        } catch (IOException ioException) {
-            System.err.println("O arquivo de configuração não foi " +
-                    "encontrado, por favor crie o arquivo com " +
-                    "as seguintes chaves: \n" +
-                    "host;port;database;user;password;ssl");
-            ioException.printStackTrace();
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        this.dsn = System.getenv("JDBC_URL");
     }
 
     @Override
     public Connection getConnection() {
-        if (this.properties.getProperty("user") != null &&
-                this.properties.getProperty("password") != null) {
-            try {
-                return DriverManager.getConnection(this.dsn, this.properties);
-            } catch (SQLException e) {
-                System.out.println("The connection could not be created, the error was: " +
-                        e.getMessage());
-                e.printStackTrace();
-            }
+        try {
+            return DriverManager.getConnection(this.dsn);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
     @Override
     public String getUrl() {
         return this.dsn;
-    }
-
-    @Override
-    public String getUser() {
-        return this.properties.getProperty("user");
-    }
-
-    @Override
-    public String getPassword() {
-        return this.properties.getProperty("password");
     }
 }

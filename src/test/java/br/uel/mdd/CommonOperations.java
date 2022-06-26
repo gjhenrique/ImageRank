@@ -115,7 +115,7 @@ public class CommonOperations {
 
     private DbSetup createNewDbSetup(Operation operation) {
         return new DbSetup(
-                with(factory.getUrl(), factory.getUser(), factory.getPassword()),
+                with(factory.getUrl(), null, null),
                 operation);
     }
 

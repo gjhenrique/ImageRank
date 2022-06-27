@@ -37,7 +37,7 @@ public class Main {
 //      args = "--feature-extraction -all-ext".split(" ");
 //        args = "--knn-queries --extractor-query-id 5 --all-distance-functions".split(" ");
 //        args = "-pr -pr-df-id 3 -pr-e 5,6,7,8,101,102,110,111".split(" ");
-//        args = "-ponciano".split(" ");
+        args = "--image-extraction --images-path src/test/resources/imgs/dicom/Pulmao --feature-extraction --all-extractors --all-extractions --all-distance-functions --precision-recall -pr-df-id 3 -pr-e 116,117,121".split(" ");
 
         new Main(args);
     }
@@ -49,7 +49,6 @@ public class Main {
         processFeatureExtractions();
         processQueryLoader();
         processPrecisionRecall();
-        processPoncianoExtractions();
     }
 
     private void processImageExtraction() {
@@ -60,7 +59,6 @@ public class Main {
     }
 
     private void processFeatureExtractions() {
-
         if (commandLineValues.isExtractFeatures()) {
 
             ImagesDao imagesDao = injector.getInstance(ImagesDao.class);
@@ -85,7 +83,6 @@ public class Main {
     }
 
     private List<Extractors> fetchExtractors() {
-
         ExtractorsDao extractorsDao = injector.getInstance(ExtractorsDao.class);
 
         List<Extractors> extractors = new ArrayList<>();
@@ -121,7 +118,7 @@ public class Main {
             int rateK = commandLineValues.getRateK();
             final int totalQueries = distanceFunctions.size() * extractions.size() * (maxK / rateK);
             dispatcher = createQueryLoaderDispatcher(totalQueries);
-            System.out.println("Consulta com extrator " + commandLineValues.getExtractorQueryId());
+
             for (DistanceFunctions distanceFunction : distanceFunctions) {
                 for (Extractions extraction : extractions) {
                     QueryLoader queryLoader = factory.create(distanceFunction);
@@ -207,12 +204,5 @@ public class Main {
             return extractorsId;
         }
         return new Integer[0];
-    }
-
-    private void processPoncianoExtractions() {
-        if (commandLineValues.isExtractPonciano()) {
-            PoncianoLoader loader = injector.getInstance(PoncianoLoader.class);
-            loader.insertExtractionsFromFile(new File("sql/dumps/ponciano-rawdata.backup"));
-        }
     }
 }

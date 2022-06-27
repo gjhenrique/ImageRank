@@ -55,9 +55,6 @@ public class CommandLineValues {
     @Option(name = "-pr-e", aliases = {"--precision-recall-extractor-id"}, usage = "Ids of extractors separated by comma")
     private String extractorsPrecisionRecall;
 
-    @Option(name = "-ponciano", usage = "Extract Ponciano")
-    private boolean extractPonciano;
-
     @Option(name = "-no-threads", usage = "Don't use threads")
     private boolean noThreadExecutor;
 
@@ -164,10 +161,6 @@ public class CommandLineValues {
 
     public String getDistanceIdPrecisionRecall() {
         return distanceIdPrecisionRecall;
-    }
-
-    public boolean isExtractPonciano() {
-        return extractPonciano;
     }
 
     public String getExtractorsPrecisionRecall() {

@@ -84,3 +84,5 @@ Add test instructions
 New pictures about
 
 java8 is required
+
+gnuplot installation is required

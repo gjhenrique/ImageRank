@@ -30,7 +30,6 @@ public class DummyKnn implements KnnOperation {
 
     @Override
     public Collection<QueryResults> performKnn(Extractions extractionQuery, int k) {
-
         TreeResult<QueryResults> result = new TreeResult<>(k);
 
         Datasets dataset = datasetsDao.fetchByExtractionId(extractionQuery.getId());
@@ -70,7 +69,6 @@ public class DummyKnn implements KnnOperation {
     }
 
     private Collection<QueryResults> updateReturnOrder(TreeResult<QueryResults> result) {
-
         Collection<QueryResults> listResult = result.getObjects();
         int order = 0;
         for (QueryResults queryResults : listResult) {

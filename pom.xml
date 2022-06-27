@@ -30,7 +30,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>24.1-jre</version>
+            <version>25.1-jre</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -40,7 +40,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.2.13</version>
+            <version>42.3.3</version>
         </dependency>
         <dependency>
             <groupId>org.jooq</groupId>
@@ -71,11 +71,6 @@
             <groupId>com.google.inject.extensions</groupId>
             <artifactId>guice-assistedinject</artifactId>
             <version>3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.kzwang</groupId>
-            <artifactId>lire</artifactId>
-            <version>0.9.4-kzwang-beta1</version>
         </dependency>
         <dependency>
             <groupId>de.lmu.ifi.dbs.jfeaturelib</groupId>

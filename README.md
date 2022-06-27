@@ -86,3 +86,7 @@ New pictures about
 java8 is required
 
 gnuplot installation is required
+
+This work was used to identify X-rays from lungs of different diseases.
+
+EQP

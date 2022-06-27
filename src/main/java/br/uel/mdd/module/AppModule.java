@@ -56,7 +56,7 @@ public class AppModule extends AbstractModule {
         bind(QueryResultsDao.class).toInstance(new QueryResultsDao(configuration));
         bind(DistanceFunctionsDao.class).toInstance(new DistanceFunctionsDao(configuration));
         if(this.noThreadsExecutor) {
-            bind(ExecutorService.class).toInstance(MoreExecutors.sameThreadExecutor());
+            bind(ExecutorService.class).toInstance(MoreExecutors.newDirectExecutorService());
         } else {
             bind(ExecutorService.class).toInstance(Executors.newFixedThreadPool(THREADS_NUMBER));
         }

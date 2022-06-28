@@ -1,79 +1,97 @@
 # ImageRank
 
-Classifica os melhores extratores de características e funções de distância baseado no seu conjunto de dados.
+In supervised learning, one approach of analyzing follows these steps:
 
-Trabalho de mestrado da matéria de Processamento Digital de Sinais.
+1. Have a dataset of images and its classes. For example, a dog is part of a particular breeed.
+2. Extracts a derived vector from the pixels of the image. 
+The generated multi-dimentional data is called feature vector and the process feature extraction.
+The algorithm that transforms the image pixels to vector is called feature extractor.
+3. Calculate the proximity of one feature related to the features of the same class.
+The comparison is given by a distance function and the query is a k-NN query, i.e find the given the k neighbors independent of the class.
+4. Based on the query results, check and the effectiveness of the extractor or the distance function in a graphical way. 
+A precision vs.recall graph gives you the ratio _between false positives and false negatives_.
 
-Desenvolvido por:
-    
-        Guilherme Henrique
-        Pedro Sena Tanaka
+Based on this context, a researcher job is to find the best distance function and feature extractor that will cluster their future images to its belonging class.
+This project helps you to introduce new extractors and distance functions and compare them easily among each other.
+
+All of the extractions, queries and query results are stored in a Postgres database, so you don't need to recalculate all of the processes every time a new extractor or distance function is introduced.
+Let's say that this project aims to be a EQP (Extract-Query-Plot) tool.
+
+This project is called ImageRank, but it's not specific to images, so you can skip step 1 and store the features directly into the database.
+
+<!-- But then you're trying to -->
+
+<!-- This project aims to do just that. -->
+
+<!-- Classifica os melhores extratores de características e funções de distância baseado no seu conjunto de dados. -->
+
+
         
-## Etapas
+## Initial motivation
+Developed by me and [Pedro Tanaka](https://github.com/pedro-stanaka) for the digital signal processing course during our masters program.
 
-#### 1. Persistência das Imagens
+The project was initially used to write a paper, which given a dataset of lung X-Rays clustered by the diseases, we would compare the [Wavelet](Put link) extractor with another paper that used histograms to identify the diseases.
 
-Armazena as imagens do caminho junto com sua classe e o conjunto de dados (dataset).
-Por padrão, a classe é retirada do nome do arquivo e o dataset é o nome da pasta que contém esses arquivos.
-Por exemplo, se você tiver a seguinte estrutura no sistema de arquivos:
+One thing led to another and the abstraction bug bit us. 
+So, ImageRank was created to yield the results in an automated fashion with no tight coupling to X-Rays, wavelets or any particular distance function.
 
-    	Pulmão
-    	|-- Enfisema1.dcm
-    	|-- Enfisema2.dcm
-    	|-- Espessamento1.dcm
-    	|-- Espessamento2.dcm
-    	|-- Favo de Mel1.dcm
-    	|-- Favo de Mel2.dcm
+The resulting paper is here (Link) (written in portuguese).
+        
+## Built-in extractors and distance functions
 
-O dataset seria "Pulmão" e a classe (doenças) dos arquivos seriam Enfisema para o primeiro e segundo arquivo, Espessamento para o terceiro e quarto arquivo e assim por diante.
+Refer to the seed file to check the supported
 
-#### 2. **Extração de Características**
+Wavelet and some features from JFeatureLib are supported
 
-Extrai as características das imagens persistidas no passo anterior.
-Mais de [30](https://github.com/gjhenrique/image-wavelet/blob/0ee87bb4a81f732ba0d25aa5a55a2157f0cce6d8/sql/seeds.sql) extratores podem ser utilizados 
-e o programa, com a ajuda da biblioteca Guice, permite a injeção de novos extratores de maneira fácil.
+Distance functions
 
-#### 3. **Consultas k-NNs**
+## Stages
 
-Roda diversas consultas k-NN entre as extrações previamente armazenadas no banco.
-Várias [funções de distância](https://github.com/gjhenrique/image-wavelet/blob/master/sql/seeds.sql) foram implementadas.
-É possível determinar o número máximo do k e o intervalo entre as consultas.
+### 1. Persisting the images
+This might not be a good idea, but depending on the
+       
+### 2. Feature extraction
 
-#### 4. **Visualização dos Resultados**
+### 3. k-NNS queries
+Depending of the 
 
-Mostra os resultados das consultas k-NN através de gráficos do tipo [Precision-Recall]([https://en.wikipedia.org/wiki/Precision_and_recall).
-Os gráficos são gerados pelo programa GNUPlot com o uso da biblioteca JavaPlot.
+It might take a while
+Multi-Threaded
 
-## Ferramentas
-* [Maven](https://maven.apache.org/)
+### 4. Plotting the queries
+
+Put the image
+
+https://blog.floydhub.com/a-pirates-guide-to-accuracy-precision-recall-and-other-scores/#precision
+
+## Future endeavors
+
+Since this project was aimed to write a paper that compares the introduction of Wavelets with another work plotting Precision vs. Recall, the design
+
+It might be tiresome to analyze every extractor and distance function.
+The idea in the future is to, based on some existing dataset, return the best extractor and distance function based on the Prec
+
+## Commands
+Java 8 is required
+Maven
+jOOQ classes are generated automatically
+gnuplot installed
+Guice for dependency injection
+
+Loading database
+
+Running tests
+
+Bundling into a single jar
+
+
+## Libraries
 * [jOOQ](http://www.jooq.org)
-* [ImageJ](https://imagej.nih.gov/ij)
 * [JWave](https://github.com/pedro-stanaka/JWave)
 * [Guice](https://github.com/google/guice)
-* [Lire](http://www.lire-project.net/)
 * [JavaPlot](http://javaplot.panayotis.com/)
-
-## Comunicação com o banco
-Para se comunicar com o banco utilize um arquivo de properties chamado database.properties
-e o coloque na pasta src/main/resources.
-
-Exemplo:
-        
-        host=localhost
-        port=5432
-        database=banco
-        user=usuario
-        password=senha
-
-
-## Geração automática de classes do jOOQ
-
-Para configurar a geração automática das classes com o jOOQ veja a documentação em: [Generator Config](http://www.jooq.org/doc/3.3/manual/code-generation/codegen-configuration).
-Um exemplo de arquivo de configuração se encontra em: jooq-config.xml.example.
-
-Depois de configurado a comunicação com o banco e configuração do jOOQ basta rodar a task do ant:
-
-		ant code-generation
+* [ImageJ](https://imagej.net/)
+       
 
 ## New Readme
 
@@ -89,4 +107,24 @@ gnuplot installation is required
 
 This work was used to identify X-rays from lungs of different diseases.
 
+
 EQP
+
+
+psql -U postgres -h localhost imagerank < sql/schema-creation.sql
+psql -U postgres -h localhost imagerank < sql/seeds.sql
+
+java -jar target/image-wavelet-1.0-jar-with-dependencies.jar --image-extraction --images-path src/test/resources/imgs/dicom/Pulmao
+
+# java -jar target/image-wavelet-1.0-jar-with-dependencies.jar --feature-extraction --all-extractors
+java -jar target/image-wavelet-1.0-jar-with-dependencies.jar --feature-extraction --extractor-feature-id 1
+java -jar target/image-wavelet-1.0-jar-with-dependencies.jar --feature-extraction --extractor-feature-id 100
+
+# java -jar target/image-wavelet-1.0-jar-with-dependencies.jar --knn-queries --all-extractions --all-distance-functions
+java -jar target/image-wavelet-1.0-jar-with-dependencies.jar --knn-queries --extractor-query-id=1 --all-distance-functions
+java -jar target/image-wavelet-1.0-jar-with-dependencies.jar --knn-queries --extractor-query-id=100 --all-distance-functions
+
+java -jar target/image-wavelet-1.0-jar-with-dependencies.jar --precision-recall --extractor-query-id=1
+
+Features
+https://github.com/locked-fg/JFeatureLib/tree/888d0d9f36381624cef28165bf19c0af022a10d1/src/main/java/de/lmu/ifi/dbs/jfeaturelib/features

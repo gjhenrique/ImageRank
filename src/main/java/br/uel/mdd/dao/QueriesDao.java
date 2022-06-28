@@ -79,7 +79,6 @@ public class QueriesDao extends DAOImpl<QueriesRecord, Queries, Integer> {
     }
 
     public List<PrecisionRecall> performQuery(Condition condition, TableField<? extends Record, Integer> field) {
-
         Select select = getQueries(condition, field);
         Result<Record> queryResults = getQueryResults(select);
         return getPrecisionRecallList(queryResults);
@@ -177,9 +176,9 @@ public class QueriesDao extends DAOImpl<QueriesRecord, Queries, Integer> {
 
 
     public Result<Record> getQueryResults(Select queries) {
-//        System.out.println(queries.getSQL());
-//        System.exit(-1);
-        return create.fetch(queries.fetchResultSet());
+       // System.out.println(queries.getSQL());
+       // System.exit(-1);
+       return create.fetch(queries.fetchResultSet());
     }
 
 }

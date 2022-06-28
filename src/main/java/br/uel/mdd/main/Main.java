@@ -176,12 +176,12 @@ public class Main {
     }
 
     private void processPrecisionRecall() {
-
         if (commandLineValues.isPrecisionRecall()) {
             PrecisionRecallEvaluator evaluator = injector.getInstance(PrecisionRecallEvaluator.class);
 
             Integer[] distanceFunctionsId = fromStringToArray(commandLineValues.getDistanceIdPrecisionRecall());
             Integer[] extractorId = fromStringToArray(commandLineValues.getExtractorsPrecisionRecall());
+
             if(distanceFunctionsId.length == 1) {
                 List<PrecisionRecall> precisionRecalls = evaluator.precisionRecallByExtractors(distanceFunctionsId[0], extractorId);
                 evaluator.plotChartByExtractors(precisionRecalls);

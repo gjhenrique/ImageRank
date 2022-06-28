@@ -37,7 +37,7 @@
         <appender-ref ref="FILE"/>
     </logger>
 
-    <logger name="br.uel.mdd" level="INFO">
+    <logger name="br.uel.mdd" level="DEBUG">
         <appender-ref ref="STDOUT"/>
     </logger>
 

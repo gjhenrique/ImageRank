@@ -1,36 +1,36 @@
 # ImageRank
 
-In a supervised learning-based Content-based image retrieval (CBIR), these steps could be followed
+This project brings many feature image extractors and distance functions to easily compare your dataset's features by generating a precision-recall curve.
 
-1. Have a test dataset of images and its classes. For example, multiple images of dogs separated by a particular breeed.
-2. We don't analyse the pixels directly, but extract a deived vector from it.
-The generated multi-dimentional vector is called feature vector and this process feature extraction.
-The algorithm that transforms the image pixels to vector is called feature extractor.
-3. Calculate the proximity of one extracted feature previously with other features of the same class.
-The proximity comparison is given by a distance function and the query could be a lazy k-NN query, i.e find the k closest neighbors independent of the class. For context, k-NN is a lazy learner (it doesn't learn from the dataset), while a neural network is an eagerr learner. This project uses only k-NN queries.
-4. Based on the query results, check the effectiveness of the extractor or the distance function in a graphical way comparing all of the available options. 
+All the image metadata, extractions, and query results are stored in a Postgres database, so you don't need to recalculate them every time a new extractor or distance function is introduced.
+Let's say that this project aims to be an EQP (Extract-Query-Plot) tool.
+
+By the way, this project is called ImageRank, but it's not specific to images, so you can the image extraction and store the features directly into the database.
+
+## Explanation
+A supervised learning-based Content-based image retrieval (CBIR) needs the following steps.
+
+1. Have a test dataset of images and their classes—for example, multiple pictures of dogs separated by a particular breed.
+2. We don't analyze the pixels but extract a derived vector from them.
+The generated multi-dimensional vector is called a feature vector, and this process feature extraction.
+The algorithm that transforms the image pixels into a vector is called feature extractor.
+3. Calculate the proximity of one extracted feature previously with other vectors of the same class.
+A distance function gives the proximity comparison, and the query could be a lazy k-NN query, i.e. find the k closest neighbours independent of the class. K-NN is a lazy learner (it doesn't learn from the previous results), while a neural network is an eager learner. This project only uses k-NN queries.
+4. Based on the query results, check the effectiveness of the extractor or the distance function visually, comparing all of the available options. 
 A precision-recall curve gives you the rate of false positives and false negatives.
 
-Based on this context, a researcher job is to find the best distance function and feature extractor that will cluster the given images to its belonging class.
-Then, this project helps you to introduce new extractors and distance functions and compare them easily among each other.
-
-All of the image metadata, extractions, query results are stored in a Postgres database, so you don't need to recalculate all of them every time a new extractor or distance function is introduced.
-Let's say that this project aims to be a EQP (Extract-Query-Plot) tool.
-
-BTW, this project is called ImageRank, but it's not specific to images, so you can skip step 1 and store the features directly into the database.
-
 ## Initial motivation
-Developed by me and [Pedro Tanaka](https://github.com/pedro-stanaka) for the digital signal processing course during our masters program.
+Developed by me and [Pedro Tanaka](https://github.com/pedro-stanaka) for the digital signal processing course during our master's program.
 
-The project was initially used to write a paper, which given a dataset of lung X-Rays clustered by the diseases, we would compare if the [Wavelet](https://en.wikipedia.org/wiki/Wavelet) extractor was better than using traditional histograms extractors.
+The project was initially used to write a paper in which, given a dataset of lung X-Rays clustered by several diseases, we would compare if the [Wavelet](https://en.wikipedia.org/wiki/Wavelet) extractor was better than using traditional histograms extractors.
 
-One thing led to another and the automation bug bit us (typical "Can you pass the salt?" XKCD comic)
-So, ImageRank was created to yield the results of this paper in an automated fashion with no tight coupling to X-Rays, wavelets or any particular distance function.
+One thing led to another, and the abstraction bug bit us (typical "Can you pass the salt?" XKCD comic)
+So, ImageRank yields the results of this paper in an automated fashion with no tight coupling to X-Rays, wavelets or any particular distance function.
 
-The resulting paper is [here](/res/paper.pdf).
+The resulting paper is [here](./res/paper.pdf) (written in portuguese).
         
-## Out of the box extractors and distance functions
-By default, there are dozes of image extractors available.
+## Out-of-the-box extractors and distance functions
+By default, there are dozens of image extractors available.
 The lib [JWave](https://github.com/graetz23/JWave) implements the wavelet ones.
 This project uses only the FastWaveletTransform with different levels, but it's easy to add new ones.
 [JFeatureLib](https://github.com/locked-fg/JFeatureLib) provides other [generic extractors](https://github.com/locked-fg/JFeatureLib/tree/888d0d9f36381624cef28165bf19c0af022a10d1/src/main/java/de/lmu/ifi/dbs/jfeaturelib/features).
@@ -69,15 +69,15 @@ psql -U postgres -h localhost imagerank < sql/schema-creation.sql
 psql -U postgres -h localhost imagerank < sql/seeds.sql
 
 # Build a fat JAR with all the dependencies
-# Skip tests so you don't overwrite the database
+# Skip tests, so you don't overwrite the database
 mvn assembly:assembly -DskipTests
 ```
 
 ### 1. Persisting the images
-We need to tag the dataset images into our own database
+We need to tag the dataset images into our database
 
-By default, the directory is the name of the dataset and the class is extracted from the name.
-In this example, there are 3 different classes Chihuahua, Groenendael and Saluki.
+By default, the directory is the name of the dataset, and the class is extracted from the name of the image.
+In this example, there are three different classes Chihuahua, Groenendael and Saluki.
 
 ``` 
 # Given the following layout
@@ -106,9 +106,9 @@ java -jar target/image-wavelet-1.0-jar-with-dependencies.jar --feature-extractio
 Refer to the seeds file to get the [extractor id](https://github.com/gjhenrique/ImageRank/blob/3efaa5c2535a530fefbfca6636edc042ed53ee89/sql/seeds.sql#L2).
 
 ### 3. k-NNS queries
-By default, the tool performs 20 queries ranging from `5-nn` to `100-nn`. This can be configured by the `--rate-k` and `--max-k`
+By default, the tool performs 20 queries ranging from `5-nn` to `100-nn`. This option can be configured by the `--rate-k` and `--max-k`
 
-Depending of the dataset size, it might take a while to finish, even with a thread pool is used to parallelize the queries.
+It might take a while to finish, even with a thread pool to parallelize the queries.
 The cost for querying the whole database is `O(number of distance functions * number of extractions * rate of k)`
 
 ``` shell
@@ -143,11 +143,11 @@ Precision-recall chart comparing a wavelet extractor with the distance functions
 
 ![curve1](./res/curve-2.png)
 
-## Future endeavors
-Since this project was aimed to write a paper to compare the introduction of Wavelets with another work plotting Precision vs. Recall, the design was simply to create the precision-recall curve.
+## Future endeavours
+Since this project was aimed to write a paper to compare the introduction of Wavelets with another work comparing their precision-recall curves, the design was to create the precision-recall curve.
 
 It might be tiresome to analyze every extractor and distance function separately.
-So, the idea in the future is to, based on some generic dataset, return the best extractor and distance function based on the precison-recall curve.
+So, the idea in the future is to, based on some generic dataset, return the best extractor and distance function based on the precision-recall curve.
 
 
 ## Libraries

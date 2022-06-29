@@ -133,13 +133,13 @@ java -jar target/image-wavelet-1.0-jar-with-dependencies.jar --precision-recall 
 java -jar target/image-wavelet-1.0-jar-with-dependencies.jar --precision-recall --precision-recall-extractor-id=1
 ```
 
-For example, here is a precision-recall curve comparing the X-Ray lung images:
+For example, here are two precision-recall curves comparing the X-Ray lung images:
 
-Precision-recall curve comparing Manhattan distance function with some extractors (db1 - 5 is Wavelet of Daubechies family with level 5)
+- Precision-recall curve comparing Manhattan distance function with some extractors (db1 - 5 is Wavelet of Daubechies family with level 5)
 
 ![curve1](./res/curve-1.png)
 
-Precision-recall chart comparing a wavelet extractor with the distance functions
+- Precision-recall curve comparing a wavelet extractor with the distance functions
 
 ![curve1](./res/curve-2.png)
 

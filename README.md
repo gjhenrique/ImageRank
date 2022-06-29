@@ -136,10 +136,12 @@ java -jar target/image-wavelet-1.0-jar-with-dependencies.jar --precision-recall 
 For example, here is a precision-recall curve comparing the X-Ray lung images:
 
 Precision-recall curve comparing Manhattan distance function with some extractors (db1 - 5 is Wavelet of Daubechies family with level 5)
-![curve1](/res/curve1.png)
+
+![curve1](./res/curve-1.png)
 
 Precision-recall chart comparing a wavelet extractor with the distance functions
-![curve1](/res/curve2.png)
+
+![curve1](./res/curve-2.png)
 
 ## Future endeavors
 Since this project was aimed to write a paper to compare the introduction of Wavelets with another work plotting Precision vs. Recall, the design was simply to create the precision-recall curve.

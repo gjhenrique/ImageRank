@@ -35,9 +35,9 @@ public abstract class ImageWrapper {
 
     public double[][] getPixelMatrix() {
 
-        double[][] matrix = new double[getHeight()][getWidth()];
+        double[][] matrix = new double[getWidth()][getHeight()];
         for (int i = 0; i < getWidth(); i++) {
-            for (int j = 0; j < getWidth(); j++) {
+            for (int j = 0; j < getHeight(); j++) {
                 matrix[i][j] = getUnitPixelValue(i, j);
             }
         }

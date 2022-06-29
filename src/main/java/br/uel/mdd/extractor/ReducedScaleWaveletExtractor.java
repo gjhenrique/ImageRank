@@ -3,6 +3,7 @@ package br.uel.mdd.extractor;
 import br.uel.mdd.io.ImageWrapper;
 import math.jwave.Transform;
 import math.jwave.exceptions.JWaveFailure;
+import math.jwave.transforms.AncientEgyptianDecomposition;
 import math.jwave.transforms.FastWaveletTransform;
 import math.jwave.transforms.wavelets.Haar1;
 import math.jwave.transforms.wavelets.Wavelet;
@@ -28,9 +29,7 @@ public class ReducedScaleWaveletExtractor implements FeatureExtractor {
 
     @Override
     public double[] extractFeature(ImageWrapper image) {
-
         double[][] pixels = image.getPixelMatrix();
-
 
         double[][] transformedPixels = this.performWaveletTransform(pixels);
 
@@ -38,16 +37,44 @@ public class ReducedScaleWaveletExtractor implements FeatureExtractor {
     }
 
     private double[][] performWaveletTransform(double[][] pixels) {
-
         double[][] transformedWavelet = null;
         try {
             Transform transform = new Transform(new FastWaveletTransform(this.filter), this.levels);
-            transformedWavelet = transform.forward(pixels);
+            transformedWavelet = transform.forward(fillWithZeros(pixels));
         } catch (JWaveFailure jWaveFailure) {
             jWaveFailure.printStackTrace();
         }
 
         return transformedWavelet;
+    }
+
+    private double[][] fillWithZeros(double[][] pixels) {
+        int width = pixels[0].length;
+        int height = pixels.length;
+        int biggerDimension = Math.max(width, height);
+        int power = powerOf2(biggerDimension, 2);
+
+        double[][] newMatrix = new double[power][power];
+        for(int i = 0; i < power; i++) {
+          for(int j = 0; j < power; j++) {
+             if(i < pixels.length - 1 && j < pixels[0].length - 1) {
+                 newMatrix[i][j] = pixels[i][j];
+             } else {
+                 newMatrix[i][j] = 0;
+             }
+          }
+        }
+      return newMatrix;
+    }
+
+    private int powerOf2(int digit, int current) {
+        int pow = (int) Math.pow(2, current);
+        if(pow < digit) {
+            return powerOf2(digit, current + 1);
+        }
+        else {
+            return pow;
+        }
     }
 
     private double[] calculateSubspace(double[][] transformedPixels) {

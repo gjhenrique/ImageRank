@@ -165,8 +165,8 @@ public class ImageLoader {
     private String extractClassFromFileName(File file) {
         String fileName = file.getName();
 
-//      Get the first occurrence of a digit in the file name
-        String patternStr = "[0-9]";
+//      Get the first occurrence of a digit or underscore in the file name
+        String patternStr = "[0-9|_]";
         Pattern pattern = Pattern.compile(patternStr);
         Matcher matcher = pattern.matcher(fileName);
 

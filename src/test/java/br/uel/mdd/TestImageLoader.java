@@ -53,7 +53,7 @@ public class TestImageLoader {
     }
 
     private void populateDatabase() {
-        String path = getClass().getResource("/imgs/dicom/Pulmao").getFile();
+        String path = getClass().getResource("/imgs/Dogs").getFile();
 
         imagesDirectory = new File(path);
         imagesDirectorySize = imagesDirectory.listFiles().length;
@@ -69,7 +69,7 @@ public class TestImageLoader {
 
     @Test
     public void testFindByMimeType() {
-        List<Images> images = imagesDao.fetch(IMAGES.MIME_TYPE, "application/dicom");
+        List<Images> images = imagesDao.fetch(IMAGES.MIME_TYPE, "image/jpeg");
         assertThat(images.size(), equalTo(imagesDirectorySize));
     }
 
@@ -78,7 +78,7 @@ public class TestImageLoader {
 
         List<Datasets> datasets = datasetsDao.findAll();
         assertThat(datasets.size(), equalTo(1));
-        assertThat(datasets.get(0).getName(), equalTo("Pulmao"));
+        assertThat(datasets.get(0).getName(), equalTo("Dogs"));
     }
 
     @Test
@@ -86,13 +86,13 @@ public class TestImageLoader {
         List<ClassImage> classes = classImageDao.findAll();
         assertThat(classes.size(), equalTo(3));
 
-        classes = classImageDao.fetch(CLASS_IMAGE.NAME, "Consolidacao");
+        classes = classImageDao.fetch(CLASS_IMAGE.NAME, "Saluki");
         assertThat(classes.size(), equalTo(1));
     }
 
     @Test
     public void testFindByFileName() throws Exception {
-        List<Images> images = imagesDao.fetch(IMAGES.FILE_NAME, "Consolidacao0002685C_08.dcm");
+        List<Images> images = imagesDao.fetch(IMAGES.FILE_NAME, "Saluki_n02091831_97.jpg");
         assertThat(images.size(), equalTo(1));
     }
 

@@ -33,12 +33,6 @@ public class Main {
     private final Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String args[]) {
-//        args = ("--image-extraction --images-path " + args[0]).split(" ");
-//      args = "--feature-extraction -all-ext".split(" ");
-//        args = "--knn-queries --extractor-query-id 5 --all-distance-functions".split(" ");
-//        args = "-pr -pr-df-id 3 -pr-e 5,6,7,8,101,102,110,111".split(" ");
-        // args = "--image-extraction --images-path src/test/resources/imgs/dicom/Pulmao --feature-extraction --all-extractors --all-extractions --all-distance-functions --precision-recall -pr-df-id 3 -pr-e 116,117,121".split(" ");
-
         new Main(args);
     }
 

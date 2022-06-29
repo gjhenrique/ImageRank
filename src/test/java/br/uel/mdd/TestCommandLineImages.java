@@ -29,7 +29,7 @@ public class TestCommandLineImages {
     @Before
     public void prepareDatabase() {
         Guice.createInjector(new AppModule(true)).injectMembers(this);
-        path = getClass().getResource("/imgs/dicom/Pulmao").getFile();
+        path = getClass().getResource("/imgs/Dogs").getFile();
 
         DbSetup setup = commonOperations.createDbSetup();
         setup.launch();

@@ -47,20 +47,88 @@ Distance functions
 
 ## Stages
 
+## 0. Building the project
+You need to have these installed:
+- Java 8
+- GNUPlot
+
+### Running tests
+``` shell
+# Use
+export TEST_DB=imagerank_test
+export JDBC_URL="jdbc:postgresql://localhost/$TEST_DB?user=postgres&password=postgres"
+
+psql -U postgres -h localhost imagerank < sql/schema-creation.sql
+
+# Run the tests
+mvn test
+```
+
+### Assembling the project
+
+``` shell
+export DB=imagerank
+export JDBC_URL="jdbc:postgresql://localhost/$DB?user=postgres&password=postgres"
+# Run the schema
+psql -U postgres -h localhost imagerank < sql/schema-creation.sql
+# Load distance function and extractors metadata
+psql -U postgres -h localhost imagerank < sql/seeds.sql
+
+Build a fat JAR with all the dependencies
+mvn assembly:assembly -DskipTests
+```
+
 ### 1. Persisting the images
-This might not be a good idea, but depending on the
+Loading the images and its classes.
+
+The directory is the name of the dataset and the class is extracted from the name.
+In this example, there are 3 different classes Chihuahua, Groenendael and Saluki.
+
+``` 
+Dogs
+├── Chihuahua_n02085620_199.jpg
+├── Chihuahua_n02085620_242.jpg
+├── Groenendael_n02105056_933.jpg
+├── Groenendael_n02105056_961.jpg
+└── Saluki_n02091831_97.jpg
+
+java -jar target/image-wavelet-1.0-jar-with-dependencies.jar --image-extraction --images-path <path>
+```
        
 ### 2. Feature extraction
+Extracts the features from the images and saves the result into the `extractions` table.
+
+``` shell
+# Run all extractions. The time it takes is (extractors * number of images)
+java -jar target/image-wavelet-1.0-jar-with-dependencies.jar --feature-extraction --all-extractors
+
+# Run single extraction
+java -jar target/image-wavelet-1.0-jar-with-dependencies.jar --feature-extraction --extractor-feature-id=1
+java -jar target/image-wavelet-1.0-jar-with-dependencies.jar --feature-extraction --extractor-feature-id=100
+```
+
+Refer to the seeds file to get the [extractor id](https://github.com/gjhenrique/ImageRank/blob/3efaa5c2535a530fefbfca6636edc042ed53ee89/sql/seeds.sql#L2).
 
 ### 3. k-NNS queries
-Depending of the 
 
-It might take a while
-Multi-Threaded
+The cost for querying the whole database is `O(number of distance functions * number of extractions * rate of k)`.
+By default, the tool performs 20 queries ranging from `5-nn` to `100-nn`. This can be configured by the `--rate-k` and `--max-k`
+
+Depending of the dataset size, it might take a while to finish. A thread pool is used to parallelize the queries.
+
+``` shell
+java -jar target/image-wavelet-1.0-jar-with-dependencies.jar --knn-queries --all-extractions --all-distance-functions
+java -jar target/image-wavelet-1.0-jar-with-dependencies.jar --knn-queries --extractor-query-id=100 --all-distance-functions
+java -jar target/image-wavelet-1.0-jar-with-dependencies.jar --knn-queries --extractor-query-id=100 --distance-function-id=1
+```
+
+Refer to the seeds file to get the [extractor id](https://github.com/gjhenrique/ImageRank/blob/3efaa5c2535a530fefbfca6636edc042ed53ee89/sql/seeds.sql#L2) and [distance function id](https://github.com/gjhenrique/ImageRank/blob/3efaa5c2535a530fefbfca6636edc042ed53ee89/sql/seeds.sql#L40).
 
 ### 4. Plotting the queries
 
-Put the image
+Based on the previous queries, a Precision-Recall curve chart is generated with GNUPlot.
+
+Depending on the argument, 
 
 https://blog.floydhub.com/a-pirates-guide-to-accuracy-precision-recall-and-other-scores/#precision
 
@@ -119,12 +187,15 @@ java -jar target/image-wavelet-1.0-jar-with-dependencies.jar --image-extraction 
 # java -jar target/image-wavelet-1.0-jar-with-dependencies.jar --feature-extraction --all-extractors
 java -jar target/image-wavelet-1.0-jar-with-dependencies.jar --feature-extraction --extractor-feature-id 1
 java -jar target/image-wavelet-1.0-jar-with-dependencies.jar --feature-extraction --extractor-feature-id 100
+java -jar target/image-wavelet-1.0-jar-with-dependencies.jar --feature-extraction --extractor-feature-id 101
 
 # java -jar target/image-wavelet-1.0-jar-with-dependencies.jar --knn-queries --all-extractions --all-distance-functions
 java -jar target/image-wavelet-1.0-jar-with-dependencies.jar --knn-queries --extractor-query-id=1 --all-distance-functions
 java -jar target/image-wavelet-1.0-jar-with-dependencies.jar --knn-queries --extractor-query-id=100 --all-distance-functions
+java -jar target/image-wavelet-1.0-jar-with-dependencies.jar --knn-queries --extractor-query-id=101 --all-distance-functions
 
-java -jar target/image-wavelet-1.0-jar-with-dependencies.jar --precision-recall --extractor-query-id=1
+java -jar target/image-wavelet-1.0-jar-with-dependencies.jar --precision-recall --precision-recall-extractor-id=1
+java -jar target/image-wavelet-1.0-jar-with-dependencies.jar --precision-recall --precision-recall-distance-function=1
 
 Features
 https://github.com/locked-fg/JFeatureLib/tree/888d0d9f36381624cef28165bf19c0af022a10d1/src/main/java/de/lmu/ifi/dbs/jfeaturelib/features

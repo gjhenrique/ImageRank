@@ -1,6 +1,5 @@
 package br.uel.mdd;
 
-import br.uel.mdd.avaliation.SlimTreeWrapper;
 import br.uel.mdd.dao.ExtractionsDao;
 import br.uel.mdd.dao.ExtractorsDao;
 import br.uel.mdd.dao.ImagesDao;
@@ -51,21 +50,7 @@ public class TestFeatureExtractionLoader {
         DbSetup setup = commonOperations.createDbSetup(operation);
         setup.launch();
 
-        removeIndexes();
         populateDatabase();
-    }
-
-    private void removeIndexes() {
-        String rootPath = getClass().getResource("/").getFile();
-
-        File folder = new File(rootPath + File.separator + SlimTreeWrapper.INDEX_FOLDER_NAME);
-
-        if (folder.exists()) {
-            for (File file : folder.listFiles()) {
-                file.delete();
-            }
-            folder.delete();
-        }
     }
 
     private void populateDatabase() {
@@ -78,13 +63,13 @@ public class TestFeatureExtractionLoader {
     @Test
     public void testFeaturesInsertionSize() throws Exception {
         List<Extractions> extractions = extractionsDao.findAll();
-        assertThat(extractions.size(), equalTo(6));
+        assertThat(extractions.size(), equalTo(10));
     }
 
     @Test
     public void testFindByDataset() throws Exception {
         List<Extractions> extractions = extractionsDao.fetch(EXTRACTIONS.EXTRACTOR_ID, 1);
-        assertThat(extractions.size(), equalTo(3));
+        assertThat(extractions.size(), equalTo(5));
     }
 
     @Test

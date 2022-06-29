@@ -43,7 +43,7 @@ public class TestCommandLineExtractions {
         new Main(commandLineArgument.split(" "));
 
         List<Extractions> extractions = extractionsDao.findAll();
-        assertThat(extractions.size(), equalTo(6));
+        assertThat(extractions.size(), equalTo(10));
     }
 
     @Test
@@ -54,7 +54,7 @@ public class TestCommandLineExtractions {
         new Main(commandLineArgument.split(" "));
 
         List<Extractions> extractions = extractionsDao.findAll();
-        assertThat(extractions.size(), equalTo(3));
+        assertThat(extractions.size(), equalTo(5));
     }
 
 }

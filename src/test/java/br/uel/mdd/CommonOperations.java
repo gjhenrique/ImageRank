@@ -47,7 +47,7 @@ public class CommonOperations {
     public static final Operation DATASETS = Operations.sequenceOf(
             insertInto("datasets").
                     columns("id", "name").
-                    values(1, "Pulmao").
+                    values(1, "Dogs").
                     build()
     );
 
@@ -70,9 +70,11 @@ public class CommonOperations {
     public static final Operation IMAGES = sequenceOf(
             insertInto("images").
                     columns("id", "file_name", "image", "dataset_class_id", "mime_type").
-                    values(1, "Consolidacao0002685C_08.dcm", extractBytes("dicom/Pulmao/Consolidacao0002685C_08.dcm"), 1, "application/dicom").
-                    values(2, "Consolidacao0769646D_12.dcm", extractBytes("dicom/Pulmao/Consolidacao0769646D_12.dcm"), 1, "application/dicom").
-                    values(3, "Enfisema0106321J_09.dcm", extractBytes("dicom/Pulmao/Enfisema0106321J_09.dcm"), 2, "application/dicom").
+                    values(1, "Consolidacao0002685C_08.dcm", extractBytes("Dogs/Chihuahua_n02085620_199.jpg"), 1, "image/jpeg").
+                    values(2, "Chihuahua_n02085620_242.jpg", extractBytes("Dogs/Chihuahua_n02085620_242.jpg"), 1, "image/jpeg").
+                    values(3, "groenendael_n02105056_933.jpg", extractBytes("Dogs/groenendael_n02105056_933.jpg"), 1, "image/jpeg").
+                    values(4, "groenendael_n02105056_961.jpg", extractBytes("Dogs/groenendael_n02105056_961.jpg"), 1, "image/jpeg").
+                    values(5, "Saluki_n02091831_97.jpg", extractBytes("Dogs/Saluki_n02091831_97.jpg"), 1, "image/jpeg").
                     build());
 
     public static final Operation EXTRACTIONS = Operations.sequenceOf(
